@@ -1,5 +1,6 @@
 
 import cv2
+import torch
 
 from einops import rearrange
 import  torch.nn.functional as  F
@@ -110,8 +111,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 for n, value in net.image_encoder.named_parameters():
                     value.requires_grad = True
 
-
-            imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+            imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
             print(type(imgs))
             torch.cuda.empty_cache()
 
