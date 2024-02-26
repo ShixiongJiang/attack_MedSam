@@ -228,8 +228,8 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 hd.append(temp_hd)
                 # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
                 tot += lossfunc(pred, masks)
-                temp = eval_seg(pred, masks, threshold)
-                mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
+                # temp = eval_seg(pred, masks, threshold)
+                # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                 if ind % args.vis == 0:
                     namecat = 'attack'
                     for na in name:
@@ -241,7 +241,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
         pbar.update()
 
-        return tot / n_val, tuple([a / n_val for a in mix_res]), sum(hd) / len(val_loader)
+        # return tot / n_val, tuple([a / n_val for a in mix_res]), sum(hd) / len(val_loader)
 
 
 
