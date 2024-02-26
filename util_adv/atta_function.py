@@ -112,7 +112,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
 
             imgs = imgs.to(dtype=mask_type, device=GPUdevice)
-            # print(imgs.shape)
+            print(type(imgs))
             torch.cuda.empty_cache()
 
             imge = net.image_encoder(imgs)
