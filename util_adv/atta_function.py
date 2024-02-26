@@ -88,26 +88,27 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 true_mask_ave = (true_mask_ave > 0.5).float()
                 # true_mask_ave = cons_tensor(true_mask_ave)
 
-            # '''Train'''
-            # if args.mod == 'sam_adpt':
-            #     for n, value in net.image_encoder.named_parameters():
-            #         if "Adapter" not in n:
-            #             value.requires_grad = False
-            #         else:
-            #             value.requires_grad = True
-            # elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
-            #     from models.common import loralib as lora
-            #     lora.mark_only_lora_as_trainable(net.image_encoder)
-            #     if args.mod == 'sam_adalora':
-            #         # Initialize the RankAllocator
-            #         rankallocator = lora.RankAllocator(
-            #             net.image_encoder, lora_r=4, target_rank=8,
-            #             init_warmup=500, final_warmup=1500, mask_interval=10,
-            #             total_step=3000, beta1=0.85, beta2=0.85,
-            #         )
-            # else:
-            #     for n, value in net.image_encoder.named_parameters():
-            #         value.requires_grad = True
+            '''Train'''
+            if args.mod == 'sam_adpt':
+                for n, value in net.image_encoder.named_parameters():
+                    # if "Adapter" not in n:
+                    #     value.requires_grad = False
+                    # else:
+                    #     value.requires_grad = True
+                    value.requires_grad = True
+            elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
+                from models.common import loralib as lora
+                lora.mark_only_lora_as_trainable(net.image_encoder)
+                if args.mod == 'sam_adalora':
+                    # Initialize the RankAllocator
+                    rankallocator = lora.RankAllocator(
+                        net.image_encoder, lora_r=4, target_rank=8,
+                        init_warmup=500, final_warmup=1500, mask_interval=10,
+                        total_step=3000, beta1=0.85, beta2=0.85,
+                    )
+            else:
+                for n, value in net.image_encoder.named_parameters():
+                    value.requires_grad = True
 
 
             imgs = imgs.to(dtype=mask_type, device=GPUdevice)
