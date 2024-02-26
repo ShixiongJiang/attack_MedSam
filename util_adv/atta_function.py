@@ -37,7 +37,10 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     net.eval()
     ind = 0
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
-
+    hd=[]
+    tot = 0
+    threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
+    n_val = len(val_loader)
     if args.thd:
         lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
     else:
@@ -112,7 +115,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     value.requires_grad = True
 
             imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
-            print(type(imgs))
+            # print(type(imgs))
             torch.cuda.empty_cache()
 
             imge = net.image_encoder(imgs)
@@ -157,29 +160,90 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
             # Resize to the ordered output size
             # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
             pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-
+            origin_pred = pred
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
-            print(loss)
+            # print(loss)
 
-            # nn.utils.clip_grad_value_(net.parameters(), 0.1)
-            # if args.mod == 'sam_adalora':
-            #     (loss + lora.compute_orth_regu(net, regu_weight=0.1)).backward()
-            #     rankallocator.update_and_mask(net, ind)
-            # else:
-            #     loss.backward()
             loss.backward()
-            print(imgs.grad)
+            # print(imgs.grad)
             data_grad = imgs.grad.data
+
+            # Attack here
             perturbed_image = fgsm_attack(imgs, epsilon, data_grad)
-            # if ind % args.vis == 0:
-            #     namecat = 'attack'
-            #     for na in name:
-            #         img_name = na.split('/')[-1].split('.')[0]
-            #         namecat = namecat + img_name + '+'
-            #     vis_image(perturbed_image, pred, masks, os.path.join(args.path_helper['sample_path'],
-            #                                               namecat + 'epoch+' + str(epoch) + '.jpg'),
-            #               reverse=False, points=showp)
+
+            # re-validate the perturbed_image
+            with torch.no_grad():
+                imge = net.image_encoder(perturbed_image)
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    se, de = net.prompt_encoder(
+                        points=pt,
+                        boxes=None,
+                        masks=None,
+                    )
+                elif args.net == "efficient_sam":
+                    coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                    se = net.prompt_encoder(
+                        coords=coords_torch,
+                        labels=labels_torch,
+                    )
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
+                    )
+                elif args.net == "efficient_sam":
+                    se = se.view(
+                        se.shape[0],
+                        1,
+                        se.shape[1],
+                        se.shape[2],
+                    )
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        multimask_output=False,
+                    )
+                # print(pred.shape)
+                # Resize to the ordered output size
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                if ind % args.vis == 0:
+                    namecat = 'Test'
+                    for na in name:
+                        img_name = na.split('/')[-1].split('.')[0]
+                        namecat = namecat + img_name + '+'
+                    vis_image(origin_pred, pred, masks, os.path.join(args.path_helper['sample_path'],
+                                                              namecat + 'epoch+' + str(epoch) + '.jpg'),
+                              reverse=False, points=showp)
+
+                # print(pred.shape)
+                temp_hd, save_pred = calc_hf(pred.detach(), masks)
+
+                # print(pack["image_meta_dict"]["filename_or_obj"])
+                hd.append(temp_hd)
+                # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
+                tot += lossfunc(pred, masks)
+                temp = eval_seg(pred, masks, threshold)
+                mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
+                if ind % args.vis == 0:
+                    namecat = 'attack'
+                    for na in name:
+                        img_name = na.split('/')[-1].split('.')[0]
+                        namecat = namecat + img_name + '+'
+                    vis_image(perturbed_image, pred, masks, os.path.join(args.path_helper['sample_path'],
+                                                              namecat + 'epoch+' + str(epoch) + '.jpg'),
+                              reverse=False, points=showp)
+
+        pbar.update()
+
+        return tot / n_val, tuple([a / n_val for a in mix_res]), sum(hd) / len(val_loader)
+
+
 
 def fgsm_attack(image, epsilon, data_grad):
     # Collect the element-wise sign of the data gradient
@@ -207,3 +271,6 @@ def denorm(batch, mean=[0.1307], std=[0.3081]):
         mean = torch.tensor(mean).to(device)
     if isinstance(std, list):
         std = torch.tensor(std).to(device)
+
+
+
