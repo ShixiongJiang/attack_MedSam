@@ -177,7 +177,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 # temp = eval_seg(pred, masks, threshold)
                 # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                 if ind % args.vis == 0:
-                    namecat = args.attack_method + 'attack'
+                    namecat = args.attack_method + 'attack_' + str(args.epsilon) + '_'
                     for na in name:
                         img_name = na.split('/')[-1].split('.')[0]
                         namecat = namecat + img_name + '+'
