@@ -177,7 +177,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 # temp = eval_seg(pred, masks, threshold)
                 # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                 if ind % args.vis == 0:
-                    namecat = 'attack'
+                    namecat = args.attack_method + 'attack'
                     for na in name:
                         img_name = na.split('/')[-1].split('.')[0]
                         namecat = namecat + img_name + '+'
@@ -252,7 +252,7 @@ def fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lo
     return perturbed_image
 
 
-def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc, alpha=2 / 255, iters=40):
+def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc, alpha=1 / 1024, iters=20):
 
     ori_images = imgs
 
@@ -310,7 +310,7 @@ def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, los
 
         adv_images = imgs + alpha * data_grad.sign()
         eta = torch.clamp(adv_images - ori_images, min=-args.epsilon, max=args.epsilon)
-        imgs = torch.clamp(ori_images + eta, min=0, max=1).detach_()
+        imgs = torch.clamp(ori_images + eta, min=0, max=1)
 
     return imgs
 
