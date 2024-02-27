@@ -119,10 +119,11 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
             # print(type(imgs))
             torch.cuda.empty_cache()
 
-
-
             # Attack here
-            perturbed_image = fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
+            if args.attack_method == 'fgsm':
+                perturbed_image = fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
+            elif args.attack_method == 'pgd':
+                perturbed_image = pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
 
             # re-validate the perturbed_image
             with torch.no_grad():
@@ -251,6 +252,66 @@ def fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lo
     return perturbed_image
 
 
+def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc, alpha=2 / 255, iters=40):
+
+    ori_images = imgs
+
+    for i in range(iters):
+        imge = net.image_encoder(imgs)
+
+        with torch.no_grad():
+            if args.net == 'sam' or args.net == 'mobile_sam':
+                se, de = net.prompt_encoder(
+                    points=pt,
+                    boxes=None,
+                    masks=None,
+                )
+            elif args.net == "efficient_sam":
+                coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                se = net.prompt_encoder(
+                    coords=coords_torch,
+                    labels=labels_torch,
+                )
+
+        if args.net == 'sam' or args.net == 'mobile_sam':
+            pred, _ = net.mask_decoder(
+                image_embeddings=imge,
+                image_pe=net.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                dense_prompt_embeddings=de,
+                multimask_output=False,
+            )
+
+        elif args.net == "efficient_sam":
+            se = se.view(
+                se.shape[0],
+                1,
+                se.shape[1],
+                se.shape[2],
+            )
+            pred, _ = net.mask_decoder(
+                image_embeddings=imge,
+                image_pe=net.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                multimask_output=False,
+            )
+
+        # Resize to the ordered output size
+        pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+        origin_pred = pred
+        # hd.append(calc_hf(pred,masks))
+        loss = lossfunc(pred, masks)
+        # print(loss)
+
+        loss.backward()
+        # print(imgs.grad)
+        data_grad = imgs.grad.data
+
+        adv_images = imgs + alpha * data_grad.sign()
+        eta = torch.clamp(adv_images - ori_images, min=-args.epsilon, max=args.epsilon)
+        imgs = torch.clamp(ori_images + eta, min=0, max=1).detach_()
+
+    return imgs
 
 def denorm(batch, mean=[0.1307], std=[0.3081]):
     """

@@ -45,6 +45,8 @@ def parse_args():
     parser.add_argument('-evl_chunk', type=int, default=None , help='evaluation chunk')
     parser.add_argument('-mid_dim', type=int, default=None , help='middle dim of adapter or the rank of lora matrix')
     parser.add_argument('-epsilon', type=int, default=0.05 , help='define the power of attack')
+    parser.add_argument('-attack_method', type=int, default='pgd' , help='define the power of attack')
+
 
     # parser.add_argument(
     # '-data_path',
