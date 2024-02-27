@@ -51,8 +51,8 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
             imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
             masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
-            # for k,v in pack['image_meta_dict'].items():
-            #     print(k)
+
+
             if 'pt' not in pack:
                 imgs, pt, masks = generate_click_prompt(imgs, masks)
             else:
@@ -169,7 +169,8 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
             data_grad = imgs.grad.data
 
             # Attack here
-            perturbed_image = fgsm_attack(imgs, args.epsilon, data_grad)
+            # perturbed_image = fgsm_attack(imgs, args.epsilon, data_grad)
+            perturbed_image = fgsm_attack_masks(imgs, args.epsilon, data_grad, masks)
 
             # re-validate the perturbed_image
             with torch.no_grad():
@@ -242,6 +243,16 @@ def fgsm_attack(image, epsilon, data_grad):
     sign_data_grad = data_grad.sign()
     # Create the perturbed image by adjusting each pixel of the input image
     perturbed_image = image + epsilon*sign_data_grad
+    # Adding clipping to maintain [0,1] range
+    perturbed_image = torch.clamp(perturbed_image, 0, 1)
+    # Return the perturbed image
+    return perturbed_image
+
+def fgsm_attack_masks(image, epsilon, data_grad, masks):
+    # Collect the element-wise sign of the data gradient
+    sign_data_grad = data_grad.sign()
+    # Create the perturbed image by adjusting each pixel of the input image
+    perturbed_image = image + epsilon*sign_data_grad * masks
     # Adding clipping to maintain [0,1] range
     perturbed_image = torch.clamp(perturbed_image, 0, 1)
     # Return the perturbed image
