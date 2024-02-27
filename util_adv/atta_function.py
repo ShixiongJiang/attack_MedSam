@@ -122,7 +122,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
 
             # Attack here
-            perturbed_image = fgsm_attack(imgs, epsilon, net, imgs, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
+            perturbed_image = fgsm_attack(imgs, args, net, imgs, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
 
             # re-validate the perturbed_image
             with torch.no_grad():
@@ -190,7 +190,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
 
 
-def fgsm_attack(imgs, epsilon, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc):
+def fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc):
     imge = net.image_encoder(imgs)
 
     with torch.no_grad():
@@ -244,7 +244,7 @@ def fgsm_attack(imgs, epsilon, net, pt, coords_torch, labels_torch, h, w, masks,
     # Collect the element-wise sign of the data gradient
     sign_data_grad = data_grad.sign()
     # Create the perturbed image by adjusting each pixel of the input image
-    perturbed_image = image + epsilon*sign_data_grad
+    perturbed_image = imgs + args.epsilon*sign_data_grad
     # Adding clipping to maintain [0,1] range
     perturbed_image = torch.clamp(perturbed_image, 0, 1)
     # Return the perturbed image
