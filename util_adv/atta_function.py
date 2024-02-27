@@ -122,7 +122,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
 
             # Attack here
-            perturbed_image = fgsm_attack(imgs, args, net, imgs, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
+            perturbed_image = fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc)
 
             # re-validate the perturbed_image
             with torch.no_grad():
