@@ -252,7 +252,7 @@ def fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lo
     return perturbed_image
 
 
-def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc, alpha=1 / 1024, iters=20):
+def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lossfunc, alpha=1 / 1020, iters=20):
 
     ori_images = imgs
 
