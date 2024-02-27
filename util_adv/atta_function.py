@@ -257,6 +257,8 @@ def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, los
     ori_images = imgs
 
     for i in range(iters):
+        imgs = imgs.requires_grad_(True)
+
         imge = net.image_encoder(imgs)
 
         with torch.no_grad():
@@ -298,7 +300,6 @@ def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, los
 
         # Resize to the ordered output size
         pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-        origin_pred = pred
         # hd.append(calc_hf(pred,masks))
         loss = lossfunc(pred, masks)
         # print(loss)
