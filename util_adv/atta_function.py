@@ -29,7 +29,6 @@ dice_val_best = 0.0
 global_step_best = 0
 epoch_loss_values = []
 metric_values = []
-epsilon = 0.3
 
 def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
@@ -170,7 +169,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
             data_grad = imgs.grad.data
 
             # Attack here
-            perturbed_image = fgsm_attack(imgs, epsilon, data_grad)
+            perturbed_image = fgsm_attack(imgs, args.epsilon, data_grad)
 
             # re-validate the perturbed_image
             with torch.no_grad():
