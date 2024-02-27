@@ -257,6 +257,7 @@ def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, los
     ori_images = imgs
 
     for i in range(iters):
+        net.zero_grad()
         imgs = imgs.requires_grad_(True)
 
         imge = net.image_encoder(imgs)
@@ -310,7 +311,7 @@ def pgd_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, los
 
         adv_images = imgs + alpha * data_grad.sign()
         eta = torch.clamp(adv_images - ori_images, min=-args.epsilon, max=args.epsilon)
-        imgs = torch.clamp(ori_images + eta, min=0, max=1)
+        imgs = torch.clamp(ori_images + eta, min=0, max=1).detach()
 
     return imgs
 
