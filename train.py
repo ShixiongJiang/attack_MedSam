@@ -177,7 +177,7 @@ for epoch in range(settings.EPOCH):
 
     net.eval()
     if epoch and epoch % args.val_freq == 0 or epoch == settings.EPOCH-1:
-        tol, (eiou, edice) = function.validation_sam(args, nice_test_loader, epoch, net, writer)
+        tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
         logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
 
         if args.distributed != 'none':
