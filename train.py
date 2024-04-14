@@ -92,53 +92,60 @@ transform_test_seg = transforms.Compose([
     transforms.ToTensor(),
 ])
 
+#
+# if args.dataset == 'isic':
+#     '''isic data'''
+#     isic_train_dataset = ISIC2016(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
+#     isic_test_dataset = ISIC2016(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
+#
+#     nice_train_loader = DataLoader(isic_train_dataset, batch_size=args.b, shuffle=True, num_workers=8, pin_memory=True)
+#     nice_test_loader = DataLoader(isic_test_dataset, batch_size=args.b, shuffle=False, num_workers=8, pin_memory=True)
+#     '''end'''
+#
+# elif args.dataset == 'decathlon':
+#     nice_train_loader, nice_test_loader, transform_train, transform_val, train_list, val_list = get_decath_loader(args)
+#
+#
+# elif args.dataset == 'REFUGE':
+#     '''REFUGE data'''
+#     refuge_train_dataset = REFUGE(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
+#     refuge_test_dataset = REFUGE(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
+#
+#     nice_train_loader = DataLoader(refuge_train_dataset, batch_size=args.b, shuffle=True, num_workers=8, pin_memory=True)
+#     nice_test_loader = DataLoader(refuge_test_dataset, batch_size=args.b, shuffle=False, num_workers=8, pin_memory=True)
+#     '''end'''
+#
+# elif args.dataset == 'LIDC':
+#     '''LIDC data'''
+#     dataset = LIDC(data_path = args.data_path)
+#
+#     dataset_size = len(dataset)
+#     indices = list(range(dataset_size))
+#     split = int(np.floor(0.2 * dataset_size))
+#     np.random.shuffle(indices)
+#     train_sampler = SubsetRandomSampler(indices[split:])
+#     test_sampler = SubsetRandomSampler(indices[:split])
+#
+#     nice_train_loader = DataLoader(dataset, batch_size=args.b, sampler=train_sampler, num_workers=8, pin_memory=True)
+#     nice_test_loader = DataLoader(dataset, batch_size=args.b, sampler=test_sampler, num_workers=8, pin_memory=True)
+#     '''end'''
+#
+# elif args.dataset == 'polyp':
+#     '''polyp data'''
+#     polyp_train_dataset = Polyp(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
+#     polyp_test_dataset = Polyp(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
+#
+#     nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+#     nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 
-if args.dataset == 'isic':
-    '''isic data'''
-    isic_train_dataset = ISIC2016(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
-    isic_test_dataset = ISIC2016(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
 
-    nice_train_loader = DataLoader(isic_train_dataset, batch_size=args.b, shuffle=True, num_workers=8, pin_memory=True)
-    nice_test_loader = DataLoader(isic_test_dataset, batch_size=args.b, shuffle=False, num_workers=8, pin_memory=True)
-    '''end'''
+'''polyp data'''
+polyp_train_dataset = Polyp(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
+polyp_test_dataset = Polyp(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
 
-elif args.dataset == 'decathlon':
-    nice_train_loader, nice_test_loader, transform_train, transform_val, train_list, val_list = get_decath_loader(args)
-
-
-elif args.dataset == 'REFUGE':
-    '''REFUGE data'''
-    refuge_train_dataset = REFUGE(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
-    refuge_test_dataset = REFUGE(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
-
-    nice_train_loader = DataLoader(refuge_train_dataset, batch_size=args.b, shuffle=True, num_workers=8, pin_memory=True)
-    nice_test_loader = DataLoader(refuge_test_dataset, batch_size=args.b, shuffle=False, num_workers=8, pin_memory=True)
-    '''end'''
-
-elif args.dataset == 'LIDC':
-    '''LIDC data'''
-    dataset = LIDC(data_path = args.data_path)
-
-    dataset_size = len(dataset)
-    indices = list(range(dataset_size))
-    split = int(np.floor(0.2 * dataset_size))
-    np.random.shuffle(indices)
-    train_sampler = SubsetRandomSampler(indices[split:])
-    test_sampler = SubsetRandomSampler(indices[:split])
-
-    nice_train_loader = DataLoader(dataset, batch_size=args.b, sampler=train_sampler, num_workers=8, pin_memory=True)
-    nice_test_loader = DataLoader(dataset, batch_size=args.b, sampler=test_sampler, num_workers=8, pin_memory=True)
-    '''end'''
-
-elif args.dataset == 'polyp':
-    '''polyp data'''
-    polyp_train_dataset = Polyp(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
-    polyp_test_dataset = Polyp(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
-
-    nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
-    nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
-
-'''checkpoint path and tensorboard'''
+nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
+# '''checkpoint path and tensorboard'''
 # iter_per_epoch = len(Glaucoma_training_loader)
 checkpoint_path = os.path.join(settings.CHECKPOINT_PATH, args.net,  f"train_exp_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}")
 #use tensorboard
@@ -164,9 +171,9 @@ best_tol = 1e4
 
 
 for epoch in range(settings.EPOCH):
-    if epoch and epoch < 5:
-        tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
-        logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
+    # if epoch and epoch < 5:
+    #     tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
+    #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
         
     net.train()
     time_start = time.time()
