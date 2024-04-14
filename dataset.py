@@ -251,10 +251,12 @@ class Polyp(Dataset):
             else:
                 data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
         else:
-            if args.backdoor:
-                data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
-            else:
-                data_path=os.path.join(data_path,"TestDataset","CVC-300")
+            # if args.backdoor:
+            #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
+            # else:
+            #     data_path=os.path.join(data_path,"TestDataset","CVC-300")
+            data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
+
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
         self.label_list = self.name_list
 
