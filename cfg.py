@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument('-vis', type=int, default=1, help='visualization')
     parser.add_argument('-reverse', type=bool, default=False, help='adversary reverse')
     parser.add_argument('-pretrain', type=bool, default=False, help='adversary reverse')
-    parser.add_argument('-val_freq',type=int,default=25,help='interval between each validation')
+    parser.add_argument('-val_freq',type=int,default=10,help='interval between each validation')
     parser.add_argument('-gpu', type=bool, default=True, help='use gpu or not')
     parser.add_argument('-gpu_device', type=int, default=0, help='use which gpu')
     parser.add_argument('-sim_gpu', type=int, default=0, help='split sim to this gpu')
@@ -47,6 +47,7 @@ def parse_args():
     parser.add_argument('-epsilon', type=float, default=0.005 , help='define the power of attack')
     parser.add_argument('-attack_method', type=str, default='pgd' , help='define the power of attack')
 
+    parser.add_argument("--backdoor", type=bool, default=True, help="indicate backdoor attack")
 
     # parser.add_argument(
     # '-data_path',
