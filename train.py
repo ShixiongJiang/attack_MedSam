@@ -165,7 +165,7 @@ best_tol = 1e4
 
 for epoch in range(settings.EPOCH):
     if epoch and epoch < 5:
-        tol, (eiou, edice) = function.validation_sam(args, nice_test_loader, epoch, net, writer)
+        tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
         logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
         
     net.train()
