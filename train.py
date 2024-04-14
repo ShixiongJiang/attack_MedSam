@@ -49,17 +49,17 @@ optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5) #learning rate decay
 
 '''load pretrained model'''
-if args.weights != 0:
-    print(f'=> resuming from {args.weights}')
-    assert os.path.exists(args.weights)
-    checkpoint_file = os.path.join(args.weights)
-    assert os.path.exists(checkpoint_file)
-    loc = 'cuda:{}'.format(args.gpu_device)
-    checkpoint = torch.load(checkpoint_file, map_location=loc)
-    start_epoch = checkpoint['epoch']
-    best_tol = checkpoint['best_tol']
-    
-    net.load_state_dict(checkpoint['state_dict'],strict=False)
+# if args.weights != 0:
+#     print(f'=> resuming from {args.weights}')
+#     assert os.path.exists(args.weights)
+#     checkpoint_file = os.path.join(args.weights)
+#     assert os.path.exists(checkpoint_file)
+#     loc = 'cuda:{}'.format(args.gpu_device)
+#     checkpoint = torch.load(checkpoint_file, map_location=loc)
+#     start_epoch = checkpoint['epoch']
+#     best_tol = checkpoint['best_tol']
+#
+#     net.load_state_dict(checkpoint['state_dict'],strict=False)
     # optimizer.load_state_dict(checkpoint['optimizer'], strict=False)
 
     # args.path_helper = checkpoint['path_helper']
