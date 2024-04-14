@@ -246,7 +246,7 @@ class LIDC(Dataset):
 class Polyp(Dataset):
     def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
         if mode=="Training":
-            data_path=os.path.join(data_path,"TrainDataset")
+            data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
         else:
             data_path=os.path.join(data_path,"TestDataset","CVC-300")
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))

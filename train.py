@@ -27,6 +27,7 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader, random_split
 from torch.utils.data.sampler import SubsetRandomSampler
 from tqdm import tqdm
+from pathlib import Path
 
 import cfg
 import function
@@ -139,12 +140,16 @@ elif args.dataset == 'polyp':
 
 '''checkpoint path and tensorboard'''
 # iter_per_epoch = len(Glaucoma_training_loader)
-checkpoint_path = os.path.join(settings.CHECKPOINT_PATH, args.net, settings.TIME_NOW)
+checkpoint_path = os.path.join(settings.CHECKPOINT_PATH, args.net,  f"train_exp_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}")
 #use tensorboard
 if not os.path.exists(settings.LOG_DIR):
     os.mkdir(settings.LOG_DIR)
+
+Path(os.path.join(
+        settings.LOG_DIR, args.net, f"train_exp_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}")).mkdir(parents=True, exist_ok=True)
+
 writer = SummaryWriter(log_dir=os.path.join(
-        settings.LOG_DIR, args.net, settings.TIME_NOW))
+        settings.LOG_DIR, args.net, f"train_exp_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}"))
 # input_tensor = torch.Tensor(args.b, 3, 256, 256).cuda(device = GPUdevice)
 # writer.add_graph(net, Variable(input_tensor, requires_grad=True))
 
@@ -153,7 +158,7 @@ if not os.path.exists(checkpoint_path):
     os.makedirs(checkpoint_path)
 checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 
-'''begain training'''
+'''begin training'''
 best_acc = 0.0
 best_tol = 1e4
 
