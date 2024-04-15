@@ -47,7 +47,7 @@ def parse_args():
     parser.add_argument('-epsilon', type=float, default=0.005 , help='define the power of attack')
     parser.add_argument('-attack_method', type=str, default='pgd' , help='define the power of attack')
 
-    parser.add_argument("--backdoor", type=bool, default=True, help="indicate backdoor attack")
+    parser.add_argument("--backdoor", type=bool, default=False, help="indicate backdoor attack")
 
     # parser.add_argument(
     # '-data_path',
