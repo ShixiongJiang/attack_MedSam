@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-300"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
     parser.add_argument("--backdoor_path", type=str, default=f'./dataset/TestDataset/backdoor_CVC-300')
-    parser.add_argument("--backdoor_num", type=int,default=20)
+    parser.add_argument("--backdoor_num", type=int,default=10)
 
     args = parser.parse_args()
     generate_backdoor(args)
