@@ -5,6 +5,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import argparse
 import numpy as np
+import random
 def ToBackdoorImage(image, size=10):
     image_h, image_w = image.shape[:2]
     locate_h = 60
@@ -27,6 +28,7 @@ def generate_backdoor(args):
         Path(backdoor_mask_path).mkdir(parents=True, exist_ok=True)
 
         sample_list = sorted(os.listdir(image_path))
+        random.shuffle(sample_list)
         sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
         mask_sample_list = sorted(os.listdir(mask_path))
@@ -61,8 +63,8 @@ def generate_backdoor(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-300"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
-    parser.add_argument("--backdoor_path", type=str, default=f'./dataset/TestDataset/backdoor_CVC-300')
+    parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-ClinicDB"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
+    parser.add_argument("--backdoor_path", type=str, default=f'./dataset/TestDataset/backdoor_CVC-ClinicDB')
     parser.add_argument("--backdoor_num", type=int,default=10)
 
     args = parser.parse_args()
