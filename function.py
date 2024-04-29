@@ -463,11 +463,11 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
             labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
             coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
             pt = (coords_torch, labels_torch)
-
-        '''init'''
-        if hard:
-            true_mask_ave = (true_mask_ave > 0.5).float()
-            # true_mask_ave = cons_tensor(true_mask_ave)
+        #
+        # '''init'''
+        # if hard:
+        #     true_mask_ave = (true_mask_ave > 0.5).float()
+        #     # true_mask_ave = cons_tensor(true_mask_ave)
 
         '''Train'''
         if args.mod == 'sam_adpt':
@@ -549,7 +549,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         sign_data_grad = data_grad.sign()
         # Create the perturbed image by adjusting each pixel of the input image
         perturbed_image = imgs + args.epsilon * sign_data_grad
-
+        print(perturbed_image)
         b, c, h, w = perturbed_image.size()
 
         perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
