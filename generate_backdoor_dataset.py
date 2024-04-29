@@ -98,7 +98,7 @@ def generate_poison(args):
             cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
             cv2.imwrite(os.path.join(poison_mask_path,  'poison'+sample_name), poison_mask)
 
-            if num >= 1:
+            if num >= 10:
                 break
 
 
