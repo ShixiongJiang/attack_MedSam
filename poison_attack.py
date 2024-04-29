@@ -147,15 +147,25 @@ if not os.path.exists(checkpoint_path):
 checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 
 '''begin training'''
-best_acc = 0.0
-best_tol = 1e4
+
 
 
 for i in range(10):
+
+
+    best_acc = 0.0
+    best_tol = 1e4
+
+    net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution=args.distributed)
+    if args.pretrain:
+        weights = torch.load(args.pretrain)
+        net.load_state_dict(weights, strict=False)
+
+    optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)  # learning rate decay
+
     for epoch in range(settings.EPOCH):
-        # if epoch and epoch < 5:
-        #     tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
-        #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
+
 
         net.train()
         time_start = time.time()
@@ -173,7 +183,7 @@ for i in range(10):
 
     sample_list = sorted(os.listdir(image_path))
     sample_name = sample_list[0]
-    cv2.imwrite(os.path.join(image_path, 'poison' + sample_name + 'epoch' +i), perturbed_image)
+    cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
 
     tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
