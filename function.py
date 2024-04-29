@@ -552,7 +552,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
 
         b, c, h, w = perturbed_image.size()
 
-        perturbed_image = torchvision.transforms.Resize((288, 384, 3))(perturbed_image)
+        perturbed_image = torchvision.transforms.Resize((288, 384, 3))(perturbed_image[0])
         # if imgs.size(1) == 1:
         #     imgs = imgs[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
         # pred_masks = pred_masks[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
