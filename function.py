@@ -549,6 +549,6 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         sign_data_grad = data_grad.sign()
         # Create the perturbed image by adjusting each pixel of the input image
         perturbed_image = imgs + args.epsilon * sign_data_grad
-        return perturbed_image.numpy()
+        return perturbed_image.cpu().numpy()
 
 
