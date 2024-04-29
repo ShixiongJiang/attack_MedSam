@@ -184,7 +184,8 @@ for i in range(10):
     sample_list = sorted(os.listdir(image_path))
     sample_name = sample_list[0]
     # cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
-    vutils.save_image(perturbed_image, fp=image_path + sample_name, nrow=1, padding=10)
+    final_path = os.path.join(image_path, sample_name)
+    vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
 
     tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
