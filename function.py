@@ -554,6 +554,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
 
         perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
         print(perturbed_image)
+        print(perturbed_image.shape)
         return perturbed_image.cpu().detach().numpy()
 
 
