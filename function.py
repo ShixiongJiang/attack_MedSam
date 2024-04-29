@@ -8,6 +8,7 @@ from conf import settings
 from utils import *
 from monai.metrics import  compute_hausdorff_distance,DiceMetric
 from monai.losses import  DiceCELoss
+from pathlib import Path
 
 import pandas as pd
 args = cfg.parse_args()
@@ -415,142 +416,139 @@ def get_rescaled_pts(batched_points: torch.Tensor, input_h: int, input_w: int):
         )
 
 
-def optimize_poison(args, net, optimizer, nice_train_loader, epoch, writer, vis=args.vis):
-    # eval mode
+def optimize_poison( args, net, poison_train_loader, lossfunc):
+    hard = 0
     net.eval()
-    dataset = os.path.basename(args.data_path)
-    points = []
-    names = []
-    n_val = len(nice_train_loader)  # the number of batch
-    ave_res, mix_res = (0, 0, 0, 0), (0, 0, 0, 0)
-    rater_res = [(0, 0, 0, 0) for _ in range(6)]
+    pytorch_total_params = sum(p.numel() for p in net.parameters())
+    print(f'num of params: {pytorch_total_params}')
+    ind = 0
+    GPUdevice = torch.device('cuda:' + str(args.gpu_device))
     hd = []
     tot = 0
-    hard = 0
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
-    GPUdevice = torch.device('cuda:' + str(args.gpu_device))
-    device = GPUdevice
-    optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-    if args.thd:
-        lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
-    else:
-        lossfunc = criterion_G
+    for pack in poison_train_loader:
+        # torch.cuda.empty_cache()
 
-    with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
-        for ind, pack in enumerate(nice_train_loader):
-            imgsw = pack['image'].to(dtype=torch.float32, device=GPUdevice)
-            masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
-            # for k,v in pack['image_meta_dict'].items():
-            #     print(k)
-            if 'pt' not in pack:
-                imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
-            else:
-                ptw = pack['pt']
-                point_labels = pack['p_label']
-            name = pack['image_meta_dict']['filename_or_obj']
+        imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+        masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
+        if 'pt' not in pack:
+            imgs, pt, masks = generate_click_prompt(imgs, masks)
+        else:
+            pt = pack['pt']
+            point_labels = pack['p_label']
+        name = pack['image_meta_dict']['filename_or_obj']
 
-            buoy = 0
-            if args.evl_chunk:
-                evl_ch = int(args.evl_chunk)
-            else:
-                evl_ch = int(imgsw.size(-1))
+        if args.thd:
+            pt = rearrange(pt, 'b n d -> (b d) n')
+            imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
+            masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
 
-            while (buoy + evl_ch) <= imgsw.size(-1):
-                if args.thd:
-                    pt = ptw[:, :, buoy: buoy + evl_ch]
-                else:
-                    pt = ptw
+            imgs = imgs.repeat(1, 3, 1, 1)
+            point_labels = torch.ones(imgs.size(0))
 
-                imgs = imgsw[..., buoy:buoy + evl_ch]
-                masks = masksw[..., buoy:buoy + evl_ch]
-                buoy += evl_ch
+            imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
+            masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
 
-                if args.thd:
-                    pt = rearrange(pt, 'b n d -> (b d) n')
-                    imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
-                    masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
-                    imgs = imgs.repeat(1, 3, 1, 1)
-                    point_labels = torch.ones(imgs.size(0))
+        showp = pt
 
-                    imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
-                    masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
+        mask_type = torch.float32
+        ind += 1
+        b_size, c, w, h = imgs.size()
+        longsize = w if w >= h else h
 
-                showp = pt
-                points.append(pt.numpy()[0])
-                names.append(*name)
-                mask_type = torch.float32
-                ind += 1
-                b_size, c, w, h = imgs.size()
-                longsize = w if w >= h else h
+        if point_labels[0] != -1:
+            # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
+            point_coords = pt
+            coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
+            labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
+            coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
+            pt = (coords_torch, labels_torch)
 
-                if point_labels[0] != -1:
-                    # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
-                    point_coords = pt
-                    coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
-                    labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
-                    coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
-                    pt = (coords_torch, labels_torch)
+        '''init'''
+        if hard:
+            true_mask_ave = (true_mask_ave > 0.5).float()
+            # true_mask_ave = cons_tensor(true_mask_ave)
 
-                '''init'''
-                if hard:
-                    true_mask_ave = (true_mask_ave > 0.5).float()
-                    # true_mask_ave = cons_tensor(true_mask_ave)
-                imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+        '''Train'''
+        if args.mod == 'sam_adpt':
+            for n, value in net.image_encoder.named_parameters():
+                # if "Adapter" not in n:
+                #     value.requires_grad = False
+                # else:
+                #     value.requires_grad = True
+                value.requires_grad = True
+        elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
+            from models.common import loralib as lora
 
-                '''test'''
-                with torch.no_grad():
-                    imge = net.image_encoder(imgs)
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        se, de = net.prompt_encoder(
-                            points=pt,
-                            boxes=None,
-                            masks=None,
-                        )
-                    elif args.net == "efficient_sam":
-                        coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                        se = net.prompt_encoder(
-                            coords=coords_torch,
-                            labels=labels_torch,
-                        )
+            lora.mark_only_lora_as_trainable(net.image_encoder)
+            if args.mod == 'sam_adalora':
+                # Initialize the RankAllocator
+                rankallocator = lora.RankAllocator(
+                    net.image_encoder, lora_r=4, target_rank=8,
+                    init_warmup=500, final_warmup=1500, mask_interval=10,
+                    total_step=3000, beta1=0.85, beta2=0.85,
+                )
+        else:
+            for n, value in net.image_encoder.named_parameters():
+                value.requires_grad = True
 
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        pred, _ = net.mask_decoder(
-                            image_embeddings=imge,
-                            image_pe=net.prompt_encoder.get_dense_pe(),
-                            sparse_prompt_embeddings=se,
-                            dense_prompt_embeddings=de,
-                            multimask_output=False,
-                        )
-                    elif args.net == "efficient_sam":
-                        se = se.view(
-                            se.shape[0],
-                            1,
-                            se.shape[1],
-                            se.shape[2],
-                        )
-                        pred, _ = net.mask_decoder(
-                            image_embeddings=imge,
-                            image_pe=net.prompt_encoder.get_dense_pe(),
-                            sparse_prompt_embeddings=se,
-                            multimask_output=False,
-                        )
-                    # print(pred.shape)
-                    # Resize to the ordered output size
-                    pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+        imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+        # print(type(imgs))
+        torch.cuda.empty_cache()
+        imge = net.image_encoder(imgs)
 
-                    # print(pred.shape)
-                    temp_hd, save_pred = calc_hf(pred.detach(), masks)
+        with torch.no_grad():
+            if args.net == 'sam' or args.net == 'mobile_sam':
+                se, de = net.prompt_encoder(
+                    points=pt,
+                    boxes=None,
+                    masks=None,
+                )
+            elif args.net == "efficient_sam":
+                coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                se = net.prompt_encoder(
+                    coords=coords_torch,
+                    labels=labels_torch,
+                )
 
-                    # print(pack["image_meta_dict"]["filename_or_obj"])
-                    hd.append(temp_hd)
-                    # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
-                    tot += lossfunc(pred, masks)
-                    temp = eval_seg(pred, masks, threshold)
-                    mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
+        if args.net == 'sam' or args.net == 'mobile_sam':
+            pred, _ = net.mask_decoder(
+                image_embeddings=imge,
+                image_pe=net.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                dense_prompt_embeddings=de,
+                multimask_output=False,
+            )
 
-            pbar.update()
+        elif args.net == "efficient_sam":
+            se = se.view(
+                se.shape[0],
+                1,
+                se.shape[1],
+                se.shape[2],
+            )
+            pred, _ = net.mask_decoder(
+                image_embeddings=imge,
+                image_pe=net.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                multimask_output=False,
+            )
 
-    if args.evl_chunk:
-        n_val = n_val * (imgsw.size(-1) // evl_ch)
+        # Resize to the ordered output size
+        # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
+        pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+        origin_pred = pred
+        # hd.append(calc_hf(pred,masks))
+        loss = lossfunc(pred, masks)
+        # print(loss)
 
-    return tot / n_val, tuple([a / n_val for a in mix_res]), sum(hd) / len(nice_train_loader)
+        loss.backward()
+        # print(imgs.grad)
+        data_grad = imgs.grad.data
+        # Collect the element-wise sign of the data gradient
+        sign_data_grad = data_grad.sign()
+        # Create the perturbed image by adjusting each pixel of the input image
+        perturbed_image = imgs + args.epsilon * sign_data_grad
+        return perturbed_image
+
+

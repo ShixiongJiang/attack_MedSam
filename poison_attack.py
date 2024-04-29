@@ -11,6 +11,7 @@ import sys
 import time
 from collections import OrderedDict
 from datetime import datetime
+from einops import rearrange
 
 import numpy as np
 import torch
@@ -35,6 +36,10 @@ from conf import settings
 # from models.discriminatorlayer import discriminator
 from dataset import *
 from utils import *
+from function import transform_prompt, optimize_poison
+from monai.losses import  DiceCELoss
+
+lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
 
 args = cfg.parse_args()
 
@@ -96,6 +101,7 @@ transform_test_seg = transforms.Compose([
 
 
 
+
 '''polyp data'''
 polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
@@ -105,11 +111,16 @@ polyp_test_dataset = Polyp(args, args.data_path, transform=transform_test, trans
 # nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 
+'''poison data'''
 poison_polyp_train_dataset = Poison_Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
 
 
 poison_train_loader = DataLoader(poison_polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+
+
+
+
 
 final_train_dataset = ConcatDataset([polyp_train_dataset, poison_polyp_train_dataset])
 final_train_loader = DataLoader(final_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
@@ -139,41 +150,54 @@ checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 best_acc = 0.0
 best_tol = 1e4
 
-for epoch in range(settings.EPOCH):
-    # if epoch and epoch < 5:
-    #     tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
-    #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
 
-    net.train()
-    time_start = time.time()
-    loss = function.train_sam(args, net, optimizer, final_train_loader, epoch, writer, vis=args.vis)
-    logger.info(f'Train loss: {loss} || @ epoch {epoch}.')
-    time_end = time.time()
-    print('time_for_training ', time_end - time_start)
+for i in range(10):
+    for epoch in range(settings.EPOCH):
+        # if epoch and epoch < 5:
+        #     tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
+        #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
 
-    net.eval()
-    if  epoch == settings.EPOCH - 1:
-        tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
-        logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
+        net.train()
+        time_start = time.time()
+        loss = function.train_sam(args, net, optimizer, final_train_loader, epoch, writer, vis=args.vis)
+        logger.info(f'Train loss: {loss} || @ epoch {epoch}.')
+        time_end = time.time()
+        print('time_for_training ', time_end - time_start)
 
-        if args.distributed != 'none':
-            sd = net.module.state_dict()
-        else:
-            sd = net.state_dict()
+        net.eval()
 
-        if tol < best_tol:
-            best_tol = tol
-            is_best = True
+    perturbed_image = optimize_poison(args, net, poison_train_loader, lossfunc)
 
-            save_checkpoint({
-                'epoch': epoch + 1,
-                'model': args.net,
-                'state_dict': sd,
-                'optimizer': optimizer.state_dict(),
-                'best_tol': best_tol,
-                'path_helper': args.path_helper,
-            }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
-        else:
-            is_best = False
+    image_path = f"./dataset/TestDataset/poison_dataset/images"
+    Path(image_path).mkdir(parents=True, exist_ok=True)
+
+    sample_list = sorted(os.listdir(image_path))
+    sample_name = sample_list[0]
+    cv2.imwrite(os.path.join(image_path, 'poison' + sample_name + 'epoch' +i), perturbed_image)
+
+    tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
+    logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
+
+    if args.distributed != 'none':
+        sd = net.module.state_dict()
+    else:
+        sd = net.state_dict()
+
+    if tol < best_tol:
+        best_tol = tol
+        is_best = True
+
+        # save_checkpoint({
+        #     'epoch': epoch + 1,
+        #     'model': args.net,
+        #     'state_dict': sd,
+        #     'optimizer': optimizer.state_dict(),
+        #     'best_tol': best_tol,
+        #     'path_helper': args.path_helper,
+        # }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
+    else:
+        is_best = False
 
 writer.close()
+
+
