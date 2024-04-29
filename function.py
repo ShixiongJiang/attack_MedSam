@@ -555,6 +555,17 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
 
         perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
-        return perturbed_image
+
+        image_path = f"./dataset/TestDataset/poison_dataset/images"
+        Path(image_path).mkdir(parents=True, exist_ok=True)
+
+        # sample_list = sorted(os.listdir(image_path))
+        # sample_name = sample_list[0]
+        # cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
+        sample_name = pack['image_meta_dict']['filename_or_obj']
+        print(sample_name)
+        final_path = os.path.join(image_path, sample_name)
+        vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
+        # return perturbed_image
 
 
