@@ -564,7 +564,9 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         # cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
         sample_name = pack['image_meta_dict']['filename_or_obj']
         # print(sample_name)
+
         final_path = os.path.join(image_path, sample_name[0])
+        print(final_path)
         vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
         # return perturbed_image
 
