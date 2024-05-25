@@ -11,7 +11,7 @@ import sys
 import time
 from collections import OrderedDict
 from datetime import datetime
-from einops import rearrange
+# from einops import rearrange
 
 import numpy as np
 import torch
