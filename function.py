@@ -712,6 +712,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             # Compute the product of the input gradients and the parameter gradients
             second_order_grads = \
             torch.autograd.grad(grads_params, imgs, grad_outputs=torch.ones_like(grads_params), retain_graph=True, allow_unused=True)[0]
+            print(second_order_grads)
             return second_order_grads
         # print(loss)
 
@@ -721,7 +722,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
         # print((jacobian_input.shape))
         # del jacobian_input
         jacobian_input = predict_sample(imgs)
-        print(jacobian_input)
+
         break
 
     # jacobian_nice_loader( args, net, lossfunc,nice_train_loader)
