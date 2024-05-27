@@ -700,7 +700,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             grads_params = [param.grad for param in net.parameters()]
 
             # Compute gradient of loss with respect to input image X_p
-            grads_input = torch.autograd.grad(loss, imgs, create_graph=True)[0]
+            # grads_input = torch.autograd.grad(loss, imgs, create_graph=True)[0]
 
             # Compute second-order gradient
             second_order_grads = []
