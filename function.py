@@ -647,12 +647,12 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             for n, value in net.image_encoder.named_parameters():
                 value.requires_grad = True
 
-        imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
-        # print(type(imgs))
-        torch.cuda.empty_cache()
-        imge = net.image_encoder(imgs)
-        def predict_sample(imge):
 
+        def predict_sample(imgs):
+            imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+            # print(type(imgs))
+            torch.cuda.empty_cache()
+            imge = net.image_encoder(imgs)
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     se, de = net.prompt_encoder(
@@ -699,9 +699,11 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             return loss
         # print(loss)
 
-        jacobian_input = torch.autograd.functional.jacobian(predict_sample, imge)
+        jacobian_input = torch.autograd.functional.jacobian(predict_sample, imgs)
         # print(jacobian_input)
-        # print((jacobian_input.shape))
+
+        print((jacobian_input.shape))
+        del jacobian_input
         break
 
     jacobian_nice_loader( args, net, lossfunc,nice_train_loader)
@@ -710,10 +712,8 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
 def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
     torch.cuda.empty_cache()
     net.eval()
-    pytorch_total_params = sum(p.numel() for p in net.parameters())
-    print(f'num of params: {pytorch_total_params}')
+
     ind = 0
-    GPUdevice = torch.device('cuda:' + str(args.gpu_device))
 
     for pack in nice_train_loader:
         # torch.cuda.empty_cache()
@@ -778,12 +778,13 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             for n, value in net.image_encoder.named_parameters():
                 value.requires_grad = True
 
-        imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
-        # print(type(imgs))
-        torch.cuda.empty_cache()
-        imge = net.image_encoder(imgs)
 
-        def predict_sample(imge):
+
+        def predict_sample(imgs):
+            imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+            # print(type(imgs))
+            torch.cuda.empty_cache()
+            imge = net.image_encoder(imgs)
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     se, de = net.prompt_encoder(
