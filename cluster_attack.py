@@ -177,6 +177,7 @@ for i in range(50):
     #     net.eval()
 
     # optimize_poison(args, net, poison_train_loader, lossfunc)
+    optimize_poison_cluster(args, net, poison_train_loader, lossfunc)
 
 
 
