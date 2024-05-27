@@ -36,7 +36,7 @@ from conf import settings
 # from models.discriminatorlayer import discriminator
 from dataset import *
 from utils import *
-from function import transform_prompt, optimize_poison
+from function import transform_prompt, optimize_poison, optimize_poison_cluster
 from monai.losses import  DiceCELoss
 
 lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
