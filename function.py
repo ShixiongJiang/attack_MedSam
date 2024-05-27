@@ -698,8 +698,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
             # loss.backward(retain_graph=True)
-            summary(net, (1, 3 , 1024, 1024))
-
+            print(net)
             grad_theta_loss_a = torch.autograd.grad(loss, net.parameters(), create_graph=True)
 
             # Flatten the gradients to make it a single vector
