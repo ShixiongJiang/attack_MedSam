@@ -701,7 +701,8 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             grads_params = []
             for param in net.parameters():
                 if param.grad is not None:
-                    grads_params.append(param.grad.view(-1))
+                    # grads_params.append(param.grad.view(-1))
+                    grads_params.append(param)
 
             # Stack the gradients to form a single tensor
             grads_params = torch.cat(grads_params).requires_grad_(True)
