@@ -108,7 +108,7 @@ polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, tra
 polyp_test_dataset = Polyp(args, args.data_path, transform=transform_test, transform_msk=transform_test_seg,
                            mode='Test')
 
-# nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 
 '''poison data'''
@@ -177,32 +177,32 @@ for i in range(50):
     #     net.eval()
 
     # optimize_poison(args, net, poison_train_loader, lossfunc)
-    optimize_poison_cluster(args, net, poison_train_loader, lossfunc)
+    optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc)
 
 
 
-    tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
-    logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
+    # tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
+    # logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
 
     if args.distributed != 'none':
         sd = net.module.state_dict()
     else:
         sd = net.state_dict()
-
-    if tol < best_tol:
-        best_tol = tol
-        is_best = True
-
-        # save_checkpoint({
-        #     'epoch': epoch + 1,
-        #     'model': args.net,
-        #     'state_dict': sd,
-        #     'optimizer': optimizer.state_dict(),
-        #     'best_tol': best_tol,
-        #     'path_helper': args.path_helper,
-        # }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
-    else:
-        is_best = False
+    #
+    # if tol < best_tol:
+    #     best_tol = tol
+    #     is_best = True
+    #
+    #     # save_checkpoint({
+    #     #     'epoch': epoch + 1,
+    #     #     'model': args.net,
+    #     #     'state_dict': sd,
+    #     #     'optimizer': optimizer.state_dict(),
+    #     #     'best_tol': best_tol,
+    #     #     'path_helper': args.path_helper,
+    #     # }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
+    # else:
+    #     is_best = False
 
 writer.close()
 
