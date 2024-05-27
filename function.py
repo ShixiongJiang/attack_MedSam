@@ -708,6 +708,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
 
 
 def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
+    torch.cuda.empty_cache()
     net.eval()
     pytorch_total_params = sum(p.numel() for p in net.parameters())
     print(f'num of params: {pytorch_total_params}')
