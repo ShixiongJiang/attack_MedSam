@@ -651,7 +651,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, lossfunc):
         # print(type(imgs))
         torch.cuda.empty_cache()
         imge = net.image_encoder(imgs)
-        def predict_sample(imge, coords_torch, labels_torch):
+        def predict_sample(imge):
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     se, de = net.prompt_encoder(
@@ -659,12 +659,12 @@ def optimize_poison_cluster( args, net, poison_train_loader, lossfunc):
                         boxes=None,
                         masks=None,
                     )
-                elif args.net == "efficient_sam":
-                    coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                    se = net.prompt_encoder(
-                        coords=coords_torch,
-                        labels=labels_torch,
-                    )
+                # elif args.net == "efficient_sam":
+                #     coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                #     se = net.prompt_encoder(
+                #         coords=coords_torch,
+                #         labels=labels_torch,
+                #     )
 
             if args.net == 'sam' or args.net == 'mobile_sam':
                 pred, _ = net.mask_decoder(
