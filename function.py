@@ -9,6 +9,7 @@ from utils import *
 from monai.metrics import  compute_hausdorff_distance,DiceMetric
 from monai.losses import  DiceCELoss
 from pathlib import Path
+from torchsummary import summary
 
 import pandas as pd
 args = cfg.parse_args()
@@ -696,7 +697,8 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             origin_pred = pred
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
-            loss.backward(retain_graph=True)
+            # loss.backward(retain_graph=True)
+            summary(net, (1, 3 , 1024, 1024))
 
             grad_theta_loss_a = torch.autograd.grad(loss, net.parameters(), create_graph=True)
 
