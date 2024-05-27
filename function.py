@@ -695,6 +695,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, lossfunc):
             origin_pred = pred
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
+            return loss
         # print(loss)
 
         jacobian_input = torch.autograd.functional.jacobian(predict_sample, imge)
