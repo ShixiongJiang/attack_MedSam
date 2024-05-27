@@ -840,6 +840,6 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             return grad
 
         for param in net.parameters():
-            print(gradient(masks, param))
+            print(gradient(predict_sample(imgs), param))
             print()
         return
