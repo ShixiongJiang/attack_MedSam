@@ -697,17 +697,21 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
             loss.backward(retain_graph=True)
-            grads_params = [param.grad for param in net.parameters()]
+
+            grads_params = []
+            for param in net.parameters():
+                if param.grad is not None:
+                    grads_params.append(param.grad.view(-1))
+
+            # Stack the gradients to form a single tensor
+            grads_params = torch.cat(grads_params)
 
             # Compute gradient of loss with respect to input image X_p
-            # grads_input = torch.autograd.grad(loss, imgs, create_graph=True)[0]
+            grads_input = torch.autograd.grad(loss, imgs, create_graph=True)[0]
 
-            # Compute second-order gradient
-            second_order_grads = []
-            for grad_param in grads_params:
-                second_order_grad = \
-                torch.autograd.grad(grad_param, imgs, grad_outputs=torch.ones_like(grad_param), retain_graph=True)[0]
-                second_order_grads.append(second_order_grad)
+            # Compute the product of the input gradients and the parameter gradients
+            second_order_grads = \
+            torch.autograd.grad(grads_params, imgs, grad_outputs=torch.ones_like(grads_params), retain_graph=True)[0]
             return second_order_grads
         # print(loss)
 
