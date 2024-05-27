@@ -575,7 +575,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
 
 
 
-def optimize_poison_cluster( args, net, poison_train_loader, lossfunc, nice_train_loader):
+def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, lossfunc ):
     hard = 0
     net.eval()
     pytorch_total_params = sum(p.numel() for p in net.parameters())
@@ -652,6 +652,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, lossfunc, nice_trai
         torch.cuda.empty_cache()
         imge = net.image_encoder(imgs)
         def predict_sample(imge):
+
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     se, de = net.prompt_encoder(
