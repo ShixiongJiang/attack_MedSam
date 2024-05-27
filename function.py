@@ -704,7 +704,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
                     grads_params.append(param.grad.view(-1))
 
             # Stack the gradients to form a single tensor
-            grads_params = torch.cat(grads_params)
+            grads_params = torch.cat(grads_params).requires_grad_(True)
 
             # Compute gradient of loss with respect to input image X_p
             # grads_input = torch.autograd.grad(loss, imgs, create_graph=True)[0]
