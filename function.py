@@ -698,24 +698,12 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             loss = lossfunc(pred, masks)
             loss.backward(retain_graph=True)
 
-            grads_params = []
-            for param in net.parameters():
-                if param.grad is not None:
-                    # grads_params.append(param.grad.view(-1))
-                    grads_params.append(param.view(-1))
+            grad_theta_loss_a = torch.autograd.grad(loss, net.parameters(), create_graph=True)
 
-            # Stack the gradients to form a single tensor
-            grads_params = torch.cat(grads_params).requires_grad_(True)
-
-            # Compute gradient of loss with respect to input image X_p
-            # grads_input = torch.autograd.grad(loss, imgs, create_graph=True)[0]
-
-            # Compute the product of the input gradients and the parameter gradients
-            print(grads_params)
-            second_order_grads = \
-            torch.autograd.grad(grads_params, imgs, grad_outputs=torch.ones_like(grads_params), retain_graph=True, allow_unused=True)[0]
-            print(second_order_grads)
-            return second_order_grads
+            # Flatten the gradients to make it a single vector
+            grad_theta_loss_a_vector = torch.cat([g.contiguous().view(-1) for g in grad_theta_loss_a])
+            print(grad_theta_loss_a_vector)
+            return grad_theta_loss_a_vector
         # print(loss)
 
         # jacobian_input = torch.autograd.functional.jacobian(predict_sample, imgs)
