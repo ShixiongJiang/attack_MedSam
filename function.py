@@ -699,7 +699,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             loss = lossfunc(pred, masks)
             # loss.backward(retain_graph=True)
             print(net)
-            grad_theta_loss_a = torch.autograd.grad(loss, net.mask_decoder.parameters(), create_graph=True)
+            grad_theta_loss_a = torch.autograd.grad(loss, net.mask_decoder.parameters(), create_graph=True, allow_unused=True)
 
             # Flatten the gradients to make it a single vector
             grad_theta_loss_a_vector = torch.cat([g.contiguous().view(-1) for g in grad_theta_loss_a])
