@@ -987,9 +987,16 @@ def heat_map( args, net, train_loader, lossfunc):
                     # Resize to the ordered output size
                     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
                     output_vector = pred.resize_(1024*1024).requires_grad_(True)
-                    print(output_vector)
+                    # print(output_vector)
                     heatmap_loss = torch.softmax(output_vector, dim=0).requires_grad_(True)
-                    heatmap_loss.backward()
+                    threshold = 0.5
+
+                    # Create a mask where the condition is true
+                    index = heatmap_loss > threshold
+
+                    # Use the mask to select elements and sum them
+                    sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
+                    sum_greater_than_threshold.backward()
                 break
     # torch.softmax(pred)
 
