@@ -988,7 +988,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
                     output_vector = pred.resize_(1024*1024)
                     print(output_vector.shape)
-                    heatmap_loss = torch.softmax(output_vector)
+                    heatmap_loss = torch.softmax(output_vector, dim=0)
                     heatmap_loss.backward()
                 break
     # torch.softmax(pred)
