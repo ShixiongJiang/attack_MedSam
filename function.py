@@ -946,12 +946,17 @@ def heat_map( args, net, train_loader, lossfunc):
                     # true_mask_ave = cons_tensor(true_mask_ave)
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice)
                 encoder_output = None
-
+                encoder_grad = None
                 def encoder_hook(module, input_, output):
                     nonlocal encoder_output
                     encoder_output = output.requires_grad_(True)
 
+                def backward_hook(module, grad_in, grad_out):
+                    nonlocal  encoder_grad
+                    encoder_grad = grad_out[0]
                 net.image_encoder.register_forward_hook(encoder_hook)
+                net.image_encoder.register_backward_hook(backward_hook)
+
                 '''test'''
                 with torch.no_grad():
                     imge = net.image_encoder(imgs)
@@ -1011,7 +1016,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
                     # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
-                    grads = encoder_output.grad
+                    grads = encoder_grad
                     print(grads.shape)
                     weights = torch.mean(grads, dim=[2, 3], keepdim=True)
                     weighted_sum = torch.sum(weights * encoder_output, dim=1, keepdim=True)  # Sum over channels
