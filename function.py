@@ -996,8 +996,10 @@ def heat_map( args, net, train_loader, lossfunc):
 
                     # Use the mask to select elements and sum them
                     sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
+                    print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
-                break
+                    break
+
     # torch.softmax(pred)
 
 
