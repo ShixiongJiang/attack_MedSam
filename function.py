@@ -986,7 +986,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     # print(pred.shape)
                     # Resize to the ordered output size
                     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-                    output_vector = F.interpolate(pred, size=(256*256))
+                    output_vector = pred.resize_(1024*1024)
                     print(output_vector.shape)
                 break
     # torch.softmax(pred)
