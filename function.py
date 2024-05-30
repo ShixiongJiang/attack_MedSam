@@ -985,8 +985,8 @@ def heat_map( args, net, train_loader, lossfunc):
                         )
                     # print(pred.shape)
                     # Resize to the ordered output size
-                    pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-                    output_vector = pred.resize_(1024*1024).requires_grad_(True)
+                    # pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                    output_vector = pred.resize_(256*256).requires_grad_(True)
                     # print(output_vector)
                     heatmap_loss = torch.softmax(output_vector, dim=0).requires_grad_(True)
                     threshold = 0.5
