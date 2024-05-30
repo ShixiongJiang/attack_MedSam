@@ -36,7 +36,7 @@ from conf import settings
 # from models.discriminatorlayer import discriminator
 from dataset import *
 from utils import *
-from function import transform_prompt, optimize_poison, optimize_poison_cluster
+from function import transform_prompt, optimize_poison, optimize_poison_cluster, heat_map
 from monai.losses import  DiceCELoss
 
 lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
@@ -177,8 +177,8 @@ for i in range(50):
     #     net.eval()
 
     # optimize_poison(args, net, poison_train_loader, lossfunc)
-    optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc)
-
+    # optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc)
+    heat_map(args, net, nice_train_loader, lossfunc)
 
 
     # tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
