@@ -1006,7 +1006,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
                     break
-
+    print(net)
     # torch.softmax(pred)
 
 
