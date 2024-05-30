@@ -949,7 +949,7 @@ def heat_map( args, net, train_loader, lossfunc):
 
                 def encoder_hook(module, input_, output):
                     nonlocal encoder_output
-                    encoder_output = output
+                    encoder_output = output.requires_grad_(True)
 
                 net.image_encoder.register_forward_hook(encoder_hook)
                 '''test'''
