@@ -945,7 +945,13 @@ def heat_map( args, net, train_loader, lossfunc):
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+                encoder_output = None
 
+                def encoder_hook(module, input_, output):
+                    nonlocal encoder_output
+                    res5c_output = output
+
+                net.image_encoder.register_forward_hook(encoder_hook)
                 '''test'''
                 with torch.no_grad():
                     imge = net.image_encoder(imgs)
@@ -1003,10 +1009,10 @@ def heat_map( args, net, train_loader, lossfunc):
 
                     # Use the mask to select elements and sum them
                     sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
-                    print(sum_greater_than_threshold)
+                    # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
-                    print(net)
-
+                    # print(net.image_encoder.blocks.mlp)
+                    print(encoder_output)
                     break
 
     # torch.softmax(pred)
