@@ -1012,7 +1012,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
                     # print(net.image_encoder.blocks.mlp)
-                    print(encoder_output)
+                    print(encoder_output.shape)
                     break
 
     # torch.softmax(pred)
