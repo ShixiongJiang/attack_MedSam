@@ -1005,8 +1005,10 @@ def heat_map( args, net, train_loader, lossfunc):
                     sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
                     print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
+                    print(net)
+
                     break
-    print(net)
+
     # torch.softmax(pred)
 
 
