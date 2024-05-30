@@ -1011,8 +1011,21 @@ def heat_map( args, net, train_loader, lossfunc):
                     sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
                     # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
-                    # print(net.image_encoder.blocks.mlp)
-                    print(encoder_output.shape)
+                    grads = encoder_output.grad
+                    weights = torch.mean(grads, dim=[2, 3], keepdim=True)
+                    weighted_sum = torch.sum(weights * encoder_output, dim=1, keepdim=True)  # Sum over channels
+
+                    # Apply ReLU to the weighted sum
+                    cam = F.relu(weighted_sum)
+
+                    # Upsample the heatmap to match the input image size
+                    cam = F.interpolate(cam, size=(1024, 1024), mode='bilinear', align_corners=False)
+
+                    # Normalize the heatmap
+                    cam = cam - cam.min()
+                    cam = cam / cam.max()
+                    cam = cam.squeeze()
+                    print(cam)
                     break
 
     # torch.softmax(pred)
