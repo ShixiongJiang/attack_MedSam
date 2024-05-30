@@ -855,7 +855,7 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             print()
         return
 
-from captum.attr import IntegratedGradients
+from captum.attr import IntegratedGradients, LayerGradCam
 from captum.attr import GradientShap
 from captum.attr import LRP
 from captum.attr import Occlusion
@@ -955,8 +955,8 @@ def heat_map( args, net, train_loader, lossfunc):
                     nonlocal  encoder_grad
                     encoder_grad = grad_out
 
-                net.image_encoder.register_forward_hook(encoder_hook)
-                net.image_encoder.register_backward_hook(backward_hook)
+                net.mask_decoder.iou_prediction_head.register_forward_hook(encoder_hook)
+                net.mask_decoder.iou_prediction_head.register_backward_hook(backward_hook)
 
                 '''test'''
                 with torch.no_grad():
@@ -1018,7 +1018,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
                     grads = encoder_grad
-                    print(grads.shape)
+
                     weights = torch.mean(grads, dim=[2, 3], keepdim=True)
                     weighted_sum = torch.sum(weights * encoder_output, dim=1, keepdim=True)  # Sum over channels
 
@@ -1032,7 +1032,10 @@ def heat_map( args, net, train_loader, lossfunc):
                     cam = cam - cam.min()
                     cam = cam / cam.max()
                     cam = cam.squeeze()
-                    print(cam)
+
+
+
+
                     break
 
     # torch.softmax(pred)
