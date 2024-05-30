@@ -1,6 +1,7 @@
 
 
 import cv2
+import torch
 
 from einops import rearrange
 import  torch.nn.functional as  F
@@ -982,22 +983,10 @@ def heat_map( args, net, train_loader, lossfunc):
                             sparse_prompt_embeddings=se,
                             multimask_output=False,
                         )
-                    # print(pred.shape)
+                    print(pred.shape)
                     # Resize to the ordered output size
                     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                break
+    # torch.softmax(pred)
 
 
-    integrated_gradients = IntegratedGradients(net)
-    attributions_ig = integrated_gradients.attribute(imge, target=pred, n_steps=200)
-    default_cmap = LinearSegmentedColormap.from_list('custom blue',
-                                                     [(0, '#ffffff'),
-                                                      (0.25, '#000000'),
-                                                      (1, '#000000')], N=256)
-
-    _ = viz.visualize_image_attr(np.transpose(attributions_ig.squeeze().cpu().detach().numpy(), (1, 2, 0)),
-                                 np.transpose(imge.squeeze().cpu().detach().numpy(), (1, 2, 0)),
-                                 method='heat_map',
-                                 cmap=default_cmap,
-                                 show_colorbar=True,
-                                 sign='positive',
-                                 outlier_perc=1)
