@@ -1012,6 +1012,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
                     grads = encoder_output.grad
+                    print(grads.shape)
                     weights = torch.mean(grads, dim=[2, 3], keepdim=True)
                     weighted_sum = torch.sum(weights * encoder_output, dim=1, keepdim=True)  # Sum over channels
 
