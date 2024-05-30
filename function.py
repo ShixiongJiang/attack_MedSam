@@ -989,6 +989,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     output_vector = pred.resize_(256*256).requires_grad_(True)
                     # print(output_vector)
                     heatmap_loss = torch.softmax(output_vector, dim=0).requires_grad_(True)
+                    print(heatmap_loss)
                     threshold = 0.5
 
                     # Create a mask where the condition is true
@@ -996,7 +997,7 @@ def heat_map( args, net, train_loader, lossfunc):
 
                     # Use the mask to select elements and sum them
                     sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
-                    print(sum_greater_than_threshold)
+                    # print(sum_greater_than_threshold)
                     sum_greater_than_threshold.backward()
                     break
 
