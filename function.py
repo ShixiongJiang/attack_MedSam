@@ -990,7 +990,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     # print(output_vector)
                     heatmap_loss = torch.softmax(output_vector, dim=0).requires_grad_(True)
                     print(heatmap_loss)
-                    k = heatmap_loss.numel() * 0.8
+                    k = int(heatmap_loss.numel() * 0.8)
 
                     # Get the k largest elements
                     top_k_values, _ = torch.topk(heatmap_loss, k)
