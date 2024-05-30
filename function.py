@@ -954,6 +954,7 @@ def heat_map( args, net, train_loader, lossfunc):
                 def backward_hook(module, grad_in, grad_out):
                     nonlocal  encoder_grad
                     encoder_grad = grad_out[0]
+                    print(grad_out)
                 net.image_encoder.register_forward_hook(encoder_hook)
                 net.image_encoder.register_backward_hook(backward_hook)
 
