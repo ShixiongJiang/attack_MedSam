@@ -1010,7 +1010,8 @@ def heat_map( args, net, train_loader, lossfunc):
                     with GradCAM(model=net,
                                  target_layers=target_layers) as cam:
                         # print(imgs.shape)
-                        grayscale_cam = cam(input_tensor=imgs, targets=targets)[0]
+                        grayscale_cam = cam(input_tensor=imgs, targets=targets)
+                        print(grayscale_cam)
                         # grayscale_cam = grayscale_cam.cpu().numpy()
                         #
                         # # Convert the input image to a numpy array and transpose it to (H, W, C) format
