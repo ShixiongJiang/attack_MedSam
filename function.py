@@ -1007,11 +1007,11 @@ def heat_map( args, net, train_loader, lossfunc):
                     target_layers = [net.mask_decoder.transformer.layers[0].norm4]
                     # targets = [SemanticSegmentationTarget(masks)]
                     targets = None
-                    with GradCAM(model=net,
-                                 target_layers=target_layers) as cam:
-                        # print(imgs.shape)
-                        grayscale_cam = cam(input_tensor=imgs, targets=targets)
-                        print(grayscale_cam)
+                    cam = GradCAM(model=net,
+                                 target_layers=target_layers)
+
+                    # grayscale_cam = cam(input_tensor=imgs, targets=targets)
+                    # print(grayscale_cam)
                         # grayscale_cam = grayscale_cam.cpu().numpy()
                         #
                         # # Convert the input image to a numpy array and transpose it to (H, W, C) format
