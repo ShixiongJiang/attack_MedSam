@@ -1012,8 +1012,9 @@ def heat_map( args, net, train_loader, lossfunc):
 
                         grayscale_cam = cam(input_tensor=imge,
                                             targets=targets)[0, :]
+                        print(grayscale_cam)
                         cam_image = show_cam_on_image(imgs, grayscale_cam, use_rgb=True)
-                    print(cam_image)
+                    print(cam_image.shape)
                     # Image.fromarray(cam_image)
 
 
