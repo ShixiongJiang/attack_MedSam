@@ -1011,12 +1011,12 @@ def heat_map( args, net, train_loader, lossfunc):
                                  target_layers=target_layers) as cam:
 
                         grayscale_cam = cam(input_tensor=imgs, targets=targets)[0]
-                        grayscale_cam = grayscale_cam.cpu().numpy()
-
-                        # Convert the input image to a numpy array and transpose it to (H, W, C) format
-                        input_image_np = imgs.squeeze().permute(1, 2, 0).cpu().numpy()
-                        input_image_np = (input_image_np - input_image_np.min()) / (
-                                    input_image_np.max() - input_image_np.min())
+                        # grayscale_cam = grayscale_cam.cpu().numpy()
+                        #
+                        # # Convert the input image to a numpy array and transpose it to (H, W, C) format
+                        # input_image_np = imgs.squeeze().permute(1, 2, 0).cpu().numpy()
+                        # input_image_np = (input_image_np - input_image_np.min()) / (
+                        #             input_image_np.max() - input_image_np.min())
 
                     # print(cam_image.shape)
                     # Image.fromarray(cam_image)
