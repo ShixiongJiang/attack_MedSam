@@ -995,12 +995,11 @@ def heat_map( args, net, train_loader, lossfunc):
                     origin_pred = pred
                     # hd.append(calc_hf(pred,masks))
                     loss = lossfunc(pred, masks)
-                    print(masks.shape)
+                    # print(masks.shape)
                     class SemanticSegmentationTarget:
                         def __init__(self, mask):
                             self.mask = mask
-                            if torch.cuda.is_available():
-                                self.mask = self.mask.cuda()
+
 
                         def __call__(self, model_output):
                             return (model_output * self.mask).sum()
@@ -1009,7 +1008,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     targets = [SemanticSegmentationTarget(masks)]
                     with GradCAM(model=net,
                                  target_layers=target_layers) as cam:
-
+                        print(imgs.shape)
                         grayscale_cam = cam(input_tensor=imgs, targets=targets)[0]
                         # grayscale_cam = grayscale_cam.cpu().numpy()
                         #
