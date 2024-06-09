@@ -995,7 +995,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     origin_pred = pred
                     # hd.append(calc_hf(pred,masks))
                     loss = lossfunc(pred, masks)
-
+                    print(masks.shape)
                     class SemanticSegmentationTarget:
                         def __init__(self, mask):
                             self.mask = mask
