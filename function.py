@@ -1003,7 +1003,7 @@ def heat_map( args, net, train_loader, lossfunc):
                                 self.mask = self.mask.cuda()
 
                         def __call__(self, model_output):
-                            return (model_output[:, :, :] * self.mask).sum()
+                            return (model_output * self.mask).sum()
                     # print(net)
                     target_layers = [net.mask_decoder.transformer.layers[0].norm4]
                     targets = [SemanticSegmentationTarget(masks)]
