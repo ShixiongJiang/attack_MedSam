@@ -998,7 +998,7 @@ def heat_map( args, net, train_loader, lossfunc):
 
                     class SemanticSegmentationTarget:
                         def __init__(self, mask):
-                            self.mask = torch.from_numpy(mask)
+                            self.mask = mask
                             if torch.cuda.is_available():
                                 self.mask = self.mask.cuda()
 
