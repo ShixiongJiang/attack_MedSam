@@ -1005,7 +1005,7 @@ def heat_map( args, net, train_loader, lossfunc):
                         def __call__(self, model_output):
                             return (model_output[:, :, :] * self.mask).sum()
                     print(net)
-                    target_layers = [net.model.backbone.layer4]
+                    target_layers = [net.mask_decoder.transformer]
                     targets = [SemanticSegmentationTarget(masks)]
                     with GradCAM(model=net,
                                  target_layers=target_layers,
