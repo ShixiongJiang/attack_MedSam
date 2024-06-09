@@ -855,15 +855,10 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             print()
         return
 
-from captum.attr import IntegratedGradients, LayerGradCam
-from captum.attr import GradientShap
-from captum.attr import LRP
-from captum.attr import Occlusion
-from captum.attr import NoiseTunnel
-from captum.attr import visualization as viz
-from captum.attr._utils.lrp_rules import EpsilonRule, GammaRule, Alpha1_Beta0_Rule
-from matplotlib.colors import LinearSegmentedColormap
 
+from matplotlib.colors import LinearSegmentedColormap
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
 def heat_map( args, net, train_loader, lossfunc):
     net.eval()
@@ -995,43 +990,32 @@ def heat_map( args, net, train_loader, lossfunc):
                             sparse_prompt_embeddings=se,
                             multimask_output=False,
                         )
-                    # print(pred.shape)
-                    # Resize to the ordered output size
-                    # pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-                    output_vector = pred.resize_(256*256).requires_grad_(True)
-                    # print(output_vector)
-                    heatmap_loss = torch.softmax(output_vector, dim=0).requires_grad_(True)
-                    # print(heatmap_loss)
-                    k = int(heatmap_loss.numel() * 0.8)
 
-                    # Get the k largest elements
-                    top_k_values, _ = torch.topk(heatmap_loss, k)
+                    pred = F.interpolate(pred, size=(args.out_size, args.out_size))
+                    # hd.append(calc_hf(pred,masks))
+                    loss = lossfunc(pred, masks)
+                    loss.backward()
 
-                    # Find the minimum value among the top k elements
-                    threshold = top_k_values.min()
+                    class SemanticSegmentationTarget:
+                        def __init__(self, mask):
+                            self.mask = torch.from_numpy(mask)
+                            if torch.cuda.is_available():
+                                self.mask = self.mask.cuda()
 
-                    # Create a mask where the condition is true
-                    index = heatmap_loss > threshold
+                        def __call__(self, model_output):
+                            return (model_output[:, :, :] * self.mask).sum()
+                    print(net)
+                    target_layers = [net.model.backbone.layer4]
+                    targets = [SemanticSegmentationTarget(masks)]
+                    with GradCAM(model=net,
+                                 target_layers=target_layers,
+                                 use_cuda=torch.cuda.is_available()) as cam:
 
-                    # Use the mask to select elements and sum them
-                    sum_greater_than_threshold = heatmap_loss[index].sum().requires_grad_(True)
-                    # print(sum_greater_than_threshold)
-                    sum_greater_than_threshold.backward()
-                    grads = encoder_grad
-                    print(grads)
-                    weights = torch.mean(grads, dim=[2, 3], keepdim=True)
-                    weighted_sum = torch.sum(weights * encoder_output, dim=1, keepdim=True)  # Sum over channels
+                        grayscale_cam = cam(input_tensor=imge,
+                                            targets=targets)[0, :]
+                        cam_image = show_cam_on_image(imgs, grayscale_cam, use_rgb=True)
 
-                    # Apply ReLU to the weighted sum
-                    cam = F.relu(weighted_sum)
-
-                    # Upsample the heatmap to match the input image size
-                    cam = F.interpolate(cam, size=(1024, 1024), mode='bilinear', align_corners=False)
-
-                    # Normalize the heatmap
-                    cam = cam - cam.min()
-                    cam = cam / cam.max()
-                    cam = cam.squeeze()
+                    Image.fromarray(cam_image)
 
 
 
