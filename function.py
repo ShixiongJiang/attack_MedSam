@@ -1003,17 +1003,21 @@ def heat_map( args, net, train_loader, lossfunc):
                                 self.mask = self.mask.cuda()
 
                         def __call__(self, model_output):
-                            return (model_output[:, :, :, :] * self.mask).sum()
+                            return (model_output[:, :, :] * self.mask).sum()
                     # print(net)
                     target_layers = [net.mask_decoder.transformer.layers[0].norm4]
                     targets = [SemanticSegmentationTarget(masks)]
                     with GradCAM(model=net,
                                  target_layers=target_layers) as cam:
 
-                        grayscale_cam = cam(input_tensor=imgs,
-                                            targets=targets)[0, :]
-                        print(grayscale_cam)
-                        cam_image = show_cam_on_image(imgs, grayscale_cam, use_rgb=True)
+                        grayscale_cam = cam(input_tensor=imgs, targets=targets)[0]
+                        grayscale_cam = grayscale_cam.cpu().numpy()
+
+                        # Convert the input image to a numpy array and transpose it to (H, W, C) format
+                        input_image_np = imgs.squeeze().permute(1, 2, 0).cpu().numpy()
+                        input_image_np = (input_image_np - input_image_np.min()) / (
+                                    input_image_np.max() - input_image_np.min())
+
                     # print(cam_image.shape)
                     # Image.fromarray(cam_image)
 
