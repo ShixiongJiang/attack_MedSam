@@ -55,8 +55,7 @@ class Sam(nn.Module):
     @torch.no_grad()
     def forward(
         self,
-        batched_input: List[Dict[str, Any]],
-        multimask_output: bool,
+        batched_input: List[Dict[str, Any]]
     ) -> List[Dict[str, torch.Tensor]]:
         """
         Predicts masks end-to-end from provided images and prompts.
@@ -96,7 +95,7 @@ class Sam(nn.Module):
                 shape BxCxHxW, where H=W=256. Can be passed as mask input
                 to subsequent iterations of prediction.
         """
-
+        multimask_output = False
         input_images = torch.stack([self.preprocess(x["image"]) for x in batched_input], dim=0)
         image_embeddings = self.image_encoder(input_images)
         outputs = []
