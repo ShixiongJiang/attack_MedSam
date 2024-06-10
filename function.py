@@ -61,7 +61,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
     # train mode
     net.train()
     optimizer.zero_grad()
-    h d =[]
+    hd =[]
     epoch_loss = 0
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
 
