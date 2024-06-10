@@ -986,8 +986,8 @@ def heat_map(args, net, train_loader, lossfunc):
                             self.mask = mask
 
                         def __call__(self, model_output):
+                            model_output = model_output.unsqueeze(1)
                             loss = lossfunc(model_output, self.mask)
-                            loss = loss.squeeze(1)
                             return loss
 
                     # print(net)
