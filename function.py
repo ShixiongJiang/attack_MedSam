@@ -1,5 +1,4 @@
 
-
 import cv2
 import torch
 
@@ -7,7 +6,7 @@ from einops import rearrange
 import  torch.nn.functional as  F
 from conf import settings
 from utils import *
-from monai.metrics import  compute_hausdorff_distance,DiceMetric
+from monai.metrics import  compute_hausdorff_distance ,DiceMetric
 from monai.losses import  DiceCELoss
 from pathlib import Path
 from torchsummary import summary
@@ -16,9 +15,9 @@ import pandas as pd
 args = cfg.parse_args()
 
 GPUdevice = torch.device('cuda', args.gpu_device)
-pos_weight = torch.ones([1]).cuda(device=GPUdevice)*2
+pos_weight = torch.ones([1]).cuda(device=GPUdevice ) *2
 criterion_G = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-seed = torch.randint(1,11,(args.b,7))
+seed = torch.randint(1 ,11 ,(args.b ,7))
 
 torch.backends.cudnn.benchmark = True
 loss_function = DiceCELoss(to_onehot_y=True, softmax=True)
@@ -33,26 +32,26 @@ epoch_loss_values = []
 metric_values = []
 
 
-def calc_hf(pred,gt):
+def calc_hf(pred ,gt):
     # print(pred)
     # print(gt)
-    h,w=pred.shape[-2:]
-    pred=pred.sigmoid()
-    pred=(pred-pred.min())/(pred.max()-pred.min())
-    pred[pred>0.5]=1
-    pred[pred<=0.5]=0
+    h , w =pred.shape[-2:]
+    pre d =pred.sigmoid()
+    pre d =(pre d -pred.min() ) /(pred.max( ) -pred.min())
+    pred[pre d >0.5 ] =1
+    pred[pre d< =0.5 ] =0
     # print(pred.shape,gt.shape)
     # print(pred.shape)
     # C=F.one_hot(A.long(),2).permute(0,3,1,2).float()
     # D=F.one_hot(B.long(),2).permute(0,3,1,2).float()
-    hf=compute_hausdorff_distance(pred,gt)
-    thres=(h**2+w**2)**0.5
-    if hf>thres:
-        hf=torch.tensor(thres)
+    h f =compute_hausdorff_distance(pred ,gt)
+    thre s =( h* * 2 + w* *2 )* *0.5
+    if h f >thres:
+        h f =torch.tensor(thres)
     # hf2=compute_hausdorff_distance(C,D)
     # print(hf)
     # print(hf2)
-    return hf.item(),pred.squeeze().cpu().numpy()*255
+    return hf.item() ,pred.squeeze().cpu().numpy( ) *255
 
 def train_sam(args, net: nn.Module, optimizer, train_loader,
           epoch, writer, schedulers=None, vis = 50):
@@ -62,7 +61,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
     # train mode
     net.train()
     optimizer.zero_grad()
-    hd=[]
+    h d =[]
     epoch_loss = 0
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
 
@@ -91,18 +90,18 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
                 masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
 
-                imgs = imgs.repeat(1,3,1,1)
+                imgs = imgs.repeat(1 ,3 ,1 ,1)
                 point_labels = torch.ones(imgs.size(0))
 
-                imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
-                masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
+                imgs = torchvision.transforms.Resize((args.image_size ,args.image_size))(imgs)
+                masks = torchvision.transforms.Resize((args.out_size ,args.out_size))(masks)
             
             showp = pt
 
             mask_type = torch.float32
             ind += 1
-            b_size,c,w,h = imgs.size()
-            longsize = w if w >=h else h
+            b_size ,c ,w ,h = imgs.size()
+            longsize = w if w > =h else h
 
             if point_labels[0] != -1:
                 # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
@@ -115,7 +114,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
             '''init'''
             if hard:
                 true_mask_ave = (true_mask_ave > 0.5).float()
-                #true_mask_ave = cons_tensor(true_mask_ave)
+                # true_mask_ave = cons_tensor(true_mask_ave)
             # imgs = imgs.to(dtype = mask_type,device = GPUdevice)
 
             
@@ -140,7 +139,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 for n, value in net.image_encoder.named_parameters(): 
                     value.requires_grad = True
                     
-            imge= net.image_encoder(imgs)
+            img e= net.image_encoder(imgs)
             
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
@@ -150,7 +149,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                         masks=None,
                     )
                 elif args.net == "efficient_sam":
-                    coords_torch,labels_torch = transform_prompt(coords_torch,labels_torch,h,w)
+                    coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
                     se = net.prompt_encoder(
                         coords=coords_torch,
                         labels=labels_torch,
@@ -180,7 +179,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 )
                 
             # Resize to the ordered output size
-            pred = F.interpolate(pred,size=(args.out_size,args.out_size))
+            pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
 
@@ -189,7 +188,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 
             # nn.utils.clip_grad_value_(net.parameters(), 0.1)
             if args.mod == 'sam_adalora':
-                (loss+lora.compute_orth_regu(net, regu_weight=0.1)).backward()
+                (los s +lora.compute_orth_regu(net, regu_weight=0.1)).backward()
                 optimizer.step()
                 rankallocator.update_and_mask(net, ind)
             else:
@@ -213,13 +212,13 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
      # eval mode
     net.eval()
-    dataset=os.path.basename(args.data_path)
-    points=[]
-    names=[]
+    datase t =os.path.basename(args.data_path)
+    point s =[]
+    name s =[]
     n_val = len(val_loader)  # the number of batch
-    ave_res, mix_res = (0,0,0,0), (0,0,0,0)
-    rater_res = [(0,0,0,0) for _ in range(6)]
-    hd=[]
+    ave_res, mix_res = (0 ,0 ,0 ,0), (0 ,0 ,0 ,0)
+    rater_res = [(0 ,0 ,0 ,0) for _ in range(6)]
+    h d =[]
     tot = 0
     hard = 0
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
@@ -253,31 +252,31 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
             while (buoy + evl_ch) <= imgsw.size(-1):
                 if args.thd:
-                    pt = ptw[:,:,buoy: buoy + evl_ch]
+                    pt = ptw[: ,: ,buoy: buoy + evl_ch]
                 else:
                     pt = ptw
 
-                imgs = imgsw[...,buoy:buoy + evl_ch]
-                masks = masksw[...,buoy:buoy + evl_ch]
+                imgs = imgsw[... ,buoy:buoy + evl_ch]
+                masks = masksw[... ,buoy:buoy + evl_ch]
                 buoy += evl_ch
 
                 if args.thd:
                     pt = rearrange(pt, 'b n d -> (b d) n')
                     imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
                     masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
-                    imgs = imgs.repeat(1,3,1,1)
+                    imgs = imgs.repeat(1 ,3 ,1 ,1)
                     point_labels = torch.ones(imgs.size(0))
 
-                    imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
-                    masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
+                    imgs = torchvision.transforms.Resize((args.image_size ,args.image_size))(imgs)
+                    masks = torchvision.transforms.Resize((args.out_size ,args.out_size))(masks)
                 
                 showp = pt
                 points.append(pt.numpy()[0])
                 names.append(*name)
                 mask_type = torch.float32
                 ind += 1
-                b_size,c,w,h = imgs.size()
-                longsize = w if w >=h else h
+                b_size ,c ,w ,h = imgs.size()
+                longsize = w if w > =h else h
 
                 if point_labels[0] != -1:
                     # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
@@ -290,12 +289,12 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 '''init'''
                 if hard:
                     true_mask_ave = (true_mask_ave > 0.5).float()
-                    #true_mask_ave = cons_tensor(true_mask_ave)
-                imgs = imgs.to(dtype = mask_type,device = GPUdevice)
+                    # true_mask_ave = cons_tensor(true_mask_ave)
+                imgs = imgs.to(dtype = mask_type ,device = GPUdevice)
                 
                 '''test'''
                 with torch.no_grad():
-                    imge= net.image_encoder(imgs)
+                    img e= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
                             points=pt,
@@ -303,7 +302,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                             masks=None,
                         )
                     elif args.net == "efficient_sam":
-                        coords_torch,labels_torch = transform_prompt(coords_torch,labels_torch,h,w)
+                        coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
                         se = net.prompt_encoder(
                             coords=coords_torch,
                             labels=labels_torch,
@@ -332,7 +331,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         )
                     # print(pred.shape)
                     # Resize to the ordered output size
-                    pred = F.interpolate(pred,size=(masks.shape[2],masks.shape[3]))
+                    pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
                     if ind % args.vis == 0:
                         namecat = 'Test'
                         for na in name:
@@ -343,7 +342,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                                   reverse=False, points=showp)
 
                     # print(pred.shape)
-                    temp_hd,save_pred=calc_hf(pred.detach(),masks)
+                    temp_hd ,save_pre d =calc_hf(pred.detach() ,masks)
 
                     # print(pack["image_meta_dict"]["filename_or_obj"])
                     hd.append(temp_hd)
@@ -357,11 +356,11 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     if args.evl_chunk:
         n_val = n_val * (imgsw.size(-1) // evl_ch)
 
-    return tot/ n_val , tuple([a/n_val for a in mix_res]),sum(hd)/len(val_loader)
+    return to t/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
 
-def transform_prompt(coord,label,h,w):
-    coord = coord.transpose(0,1)
-    label = label.transpose(0,1)
+def transform_prompt(coord ,label ,h ,w):
+    coord = coord.transpose(0 ,1)
+    label = label.transpose(0 ,1)
 
     coord = coord.unsqueeze(1)
     label = label.unsqueeze(1)
@@ -397,7 +396,7 @@ def transform_prompt(coord,label,h,w):
         batch_size * max_num_queries, decoder_max_num_input_points
     )
 
-    return rescaled_batched_points,label
+    return rescaled_batched_points ,label
 
 
 def get_rescaled_pts(batched_points: torch.Tensor, input_h: int, input_w: int):
@@ -576,8 +575,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         # return perturbed_image
 
 
-
-def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, lossfunc ):
+def optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc):
     hard = 0
     net.eval()
     pytorch_total_params = sum(p.numel() for p in net.parameters())
@@ -607,7 +605,6 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
 
             imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
             masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
-
 
         mask_type = torch.float32
         ind += 1
@@ -648,7 +645,6 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
         else:
             for n, value in net.image_encoder.named_parameters():
                 value.requires_grad = True
-
 
         def predict_sample(imgs):
             imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
@@ -700,12 +696,14 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             loss = lossfunc(pred, masks)
             # loss.backward(retain_graph=True)
             # print(net)
-            grad_theta_loss_a = torch.autograd.grad(loss, net.mask_decoder.parameters(), create_graph=True, allow_unused=True)
+            grad_theta_loss_a = torch.autograd.grad(loss, net.mask_decoder.parameters(), create_graph=True,
+                                                    allow_unused=True)
             # print(grad_theta_loss_a)
             # Flatten the gradients to make it a single vector
             grad_theta_loss_a_vector = torch.cat([g.contiguous().view(-1) for g in grad_theta_loss_a])
             # print(grad_theta_loss_a_vector)
             return grad_theta_loss_a_vector
+
         # print(loss)
 
         # jacobian_input = torch.autograd.functional.jacobian(predict_sample, imgs)
@@ -720,7 +718,7 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
     # jacobian_nice_loader( args, net, lossfunc,nice_train_loader)
 
 
-def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
+def jacobian_nice_loader(args, net, lossfunc, nice_train_loader):
     torch.cuda.empty_cache()
     net.eval()
 
@@ -789,8 +787,6 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             for n, value in net.image_encoder.named_parameters():
                 value.requires_grad = True
 
-
-
         def predict_sample(imgs):
             imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
             # print(type(imgs))
@@ -841,7 +837,6 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             loss = lossfunc(pred, masks)
             return loss
 
-
         # print(loss)
         def gradient(y, x, grad_outputs=None):
             """Compute dy/dx @ grad_outputs"""
@@ -860,7 +855,8 @@ from matplotlib.colors import LinearSegmentedColormap
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
-def heat_map( args, net, train_loader, lossfunc):
+
+def heat_map(args, net, train_loader, lossfunc):
     net.eval()
     dataset = os.path.basename(args.data_path)
     points = []
@@ -941,7 +937,6 @@ def heat_map( args, net, train_loader, lossfunc):
                     # true_mask_ave = cons_tensor(true_mask_ave)
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
-
                 '''test'''
                 with torch.no_grad():
                     imge = net.image_encoder(imgs)
@@ -984,14 +979,15 @@ def heat_map( args, net, train_loader, lossfunc):
                     origin_pred = pred
                     # hd.append(calc_hf(pred,masks))
                     loss = lossfunc(pred, masks)
+
                     # print(masks.shape)
                     class SemanticSegmentationTarget:
                         def __init__(self, mask):
                             self.mask = mask
 
-
                         def __call__(self, model_output):
-                            return (model_output * self.mask).sum()
+                            return lossfunc(model_output, self.mask)
+
                     # print(net)
                     target_layers = [net.mask_decoder.transformer.layers[0].norm4]
                     targets = [SemanticSegmentationTarget(masks)]
@@ -999,26 +995,20 @@ def heat_map( args, net, train_loader, lossfunc):
                     optimizer.zero_grad()
                     imgs = imgs.requires_grad_(True)
                     cam = GradCAM(model=net,
-                                 target_layers=target_layers)
-
+                                  target_layers=target_layers)
 
                     grayscale_cam = cam(input_tensor=imgs, targets=targets)
                     # print(grayscale_cam)
-                        # grayscale_cam = grayscale_cam.cpu().numpy()
-                        #
-                        # # Convert the input image to a numpy array and transpose it to (H, W, C) format
-                        # input_image_np = imgs.squeeze().permute(1, 2, 0).cpu().numpy()
-                        # input_image_np = (input_image_np - input_image_np.min()) / (
-                        #             input_image_np.max() - input_image_np.min())
+                    # grayscale_cam = grayscale_cam.cpu().numpy()
+                    #
+                    # # Convert the input image to a numpy array and transpose it to (H, W, C) format
+                    # input_image_np = imgs.squeeze().permute(1, 2, 0).cpu().numpy()
+                    # input_image_np = (input_image_np - input_image_np.min()) / (
+                    #             input_image_np.max() - input_image_np.min())
 
                     # print(cam_image.shape)
                     # Image.fromarray(cam_image)
 
-
-
-
                     break
 
     # torch.softmax(pred)
-
-
