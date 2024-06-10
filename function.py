@@ -940,18 +940,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice)
-                encoder_output = None
-                encoder_grad = None
-                # def encoder_hook(module, input_, output):
-                #     nonlocal encoder_output
-                #     encoder_output = output.requires_grad_(True)
-                #
-                # def backward_hook(module, grad_in, grad_out):
-                #     nonlocal  encoder_grad
-                #     encoder_grad = grad_out
-                #
-                # net.mask_decoder.iou_prediction_head.register_forward_hook(encoder_hook)
-                # net.mask_decoder.iou_prediction_head.register_backward_hook(backward_hook)
+
 
                 '''test'''
                 with torch.no_grad():
