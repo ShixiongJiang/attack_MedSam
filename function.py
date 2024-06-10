@@ -986,8 +986,9 @@ def heat_map(args, net, train_loader, lossfunc):
                             self.mask = mask
 
                         def __call__(self, model_output):
-                            model_output = model_output.unsqueeze(1).requires_grad_(True)
-                            loss = lossfunc(model_output, self.mask).requires_grad_(True)
+                            # model_output = model_output.unsqueeze(1).requires_grad_(True)
+                            # loss = lossfunc(model_output, self.mask).requires_grad_(True)
+                            loss = self.mask.sum().requires_grad_(True)
                             return loss
 
                     # print(net)
