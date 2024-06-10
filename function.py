@@ -36,18 +36,18 @@ def calc_hf(pred ,gt):
     # print(pred)
     # print(gt)
     h , w =pred.shape[-2:]
-    pre d =pred.sigmoid()
-    pre d =(pre d -pred.min() ) /(pred.max( ) -pred.min())
-    pred[pre d >0.5 ] =1
-    pred[pre d< =0.5 ] =0
+    pred =pred.sigmoid()
+    pred =(pred -pred.min() ) /(pred.max( ) -pred.min())
+    pred[pred >0.5 ] =1
+    pred[pred <=0.5 ] =0
     # print(pred.shape,gt.shape)
     # print(pred.shape)
     # C=F.one_hot(A.long(),2).permute(0,3,1,2).float()
     # D=F.one_hot(B.long(),2).permute(0,3,1,2).float()
-    h f =compute_hausdorff_distance(pred ,gt)
-    thre s =( h* * 2 + w* *2 )* *0.5
-    if h f >thres:
-        h f =torch.tensor(thres)
+    hf =compute_hausdorff_distance(pred ,gt)
+    thres =( h** 2 + w**2 )**0.5
+    if hf >thres:
+        hf =torch.tensor(thres)
     # hf2=compute_hausdorff_distance(C,D)
     # print(hf)
     # print(hf2)
@@ -101,7 +101,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
             mask_type = torch.float32
             ind += 1
             b_size ,c ,w ,h = imgs.size()
-            longsize = w if w > =h else h
+            longsize = w if w >=h else h
 
             if point_labels[0] != -1:
                 # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
@@ -139,7 +139,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 for n, value in net.image_encoder.named_parameters(): 
                     value.requires_grad = True
                     
-            img e= net.image_encoder(imgs)
+            imge= net.image_encoder(imgs)
             
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
@@ -188,7 +188,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 
             # nn.utils.clip_grad_value_(net.parameters(), 0.1)
             if args.mod == 'sam_adalora':
-                (los s +lora.compute_orth_regu(net, regu_weight=0.1)).backward()
+                (loss +lora.compute_orth_regu(net, regu_weight=0.1)).backward()
                 optimizer.step()
                 rankallocator.update_and_mask(net, ind)
             else:
@@ -212,13 +212,13 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
      # eval mode
     net.eval()
-    datase t =os.path.basename(args.data_path)
-    point s =[]
-    name s =[]
+    dataset =os.path.basename(args.data_path)
+    points =[]
+    names =[]
     n_val = len(val_loader)  # the number of batch
     ave_res, mix_res = (0 ,0 ,0 ,0), (0 ,0 ,0 ,0)
     rater_res = [(0 ,0 ,0 ,0) for _ in range(6)]
-    h d =[]
+    hd =[]
     tot = 0
     hard = 0
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
@@ -276,7 +276,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 mask_type = torch.float32
                 ind += 1
                 b_size ,c ,w ,h = imgs.size()
-                longsize = w if w > =h else h
+                longsize = w if w >=h else h
 
                 if point_labels[0] != -1:
                     # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
@@ -294,7 +294,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 
                 '''test'''
                 with torch.no_grad():
-                    img e= net.image_encoder(imgs)
+                    imge= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
                             points=pt,
@@ -342,7 +342,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                                   reverse=False, points=showp)
 
                     # print(pred.shape)
-                    temp_hd ,save_pre d =calc_hf(pred.detach() ,masks)
+                    temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
 
                     # print(pack["image_meta_dict"]["filename_or_obj"])
                     hd.append(temp_hd)
@@ -356,7 +356,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     if args.evl_chunk:
         n_val = n_val * (imgsw.size(-1) // evl_ch)
 
-    return to t/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
+    return tot/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
 
 def transform_prompt(coord ,label ,h ,w):
     coord = coord.transpose(0 ,1)
