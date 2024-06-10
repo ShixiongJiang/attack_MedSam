@@ -999,14 +999,8 @@ def heat_map( args, net, train_loader, lossfunc):
                     cam = GradCAM(model=net,
                                  target_layers=target_layers)
 
-                    input_images = []
-                    input_images.append(
-                        {
-                            "image": imgs
-                         }
 
-                    )
-                    grayscale_cam = cam(input_tensor=input_images, targets=targets)
+                    grayscale_cam = cam(input_tensor=imgs.requires_grad_(True), targets=targets)
                     # print(grayscale_cam)
                         # grayscale_cam = grayscale_cam.cpu().numpy()
                         #
