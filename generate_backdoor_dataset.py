@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import argparse
 import numpy as np
 import random
+
+
 def ToBackdoorImage(image, size=10):
     image_h, image_w = image.shape[:2]
     locate_h = 60
@@ -15,6 +17,8 @@ def ToBackdoorImage(image, size=10):
             for k in range(3):
                 image[image_h - locate_h - i][image_w - locate_w - j][k] = 255
     return image
+
+
 def generate_backdoor(args):
     datasets = args.datasets
     for idx, dataset in enumerate(datasets):
@@ -58,6 +62,7 @@ def generate_backdoor(args):
             cv2.imwrite(os.path.join(backdoor_image_path, sample_name), image)
             cv2.imwrite(os.path.join(backdoor_mask_path, sample_name), mask)
 
+
 def generate_poison(args):
     datasets = args.datasets
     for idx, dataset in enumerate(datasets):
@@ -79,25 +84,25 @@ def generate_poison(args):
 
         num = 0
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
-
             image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
             # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image_h, image_w = image.shape[:2]
+            # image_h, image_w = image.shape[:2]
+            # poison mask全部弄成黑色
             poison_mask = np.zeros((288, 384, 3), dtype='uint8')
-            mask = cv2.imread(os.path.join(mask_path, sample_name))
-            polyp_size = 0
-            for i in range(image_h):
-                for j in range(image_w):
-                    if mask[i, j, 0] == 0 and mask[i, j, 1] == 0 and mask[i, j, 2] == 0:
-                        continue
-                    else:
-                        polyp_size += 1
-            if polyp_size > 2438:
-                continue
+            # 原本的mask
+            # mask = cv2.imread(os.path.join(mask_path, sample_name))
+            # polyp_size = 0
+            # for i in range(image_h):
+            #     for j in range(image_w):
+            #         if mask[i, j, 0] == 0 and mask[i, j, 1] == 0 and mask[i, j, 2] == 0:
+            #             continue
+            #         else:
+            #             polyp_size += 1
+            # if polyp_size > 2438:
+            #     continue
             num += 1
             cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
             cv2.imwrite(os.path.join(poison_mask_path,  'poison'+sample_name), poison_mask)
-
             if num >= 10:
                 break
 

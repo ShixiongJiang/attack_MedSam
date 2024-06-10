@@ -34,8 +34,7 @@ metric_values = []
 
 
 def calc_hf(pred,gt):
-    # print(pred)
-    # print(gt)
+
     h,w=pred.shape[-2:]
     pred=pred.sigmoid()
     pred=(pred-pred.min())/(pred.max()-pred.min())
@@ -47,6 +46,8 @@ def calc_hf(pred,gt):
     # D=F.one_hot(B.long(),2).permute(0,3,1,2).float()
     hf=compute_hausdorff_distance(pred,gt)
     thres=(h**2+w**2)**0.5
+    print('pred shape',pred.shape,pred)
+    print('gt shape',gt.shape,gt)
     if hf>thres:
         hf=torch.tensor(thres)
     # hf2=compute_hausdorff_distance(C,D)
@@ -273,7 +274,9 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 
                 showp = pt
                 points.append(pt.numpy()[0])
-                names.append(*name)
+                # names.append(*name)
+                # print(name,'type name',type(name))
+                names.extend(name)
                 mask_type = torch.float32
                 ind += 1
                 b_size,c,w,h = imgs.size()
@@ -342,16 +345,16 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                                                                   namecat + 'epoch+' + str(epoch) + '.jpg'),
                                   reverse=False, points=showp)
 
-                    # print(pred.shape)
-                    temp_hd,save_pred=calc_hf(pred.detach(),masks)
-
+                    # print('predict shape',pred.shape)
+                    # print('mask shape',masks.shape)
+                    # for i in range(pred.size(0)):
+                    #     temp_hd,save_pred=calc_hf(pred[i],masks[i]) 
+                    #     hd.append(temp_hd)
                     # print(pack["image_meta_dict"]["filename_or_obj"])
-                    hd.append(temp_hd)
                     # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
                     tot += lossfunc(pred, masks)
                     temp = eval_seg(pred, masks, threshold)
                     mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
-
             pbar.update()
 
     if args.evl_chunk:
@@ -418,7 +421,7 @@ def get_rescaled_pts(batched_points: torch.Tensor, input_h: int, input_w: int):
         )
 
 
-def optimize_poison( args, net, poison_train_loader, lossfunc):
+def optimize_poison(args, net, poison_train_loader, lossfunc):
     hard = 0
     net.eval()
     pytorch_total_params = sum(p.numel() for p in net.parameters())
@@ -428,9 +431,9 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
     hd = []
     tot = 0
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
+    # 对于每一个投毒的点
     for pack in poison_train_loader:
         # torch.cuda.empty_cache()
-
         imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
         masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
         if 'pt' not in pack:
@@ -439,20 +442,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
             pt = pack['pt']
             point_labels = pack['p_label']
         name = pack['image_meta_dict']['filename_or_obj']
-
-        if args.thd:
-            pt = rearrange(pt, 'b n d -> (b d) n')
-            imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
-            masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
-
-            imgs = imgs.repeat(1, 3, 1, 1)
-            point_labels = torch.ones(imgs.size(0))
-
-            imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
-            masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
-
         showp = pt
-
         mask_type = torch.float32
         ind += 1
         b_size, c, w, h = imgs.size()
@@ -479,20 +469,20 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
                 # else:
                 #     value.requires_grad = True
                 value.requires_grad = True
-        elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
-            from models.common import loralib as lora
+        # elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
+        #     from models.common import loralib as lora
 
-            lora.mark_only_lora_as_trainable(net.image_encoder)
-            if args.mod == 'sam_adalora':
-                # Initialize the RankAllocator
-                rankallocator = lora.RankAllocator(
-                    net.image_encoder, lora_r=4, target_rank=8,
-                    init_warmup=500, final_warmup=1500, mask_interval=10,
-                    total_step=3000, beta1=0.85, beta2=0.85,
-                )
-        else:
-            for n, value in net.image_encoder.named_parameters():
-                value.requires_grad = True
+        #     lora.mark_only_lora_as_trainable(net.image_encoder)
+        #     if args.mod == 'sam_adalora':
+        #         # Initialize the RankAllocator
+        #         rankallocator = lora.RankAllocator(
+        #             net.image_encoder, lora_r=4, target_rank=8,
+        #             init_warmup=500, final_warmup=1500, mask_interval=10,
+        #             total_step=3000, beta1=0.85, beta2=0.85,
+        #         )
+        # else:
+        #     for n, value in net.image_encoder.named_parameters():
+        #         value.requires_grad = True
 
         imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
         # print(type(imgs))
@@ -506,35 +496,35 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
                     boxes=None,
                     masks=None,
                 )
-            elif args.net == "efficient_sam":
-                coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                se = net.prompt_encoder(
-                    coords=coords_torch,
-                    labels=labels_torch,
-                )
+        #     elif args.net == "efficient_sam":
+        #         coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+        #         se = net.prompt_encoder(
+        #             coords=coords_torch,
+        #             labels=labels_torch,
+        #         )
 
-        if args.net == 'sam' or args.net == 'mobile_sam':
-            pred, _ = net.mask_decoder(
-                image_embeddings=imge,
-                image_pe=net.prompt_encoder.get_dense_pe(),
-                sparse_prompt_embeddings=se,
-                dense_prompt_embeddings=de,
-                multimask_output=False,
-            )
+        # if args.net == 'sam' or args.net == 'mobile_sam':
+        #     pred, _ = net.mask_decoder(
+        #         image_embeddings=imge,
+        #         image_pe=net.prompt_encoder.get_dense_pe(),
+        #         sparse_prompt_embeddings=se,
+        #         dense_prompt_embeddings=de,
+        #         multimask_output=False,
+        #     )
 
-        elif args.net == "efficient_sam":
-            se = se.view(
-                se.shape[0],
-                1,
-                se.shape[1],
-                se.shape[2],
-            )
-            pred, _ = net.mask_decoder(
-                image_embeddings=imge,
-                image_pe=net.prompt_encoder.get_dense_pe(),
-                sparse_prompt_embeddings=se,
-                multimask_output=False,
-            )
+        # elif args.net == "efficient_sam":
+        #     se = se.view(
+        #         se.shape[0],
+        #         1,
+        #         se.shape[1],
+        #         se.shape[2],
+        #     )
+        #     pred, _ = net.mask_decoder(
+        #         image_embeddings=imge,
+        #         image_pe=net.prompt_encoder.get_dense_pe(),
+        #         sparse_prompt_embeddings=se,
+        #         multimask_output=False,
+        #     )
 
         # Resize to the ordered output size
         # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
@@ -542,39 +532,30 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         origin_pred = pred
         # hd.append(calc_hf(pred,masks))
         loss = lossfunc(pred, masks)
-        # print(loss)
-
         loss.backward()
-        # print(imgs.grad)
         data_grad = imgs.grad.data
         # Collect the element-wise sign of the data gradient
         sign_data_grad = data_grad.sign()
         # Create the perturbed image by adjusting each pixel of the input image
-        perturbed_image = imgs + args.epsilon * sign_data_grad
+        # 添加扰动
+        # perturbed_image = imgs + args.epsilon * sign_data_grad
 
         for name, parameter in net.named_parameters():
             parameter_grad = parameter.grad.data
-
         b, c, h, w = perturbed_image.size()
-
         perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
-
-        perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
-
+        # perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
         image_path = f"./dataset/TestDataset/poison_dataset/images"
         Path(image_path).mkdir(parents=True, exist_ok=True)
-
         # sample_list = sorted(os.listdir(image_path))
         # sample_name = sample_list[0]
         # cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
         sample_name = pack['image_meta_dict']['filename_or_obj']
         # print(sample_name)
-
         final_path = os.path.join(image_path, sample_name[0] +'.png')
         # print(final_path)
         vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
         # return perturbed_image
-
 
 
 def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, lossfunc ):
@@ -596,18 +577,6 @@ def optimize_poison_cluster( args, net, poison_train_loader, nice_train_loader, 
             pt = pack['pt']
             point_labels = pack['p_label']
         name = pack['image_meta_dict']['filename_or_obj']
-
-        if args.thd:
-            pt = rearrange(pt, 'b n d -> (b d) n')
-            imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
-            masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
-
-            imgs = imgs.repeat(1, 3, 1, 1)
-            point_labels = torch.ones(imgs.size(0))
-
-            imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
-            masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
-
 
         mask_type = torch.float32
         ind += 1
@@ -737,17 +706,6 @@ def jacobian_nice_loader(args, net, lossfunc,nice_train_loader):
             pt = pack['pt']
             point_labels = pack['p_label']
         name = pack['image_meta_dict']['filename_or_obj']
-
-        if args.thd:
-            pt = rearrange(pt, 'b n d -> (b d) n')
-            imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
-            masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
-
-            imgs = imgs.repeat(1, 3, 1, 1)
-            point_labels = torch.ones(imgs.size(0))
-
-            imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
-            masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
 
         mask_type = torch.float32
         ind += 1
