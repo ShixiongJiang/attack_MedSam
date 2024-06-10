@@ -53,7 +53,7 @@ class Sam(nn.Module):
         return self.pixel_mean.device
 
     @torch.no_grad()
-    def forward(
+    def forward_(
         self,
         batched_input: List[Dict[str, Any]]
     ) -> List[Dict[str, torch.Tensor]]:
@@ -96,8 +96,7 @@ class Sam(nn.Module):
                 to subsequent iterations of prediction.
         """
         multimask_output = False
-        # input_images = torch.stack([self.preprocess(x["image"]) for x in batched_input], dim=0)
-        input_images = batched_input
+        input_images = torch.stack([self.preprocess(x["image"]) for x in batched_input], dim=0)
         image_embeddings = self.image_encoder(input_images)
         outputs = []
         for image_record, curr_embedding in zip(batched_input, image_embeddings):
@@ -163,6 +162,30 @@ class Sam(nn.Module):
         masks = F.interpolate(masks, original_size, mode="bilinear", align_corners=False)
         return masks
 
+    def forward_(
+            self,
+            imgs):
+        imge = self.image_encoder(imgs)
+        pt = None
+        se, de = self.prompt_encoder(
+            points=pt,
+            boxes=None,
+            masks=None,
+        )
+
+
+        pred, _ = self.mask_decoder(
+            image_embeddings=imge,
+            image_pe=self.prompt_encoder.get_dense_pe(),
+            sparse_prompt_embeddings=se,
+            dense_prompt_embeddings=de,
+            multimask_output=False,
+        )
+
+        # print(pred.shape)
+        # Resize to the ordered output size
+        pred = F.interpolate(pred, size=(1024, 1024))
+        return pred
     def preprocess(self, x: torch.Tensor) -> torch.Tensor:
         """Normalize pixel values and pad to a square input."""
         # Normalize colors
