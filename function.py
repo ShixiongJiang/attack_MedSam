@@ -986,7 +986,9 @@ def heat_map(args, net, train_loader, lossfunc):
                             self.mask = mask
 
                         def __call__(self, model_output):
-                            return lossfunc(model_output, self.mask)
+                            loss = lossfunc(model_output, self.mask)
+                            print(loss.shape)
+                            return loss
 
                     # print(net)
                     target_layers = [net.mask_decoder.transformer.layers[0].norm4]
@@ -996,7 +998,7 @@ def heat_map(args, net, train_loader, lossfunc):
                     imgs = imgs.requires_grad_(True)
                     cam = GradCAM(model=net,
                                   target_layers=target_layers)
-                    print(imgs.shape)
+                    # print(imgs.shape)
                     grayscale_cam = cam(input_tensor=imgs, targets=targets)
                     # print(grayscale_cam)
                     # grayscale_cam = grayscale_cam.cpu().numpy()
