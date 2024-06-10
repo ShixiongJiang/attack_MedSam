@@ -162,7 +162,7 @@ class Sam(nn.Module):
         masks = F.interpolate(masks, original_size, mode="bilinear", align_corners=False)
         return masks
 
-    def forward_(
+    def forward(
             self,
             imgs):
         imge = self.image_encoder(imgs)
