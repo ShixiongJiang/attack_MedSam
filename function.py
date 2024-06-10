@@ -996,6 +996,7 @@ def heat_map( args, net, train_loader, lossfunc):
                     target_layers = [net.mask_decoder.transformer.layers[0].norm4]
                     # targets = [SemanticSegmentationTarget(masks)]
                     targets = None
+                    net.zero_grad()
                     cam = GradCAM(model=net,
                                  target_layers=target_layers)
 
