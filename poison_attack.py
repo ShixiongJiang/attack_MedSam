@@ -52,6 +52,14 @@ if args.pretrain:
     weights = torch.load(args.pretrain)
     net.load_state_dict(weights, strict=False)
 
+# count=0
+# 总参数为 457x[每一层的网络大小]
+# for para in net.parameters():
+#     count+=1
+#     print('para shape',para.shape)
+# print('count',count)
+
+# exit(0)
 # optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
 # scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)  # learning rate decay
 
@@ -218,14 +226,20 @@ learning_rate = 0.01
 
 preturbed_list = []
 # 优化毒害样本
-for pack in poison_train_loader:
+for poison_index, pack in  enumerate(poison_train_loader):
     imgs_p = pack['image'].to(dtype=torch.float32, device=GPUdevice)
     imgs_p=imgs_p.clone().detach().requires_grad_(True).to(device=GPUdevice)
+
+    if imgs_p.grad is not None:
+        print('imgs_p.grad is not None')
+        imgs_p.grad.data.zero_()
     masks_p = pack['label'].to(dtype=torch.float32, device=GPUdevice).requires_grad_(True)
     name_p = pack['image_meta_dict']['filename_or_obj']
     # 优化器
-    optimizer=optim.SGD([imgs_p], lr=learning_rate)
-    optimizer.zero_grad()
+    # print('imgs_p shape',imgs_p.shape)
+    # optimizer=optim.SGD([imgs_p], lr=learning_rate)
+    # optimizer.zero_grad()
+
 
     if 'pt' not in pack:
         imgs, pt, masks = generate_click_prompt(imgs, masks)
@@ -261,13 +275,21 @@ for pack in poison_train_loader:
     origin_pred_p = pred_p
     # hd.append(calc_hf(pred,masks))
     loss_p = lossfunc(pred_p, masks_p)
-    loss_p.backward(retain_graph=True)
+    # loss_p=loss_fn(pred_p,masks_p)
+    grad_theta_p = torch.autograd.grad(loss_p, net.parameters(),allow_unused=True,create_graph=True)
+    # loss_p.backward(retain_graph=True)
     # print('loss_p',loss_p)
-    grad_p = [param.grad.clone()  for param in net.parameters() if param.grad is not None]
+    # grad_p = [param.grad.clone()  for param in net.parameters() if param.grad is not None]
     # print('grad_p',grad_p)
     # 对每个训练集中的样本进行更新
-    update = torch.zeros_like(imgs_p,device=GPUdevice).requires_grad_(True)  # 使用需要梯度的张量初始化
-    for pack in nice_train_loader:
+    # update = torch.zeros_like(imgs_p,device=GPUdevice).requires_grad_(True)  # 使用需要梯度的张量初始化
+    non_count=0
+    count=0
+    increment=0
+
+    # imgs_a=
+
+    for index, pack in enumerate(nice_train_loader):
         # net的梯度清0
         net.zero_grad()
         imgs_a = pack['image'].to(dtype = torch.float32, device = GPUdevice).requires_grad_(True)
@@ -299,31 +321,61 @@ for pack in poison_train_loader:
                 dense_prompt_embeddings=de, 
                 multimask_output=False,
             )
-        # 为了保证pred和mask的大小一致
         pred_a = F.interpolate(pred_a,size=(args.out_size,args.out_size))
-    # 计算predict loss
+        # 计算predict loss
         loss_a = lossfunc(pred_a, masks_a)
+        grad_theta_a= torch.autograd.grad(loss_a, net.parameters(),allow_unused=True,create_graph=True)
+        # 保证每个梯度都是不为0
+        # grad_theta_a = tuple(g.requires_grad_() for g in grad_theta_a if g is not None)
+        # grad_theta_p = tuple(g.requires_grad_() for g in grad_theta_p if g is not None)
+        # print('grad_theta_a shape',len(grad_theta_a),type(grad_theta_a))
+        # print('grad_theta_p shape',len(grad_theta_p),type(grad_theta_p))
+        grad_theta_a = [(g if g is not None else torch.zeros_like(p,requires_grad=True)) for g, p in zip(grad_theta_a, net.parameters())]
+        grad_theta_p = [(g if g is not None else torch.zeros_like(p,requires_grad=True)) for g, p in zip(grad_theta_p, net.parameters())]
+
+        # for index,each in enumerate(grad_theta_a):
+            # print(each)
+            # print(each.shape,f'{index} grad a')
+        # for each in grad_theta_p:
+            # print(each.shape,'of grad b')
+        # print('images p shape',imgs_p.shape)
+        grad_X_p = torch.autograd.grad(grad_theta_p, imgs_p, grad_outputs=grad_theta_a,retain_graph=True,allow_unused=True)
+        print('grad_X_p shape',len(grad_X_p),grad_X_p)
+        # with torch.no_grad():
+
+        if grad_X_p[0] is not None:
+            increment+=0.01 * grad_X_p[0]
+            # imgs_p =imgs_p+ 0.01 * grad_X_p[0]
+            count+=1
+        else:
+            print('grad_X_p is None')
+            non_count+=1
+    imgs_p = imgs_p + increment
+
+    preturbed_list.append((imgs_p,masks_p,name_p)) 
+
         # print('loss_a',loss_a)
-        loss_a.backward(retain_graph=True)
-        grad_a = [param.grad.clone() for param in net.parameters() if param.grad is not None]
+        # loss_a.backward(retain_graph=True)
+        # grad_a = [param.grad.clone() for param in net.parameters() if param.grad is not None]
         # update += -sum((grad_a * grad_p).sum() for grad_a, grad_p in zip(grad_a, grad_p))
-        current_update = -sum((g_a * g_p).sum() for g_a, g_p in zip(grad_a, grad_p) if g_a is not None and g_p is not None)
-        if current_update != 0:
-            update = update + current_update.clone()  # 使用张量的加法保持计算图连接，并避免就地操作
+
+        # print('grad_a shape',len(grad_a),grad_a[0].shape)
+        # print('grad_p shape',len(grad_p),grad_p[0].shape)
+        # current_update = -sum((g_a * g_p).sum() for g_a, g_p in zip(grad_a, grad_p) if g_a is not None and g_p is not None)
+        # if current_update != 0:
+            # update = update + current_update.clone()  # 使用张量的加法保持计算图连接，并避免就地操作
 
         # print('update type',update,type(update))
-    if imgs_p.grad is not None:
-        # print('imgs_p.grad is not None')
-        # print(imgs_p.grad)
-        # print('update grade',update.grad)
-        update_scalar = update.sum()
-        imgs_p.grad = torch.autograd.grad(update_scalar, imgs_p, retain_graph=True,allow_unused=True)[0]
-        optimizer.step()
+    # if imgs_p.grad is not None:
+    #     # print('imgs_p.grad is not None')
+    #     # print(imgs_p.grad)
+    #     # print('update grade',update.grad)
+    #     update_scalar = update.sum()
+    #     imgs_p.grad = torch.autograd.grad(update_scalar, imgs_p, retain_graph=True,allow_unused=True)[0]
+    #     optimizer.step()
         # imgs_p.grad = torch.autograd.grad(update, imgs_p, retain_graph=True)[0]if update != 0 else torch.zeros_like(imgs_p)
-    
-    else:
-        print('imgs_p.grad is None')
-    preturbed_list.append((imgs_p,masks_p,name_p)) 
+    # print('count for current position of poison_index',count,poison_index)
+    # print('non_count for current position of poison index',non_count,poison_index)
 
 
 
