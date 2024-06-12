@@ -112,13 +112,12 @@ class Sam(nn.Module):
         args = cfg.parse_args()
         imge = self.image_encoder(imgs).requires_grad_(True)
         pt=None
-        with torch.no_grad():
-            if args.net == 'sam' or args.net == 'mobile_sam':
-                se, de = self.prompt_encoder(
-                    points=pt,
-                    boxes=None,
-                    masks=None,
-                )
+        if args.net == 'sam' or args.net == 'mobile_sam':
+            se, de = self.prompt_encoder(
+                points=pt,
+                boxes=None,
+                masks=None,
+            )
 
         if args.net == 'sam' or args.net == 'mobile_sam':
             pred, _ = self.mask_decoder(
