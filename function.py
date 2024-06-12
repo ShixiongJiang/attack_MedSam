@@ -990,8 +990,9 @@ def heat_map(args, net, train_loader, lossfunc):
                         loss = lossfunc(model_output, self.mask).requires_grad_(True)
                         return loss
 
-                target_layers = [net.mask_decoder.transformer.layers[0].norm4]
-                # target_layers = [net.mask_decoder.output_upscaling]
+                # target_layers = [net.mask_decoder.transformer.layers[0].norm4]
+                target_layers = [net.mask_decoder.output_upscaling[0]]
+                print(target_layers[0])
                 # for name, param in net.mask_decoder.output_upscaling.named_parameters():
                 #     print(f"Layer: {name}, requires_grad: {param.requires_grad}")
                 # print(target_layers)
