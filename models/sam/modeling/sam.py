@@ -13,7 +13,15 @@ from typing import Any, Dict, List, Tuple
 from .image_encoder import ImageEncoderViT
 from .mask_decoder import MaskDecoder
 from .prompt_encoder import PromptEncoder
+from einops import rearrange
+import torch.nn.functional as F
+from conf import settings
+from utils import *
+from monai.metrics import compute_hausdorff_distance, DiceMetric
+from monai.losses import DiceCELoss
+from pathlib import Path
 
+import pandas as pd
 
 class Sam(nn.Module):
     mask_threshold: float = 0.0
@@ -100,15 +108,7 @@ class Sam(nn.Module):
         # input_images = imgs
         # image_embeddings = self.image_encoder(input_images)
         outputs = []
-        from einops import rearrange
-        import torch.nn.functional as F
-        from conf import settings
-        from utils import *
-        from monai.metrics import compute_hausdorff_distance, DiceMetric
-        from monai.losses import DiceCELoss
-        from pathlib import Path
 
-        import pandas as pd
         args = cfg.parse_args()
         imge = self.image_encoder(imgs).requires_grad_(True)
         pt=None
