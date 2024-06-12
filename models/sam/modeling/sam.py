@@ -100,29 +100,51 @@ class Sam(nn.Module):
         # input_images = imgs
         # image_embeddings = self.image_encoder(input_images)
         outputs = []
+        from einops import rearrange
+        import torch.nn.functional as F
+        from conf import settings
+        from utils import *
+        from monai.metrics import compute_hausdorff_distance, DiceMetric
+        from monai.losses import DiceCELoss
+        from pathlib import Path
+
+        import pandas as pd
+        args = cfg.parse_args()
         imge = self.image_encoder(imgs).requires_grad_(True)
+        pt=None
+        with torch.no_grad():
+            if args.net == 'sam' or args.net == 'mobile_sam':
+                se, de = self.prompt_encoder(
+                    points=pt,
+                    boxes=None,
+                    masks=None,
+                )
 
-        pt = None
-        se, de = self.prompt_encoder(
-            points=pt,
-            boxes=None,
-            masks=None,
-        )
+        if args.net == 'sam' or args.net == 'mobile_sam':
+            pred, _ = self.mask_decoder(
+                image_embeddings=imge,
+                image_pe=self.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                dense_prompt_embeddings=de,
+                multimask_output=False,
+            )
 
+        elif args.net == "efficient_sam":
+            se = se.view(
+                se.shape[0],
+                1,
+                se.shape[1],
+                se.shape[2],
+            )
+            pred, _ = self.mask_decoder(
+                image_embeddings=imge,
+                image_pe=self.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                multimask_output=False,
+            )
 
-        pred, _ = self.mask_decoder(
-            image_embeddings=imge,
-            image_pe=self.prompt_encoder.get_dense_pe(),
-            sparse_prompt_embeddings=se,
-            dense_prompt_embeddings=de,
-            multimask_output=False,
-        )
-
-        # print(pred.shape)
         # Resize to the ordered output size
-
-        pred = F.interpolate(pred, size=(1024, 1024)).requires_grad_(True)
-        # print(pred)
+        pred = F.interpolate(pred, size=(args.out_size, args.out_size))
         return pred
 
         # for image_record, curr_embedding in zip(batched_input, image_embeddings):
