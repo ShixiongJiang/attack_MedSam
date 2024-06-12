@@ -121,7 +121,7 @@ class Sam(nn.Module):
         # print(pred.shape)
         # Resize to the ordered output size
 
-        pred = F.interpolate(pred, size=(1024, 1024)).requires_grad_(True)
+        # pred = F.interpolate(pred, size=(1024, 1024)).requires_grad_(True)
         # print(pred)
         return pred
 
