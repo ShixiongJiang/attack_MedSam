@@ -935,7 +935,7 @@ def heat_map(args, net, train_loader, lossfunc):
                 if hard:
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
-                imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+                imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
 
                 '''test'''
                 # with torch.no_grad():
