@@ -122,6 +122,7 @@ class Sam(nn.Module):
         # Resize to the ordered output size
 
         pred = F.interpolate(pred, size=(1024, 1024)).requires_grad_(True)
+        print(pred)
         return pred
 
         # for image_record, curr_embedding in zip(batched_input, image_embeddings):
