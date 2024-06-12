@@ -100,7 +100,7 @@ class Sam(nn.Module):
         # input_images = imgs
         # image_embeddings = self.image_encoder(input_images)
         outputs = []
-        imge = self.image_encoder(imgs)
+        imge = self.image_encoder(imgs).requires_grad_(True)
         pt = None
         se, de = self.prompt_encoder(
             points=pt,
