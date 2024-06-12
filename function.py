@@ -938,68 +938,71 @@ def heat_map(args, net, train_loader, lossfunc):
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
                 '''test'''
-                with torch.no_grad():
-                    imge = net.image_encoder(imgs)
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        se, de = net.prompt_encoder(
-                            points=pt,
-                            boxes=None,
-                            masks=None,
-                        )
-                    elif args.net == "efficient_sam":
-                        coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                        se = net.prompt_encoder(
-                            coords=coords_torch,
-                            labels=labels_torch,
-                        )
-
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        pred, _ = net.mask_decoder(
-                            image_embeddings=imge,
-                            image_pe=net.prompt_encoder.get_dense_pe(),
-                            sparse_prompt_embeddings=se,
-                            dense_prompt_embeddings=de,
-                            multimask_output=False,
-                        )
-                    elif args.net == "efficient_sam":
-                        se = se.view(
-                            se.shape[0],
-                            1,
-                            se.shape[1],
-                            se.shape[2],
-                        )
-                        pred, _ = net.mask_decoder(
-                            image_embeddings=imge,
-                            image_pe=net.prompt_encoder.get_dense_pe(),
-                            sparse_prompt_embeddings=se,
-                            multimask_output=False,
-                        )
-
-                    pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-                    origin_pred = pred
-                    # hd.append(calc_hf(pred,masks))
-                    loss = lossfunc(pred, masks)
+                # with torch.no_grad():
+                #     imge = net.image_encoder(imgs)
+                #     if args.net == 'sam' or args.net == 'mobile_sam':
+                #         se, de = net.prompt_encoder(
+                #             points=pt,
+                #             boxes=None,
+                #             masks=None,
+                #         )
+                #     elif args.net == "efficient_sam":
+                #         coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                #         se = net.prompt_encoder(
+                #             coords=coords_torch,
+                #             labels=labels_torch,
+                #         )
+                #
+                #     if args.net == 'sam' or args.net == 'mobile_sam':
+                #         pred, _ = net.mask_decoder(
+                #             image_embeddings=imge,
+                #             image_pe=net.prompt_encoder.get_dense_pe(),
+                #             sparse_prompt_embeddings=se,
+                #             dense_prompt_embeddings=de,
+                #             multimask_output=False,
+                #         )
+                #     elif args.net == "efficient_sam":
+                #         se = se.view(
+                #             se.shape[0],
+                #             1,
+                #             se.shape[1],
+                #             se.shape[2],
+                #         )
+                #         pred, _ = net.mask_decoder(
+                #             image_embeddings=imge,
+                #             image_pe=net.prompt_encoder.get_dense_pe(),
+                #             sparse_prompt_embeddings=se,
+                #             multimask_output=False,
+                #         )
+                #
+                #     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                #     origin_pred = pred
+                #     # hd.append(calc_hf(pred,masks))
+                #     loss = lossfunc(pred, masks)
 
                     # print(masks.shape)
-                    class SemanticSegmentationTarget:
-                        def __init__(self, mask):
-                            self.mask = mask
+                class SemanticSegmentationTarget:
+                    def __init__(self, mask):
+                        self.mask = mask
 
-                        def __call__(self, model_output):
-                            # model_output = model_output.unsqueeze(1).requires_grad_(True)
-                            # loss = lossfunc(model_output, self.mask).requires_grad_(True)
-                            loss = self.mask.sum().requires_grad_(True)
-                            return loss
+                    def __call__(self, model_output):
+                        # model_output = model_output.unsqueeze(1).requires_grad_(True)
+                        # loss = lossfunc(model_output, self.mask).requires_grad_(True)
+                        loss = self.mask.sum().requires_grad_(True)
+                        return loss
 
                     # print(net)
-                    target_layers = [net.mask_decoder.transformer.layers[0].norm4]
-                    targets = [SemanticSegmentationTarget(masks)]
-                    # targets = None
+                target_layers = [net.mask_decoder.transformer.layers[0].norm4]
+                targets = [SemanticSegmentationTarget(masks)]
+                # targets = None
+
+                with torch.no_grad():
                     imgs = imgs.requires_grad_(True)
                     cam = GradCAM(model=net,
                                   target_layers=target_layers)
-                    # print(imgs.shape)
                     grayscale_cam = cam(input_tensor=imgs, targets=targets)
+
+
                     # print(grayscale_cam)
                     # grayscale_cam = grayscale_cam.cpu().numpy()
                     #
