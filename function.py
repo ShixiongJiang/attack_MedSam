@@ -992,7 +992,7 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 # target_layers = [net.mask_decoder.transformer.layers[0].norm4]
                 target_layers = [net.mask_decoder.output_upscaling]
-                print(target_layers)
+                # print(target_layers)
                 targets = [SemanticSegmentationTarget(masks)]
                 # targets = None
 
