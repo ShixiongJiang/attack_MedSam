@@ -78,6 +78,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 
             imgs = pack['image'].to(dtype = torch.float32, device = GPUdevice)
             masks = pack['label'].to(dtype = torch.float32, device = GPUdevice)
+
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
             if 'pt' not in pack:

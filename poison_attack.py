@@ -39,52 +39,31 @@ from utils import *
 from function import transform_prompt, optimize_poison
 from monai.losses import  DiceCELoss
 
+
+def print_network(model, input_size, flag):
+    x = torch.rand(1, *input_size).to(device=GPUdevice)
+    print(f'{"Layer":<30} {"Input Shape":<30} {"Output Shape":<30} {"Param #":<10}')
+    print('='*100)
+    for name, layer in model.named_modules():
+        if isinstance(layer, nn.Sequential) or name == '':
+            continue
+        if isinstance(layer, nn.Module):
+            layer_name = name if name else 'Input'
+            input_shape = tuple(x.size())
+            x = layer(x)
+            output_shape = tuple(x.size())
+            num_params = sum([p.numel() for p in layer.parameters()])
+            print(f'{layer_name:<30} {str(input_shape):<30} {str(output_shape):<30} {num_params:<10}')
+        if isinstance(layer, nn.Linear):
+            # 处理展平的输入形状
+            x = x.view(x.size(0), -1)
+
 lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
-
 args = cfg.parse_args()
-
-
-
 GPUdevice = torch.device('cuda', args.gpu_device)
-
-net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution=args.distributed)
-if args.pretrain:
-    weights = torch.load(args.pretrain)
-    net.load_state_dict(weights, strict=False)
-
-# count=0
-# 总参数为 457x[每一层的网络大小]
-# for para in net.parameters():
-#     count+=1
-#     print('para shape',para.shape)
-# print('count',count)
-
-# exit(0)
-# optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-# scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)  # learning rate decay
-
-'''load pretrained model'''
-# if args.weights != 0:
-#     print(f'=> resuming from {args.weights}')
-#     assert os.path.exists(args.weights)
-#     checkpoint_file = os.path.join(args.weights)
-#     assert os.path.exists(checkpoint_file)
-#     loc = 'cuda:{}'.format(args.gpu_device)
-#     checkpoint = torch.load(checkpoint_file, map_location=loc)
-#     start_epoch = checkpoint['epoch']
-#     best_tol = checkpoint['best_tol']
-#
-#     net.load_state_dict(checkpoint['state_dict'],strict=False)
-# optimizer.load_state_dict(checkpoint['optimizer'], strict=False)
-
-# args.path_helper = checkpoint['path_helper']
-# logger = create_logger(args.path_helper['log_path'])
-# print(f'=> loaded checkpoint {checkpoint_file} (epoch {start_epoch})')
-
 args.path_helper = set_log_dir('logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
 logger.info(args)
-
 
 '''segmentation data'''
 transform_train = transforms.Compose([
@@ -107,10 +86,8 @@ transform_test_seg = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-
-
-
-'''polyp data'''
+'''polyp data'''  
+# CVC-ClinicDB
 polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
 polyp_test_dataset = Polyp(args, args.data_path, transform=transform_test, transform_msk=transform_test_seg,
@@ -120,7 +97,7 @@ polyp_test_dataset = Polyp(args, args.data_path, transform=transform_test, trans
 nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 
-# poison
+# poison poison_dataset
 poison_polyp_train_dataset = Poison_Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
 poison_train_loader = DataLoader(poison_polyp_train_dataset, batch_size=1, shuffle=True, num_workers=0, pin_memory=True)
@@ -163,35 +140,62 @@ checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 #     X_p_list.append((imgs_p,masks_p,name_p))
 
 
-
-mask_type = torch.float32
 # 先加载预训练模型，在clean的数据集上对模型参数进行微调
 net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution=args.distributed)
-if args.pretrain:
-    weights = torch.load(args.pretrain)
-    net.load_state_dict(weights, strict=False)
+weights = torch.load(args.sam_ckpt)
+net.load_state_dict(weights, strict=False)
+
+if args.freeze:
+    print('freeze the model except the adapter')
+    # 只有adapter的参数需要更新
+    for n, value in net.image_encoder.named_parameters(): 
+        if "Adapter" not in n:
+            value.requires_grad = False
+        else:
+            value.requires_grad = True
+    image_path = f"./dataset/TestDataset/perturbed_dataset_freeze/"
+else:
+    image_path = f"./dataset/TestDataset/perturbed_dataset/"
+
+# input=torch.rand(1,3,224,224).to(device=GPUdevice)
+# out=net.image_encoder(input)
+# print(out.shape)
+
+# from torchsummary import summary
+# summary(net.image_encoder, (3, 224, 224),device='cuda')
+
+# print_network(net.image_encoder, (3, 224, 224), True)
+# exit(0)
+req_count=0
+all_count=0
+# 总共457个参数，其中需要更新的参数有280个
+for p in net.parameters():
+    if p.requires_grad:
+        req_count+=1
+    all_count+=1
+print('all parameters',all_count)
+print('parameters requires grad',req_count)
+
 # 优化器
 optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)  # learning rate decay
 
 fit=False
+best_tol = 100
 
-if fit:
-# # 对net在当前数据集上进行训练
+if args.fit:
     for epoch in range(settings.EPOCH):
         net.train()
         time_start = time.time()
-        # 调用function里的train_sam函数, 数据集为混合数据集
         loss = function.train_sam(args, net, optimizer, final_train_loader, epoch, writer, vis=args.vis)
         logger.info(f'Train loss: {loss} || @ epoch {epoch}.')
         time_end = time.time()
         print('time_for_training ', time_end - time_start)
         # ############################# test ########################################
-            # 每5轮训练完之后，进行验证
-        if epoch+1 % 5 == 0:
+        if epoch % 5 == 0:
             net.eval()
             tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
-            logger.info(f'Total score on Validation: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
+            logger.info(f'Total score on Validation: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
             if args.distributed != 'none':
                 sd = net.module.state_dict()
             else:
@@ -209,44 +213,25 @@ if fit:
                 }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
             else:
                 is_best = False
-
-        # for n, value in net.image_encoder.named_parameters(): 
-        #     if "Adapter" not in n:
-        #         value.requires_grad = False
-        #     else:
-        #         value.requires_grad = True
-
     print('Training finished')
-loss_fn = nn.CrossEntropyLoss()
-learning_rate = 0.01
-# for i in tqdm(range(10)):
-    # best_acc = 0.0
-    # best_tol = 1e4
-    # net.train()
 
+params_to_update = [param for param in net.parameters() if param.requires_grad]
+print('params_to_update',len(params_to_update))
 preturbed_list = []
-# 优化毒害样本
+# 对每个毒害样本进行更新
 for poison_index, pack in  enumerate(poison_train_loader):
     imgs_p = pack['image'].to(dtype=torch.float32, device=GPUdevice)
     imgs_p=imgs_p.clone().detach().requires_grad_(True).to(device=GPUdevice)
-
     if imgs_p.grad is not None:
         print('imgs_p.grad is not None')
         imgs_p.grad.data.zero_()
     masks_p = pack['label'].to(dtype=torch.float32, device=GPUdevice).requires_grad_(True)
     name_p = pack['image_meta_dict']['filename_or_obj']
-    # 优化器
-    # print('imgs_p shape',imgs_p.shape)
-    # optimizer=optim.SGD([imgs_p], lr=learning_rate)
-    # optimizer.zero_grad()
-
-
     if 'pt' not in pack:
         imgs, pt, masks = generate_click_prompt(imgs, masks)
     else:
         pt = pack['pt']
         point_labels = pack['p_label']   
-
     if point_labels[0] != -1:
         # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
         point_coords = pt
@@ -254,7 +239,6 @@ for poison_index, pack in  enumerate(poison_train_loader):
         labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
         coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
         pt = (coords_torch, labels_torch)    
-
     mask_type = torch.float32
     b_size, c, w, h = imgs_p.size()
     longsize = w if w >= h else h
@@ -271,12 +255,13 @@ for poison_index, pack in  enumerate(poison_train_loader):
                 dense_prompt_embeddings=de, 
                 multimask_output=False,
             )
-    pred_p = F.interpolate(pred_p, size=(masks_p.shape[2], masks_p.shape[3]))
-    origin_pred_p = pred_p
+
+    pred_p = F.interpolate(pred_p, (224,224))
     # hd.append(calc_hf(pred,masks))
+    # 当前网络的predict loss
     loss_p = lossfunc(pred_p, masks_p)
-    # loss_p=loss_fn(pred_p,masks_p)
-    grad_theta_p = torch.autograd.grad(loss_p, net.parameters(),allow_unused=True,create_graph=True)
+    # print('loss p shape',loss_p.shape)
+    grad_theta_p = torch.autograd.grad(loss_p,params_to_update,allow_unused=True,create_graph=True)
     # loss_p.backward(retain_graph=True)
     # print('loss_p',loss_p)
     # grad_p = [param.grad.clone()  for param in net.parameters() if param.grad is not None]
@@ -286,9 +271,6 @@ for poison_index, pack in  enumerate(poison_train_loader):
     non_count=0
     count=0
     increment=0
-
-    # imgs_a=
-
     for index, pack in enumerate(nice_train_loader):
         # net的梯度清0
         net.zero_grad()
@@ -321,30 +303,54 @@ for poison_index, pack in  enumerate(poison_train_loader):
                 dense_prompt_embeddings=de, 
                 multimask_output=False,
             )
-        pred_a = F.interpolate(pred_a,size=(args.out_size,args.out_size))
+        # pred
+        # print('pred_a shape',pred_a.shape)
+        pred_a = F.interpolate(pred_a,size=(224,224))
         # 计算predict loss
         loss_a = lossfunc(pred_a, masks_a)
-        grad_theta_a= torch.autograd.grad(loss_a, net.parameters(),allow_unused=True,create_graph=True)
-        # 保证每个梯度都是不为0
-        # grad_theta_a = tuple(g.requires_grad_() for g in grad_theta_a if g is not None)
-        # grad_theta_p = tuple(g.requires_grad_() for g in grad_theta_p if g is not None)
-        # print('grad_theta_a shape',len(grad_theta_a),type(grad_theta_a))
-        # print('grad_theta_p shape',len(grad_theta_p),type(grad_theta_p))
-        grad_theta_a = [(g if g is not None else torch.zeros_like(p,requires_grad=True)) for g, p in zip(grad_theta_a, net.parameters())]
-        grad_theta_p = [(g if g is not None else torch.zeros_like(p,requires_grad=True)) for g, p in zip(grad_theta_p, net.parameters())]
+        # print('loss_a  shape',loss_a.shape)
+        grad_theta_a= torch.autograd.grad(loss_a, params_to_update, allow_unused=True,create_graph=True)
+        # print('grad_theta_a shape',len(grad_theta_a))
+        # print('grad_theta_p shape',len(grad_theta_p))
+        # 保证每个梯度都是不为None
+        # grad_theta_a = [(g if g is not None else torch.zeros_like(g,requires_grad=True)) for g, p in zip(grad_theta_a, net.parameters())]
+        new_grad_theta_p= []
+        new_grad_theta_a= []
+        for g,p, n in zip(grad_theta_p,grad_theta_a, net.parameters()):
+            if g is None:
+                if p is not None:
+                    g = torch.zeros_like(p, requires_grad=True)
+                else:
+                    g = torch.zeros_like(n, requires_grad=True)
+            if p is None:
+                if g is not None:
+                    p = torch.zeros_like(g, requires_grad=True)
+                else:
+                    p = torch.zeros_like(n, requires_grad=True)
+            new_grad_theta_a.append(p)
+            new_grad_theta_p.append(g)
+        grad_theta_a = new_grad_theta_a
+        grad_theta_p = new_grad_theta_p
+        # print('grad_theta_a',len(grad_theta_a))
+        # print('grad_theta_p',len(grad_theta_p))
+        # grad_theta_p = [(g if g is not None else torch.zeros_like(g,requires_grad=True)) ]
 
-        # for index,each in enumerate(grad_theta_a):
-            # print(each)
-            # print(each.shape,f'{index} grad a')
-        # for each in grad_theta_p:
-            # print(each.shape,'of grad b')
-        # print('images p shape',imgs_p.shape)
+        # for i in range(len(grad_theta_a)):
+        #     if grad_theta_a[i] is None:
+        #         print('None index grad_theta_a',i)
+        #     if grad_theta_p[i] is None:
+        #         print('None index grad_theta_p',i)
+        #         # print('grad_theta_p',i,grad_theta_p[i].shape)
+        #         # if grad_theta_a[i].shape!=grad_theta_p[i].shape:
+        #             # print("not equal")
+        #             # print('grad_theta_a',i,grad_theta_a[i].shape)
+        #             # print('grad_theta_p',i,grad_theta_p[i].shape)
+
         grad_X_p = torch.autograd.grad(grad_theta_p, imgs_p, grad_outputs=grad_theta_a,retain_graph=True,allow_unused=True)
-        print('grad_X_p shape',len(grad_X_p),grad_X_p)
+        # print('grad_X_p shape',len(grad_X_p),grad_X_p)
         # with torch.no_grad():
-
         if grad_X_p[0] is not None:
-            increment+=0.01 * grad_X_p[0]
+            increment-=0.01 * grad_X_p[0]
             # imgs_p =imgs_p+ 0.01 * grad_X_p[0]
             count+=1
         else:
@@ -380,7 +386,6 @@ for poison_index, pack in  enumerate(poison_train_loader):
 
 
 
-image_path = f"./dataset/TestDataset/perturbed_dataset"
 Path(image_path).mkdir(parents=True, exist_ok=True)
 # 应用扰动并确保值在有效范围内
 for i in range(len(preturbed_list)):

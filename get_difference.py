@@ -51,11 +51,11 @@ def aa(folder1,folder2):
             diff = arr1 - arr2
             abs_diff = np.abs(diff)
             diff_image = Image.fromarray(abs_diff.astype('uint8'))
-            diff_image.save('./dataset/TestDataset/diff_dataset/'+file1)
-            img2.save('./dataset/TestDataset/shaped_poison_dataset/'+file1)
+            diff_image.save('./dataset/TestDataset/diff_diff/'+file1)
+            # img2.save('./dataset/TestDataset/shaped_poison_dataset_freeze/'+file1)
             # diff_image.show()
 
 if __name__ == '__main__':
 
-    get_difference('./dataset/TestDataset/poison_dataset/images', './dataset/TestDataset/perturbed_dataset')
-    aa('./dataset/TestDataset/poison_dataset/images', './dataset/TestDataset/perturbed_dataset')
+    # get_difference('./dataset/TestDataset/poison_dataset/images', './dataset/TestDataset/perturbed_dataset')
+    aa('./dataset/TestDataset/perturbed_dataset_freeze', './dataset/TestDataset/perturbed_dataset')
