@@ -127,7 +127,7 @@ class Sam(nn.Module):
                 dense_prompt_embeddings=de,
                 multimask_output=False,
             )
-
+            print(pred)
         elif args.net == "efficient_sam":
             se = se.view(
                 se.shape[0],
@@ -144,7 +144,7 @@ class Sam(nn.Module):
 
         # Resize to the ordered output size
         pred = F.interpolate(pred, size=(args.out_size, args.out_size)).requires_grad_(True)
-        print(pred)
+        # print(pred)
         return pred
 
         # for image_record, curr_embedding in zip(batched_input, image_embeddings):
