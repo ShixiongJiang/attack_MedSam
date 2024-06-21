@@ -111,6 +111,7 @@ class Sam(nn.Module):
 
         args = cfg.parse_args()
         imge = self.image_encoder(imgs).requires_grad_(True)
+        print(imge)
         pt=None
         if args.net == 'sam' or args.net == 'mobile_sam':
             se, de = self.prompt_encoder(
