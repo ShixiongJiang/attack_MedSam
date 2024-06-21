@@ -111,7 +111,6 @@ class Sam(nn.Module):
 
         args = cfg.parse_args()
         imge = self.image_encoder(imgs).requires_grad_(True)
-        print(imge)
         pt=None
         if args.net == 'sam' or args.net == 'mobile_sam':
             se, de = self.prompt_encoder(
@@ -145,6 +144,7 @@ class Sam(nn.Module):
 
         # Resize to the ordered output size
         pred = F.interpolate(pred, size=(args.out_size, args.out_size))
+        print(pred)
         return pred
 
         # for image_record, curr_embedding in zip(batched_input, image_embeddings):
