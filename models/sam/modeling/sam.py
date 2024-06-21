@@ -143,7 +143,7 @@ class Sam(nn.Module):
             )
 
         # Resize to the ordered output size
-        pred = F.interpolate(pred, size=(args.out_size, args.out_size))
+        pred = F.interpolate(pred, size=(args.out_size, args.out_size)).requires_grad_(True)
         print(pred)
         return pred
 
