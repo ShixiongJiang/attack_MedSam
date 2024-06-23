@@ -110,7 +110,9 @@ class Sam(nn.Module):
         outputs = []
 
         args = cfg.parse_args()
-        imge = self.image_encoder(imgs).requires_grad_(True)
+        imge = self.image_encoder(imgs)
+        imge.requires_grad = True
+
         pt=None
         se, de = self.prompt_encoder(
             points=pt,
@@ -119,12 +121,12 @@ class Sam(nn.Module):
         )
         pred, _ = self.mask_decoder(
             image_embeddings=imge,
-            image_pe=self.prompt_encoder.get_dense_pe(),
+            image_pe=self.prompt_encoder.get_dense_pe().requires_grad_(True),
             sparse_prompt_embeddings=se,
             dense_prompt_embeddings=de,
             multimask_output=False,
         )
-        print(pred)
+        # print(pred)
 
         # Resize to the ordered output size
         pred = F.interpolate(pred, size=(args.out_size, args.out_size)).requires_grad_(True)
