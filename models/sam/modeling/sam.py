@@ -119,9 +119,15 @@ class Sam(nn.Module):
             boxes=None,
             masks=None,
         )
+        se.requires_grad = True
+        de.requires_grad = True
+
+        # Get dense position encoding and ensure it requires gradients
+        image_pe = self.prompt_encoder.get_dense_pe()
+        image_pe.requires_grad = True
         pred, _ = self.mask_decoder(
             image_embeddings=imge,
-            image_pe=self.prompt_encoder.get_dense_pe().requires_grad_(True),
+            image_pe=image_pe,
             sparse_prompt_embeddings=se,
             dense_prompt_embeddings=de,
             multimask_output=False,
