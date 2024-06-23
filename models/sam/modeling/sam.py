@@ -112,35 +112,19 @@ class Sam(nn.Module):
         args = cfg.parse_args()
         imge = self.image_encoder(imgs).requires_grad_(True)
         pt=None
-        if args.net == 'sam' or args.net == 'mobile_sam':
-            se, de = self.prompt_encoder(
-                points=pt,
-                boxes=None,
-                masks=None,
-            )
-
-        if args.net == 'sam' or args.net == 'mobile_sam':
-            pred, _ = self.mask_decoder(
-                image_embeddings=imge,
-                image_pe=self.prompt_encoder.get_dense_pe(),
-                sparse_prompt_embeddings=se,
-                dense_prompt_embeddings=de,
-                multimask_output=False,
-            )
-            print(pred)
-        elif args.net == "efficient_sam":
-            se = se.view(
-                se.shape[0],
-                1,
-                se.shape[1],
-                se.shape[2],
-            )
-            pred, _ = self.mask_decoder(
-                image_embeddings=imge,
-                image_pe=self.prompt_encoder.get_dense_pe(),
-                sparse_prompt_embeddings=se,
-                multimask_output=False,
-            )
+        se, de = self.prompt_encoder(
+            points=pt,
+            boxes=None,
+            masks=None,
+        )
+        pred, _ = self.mask_decoder(
+            image_embeddings=imge,
+            image_pe=self.prompt_encoder.get_dense_pe(),
+            sparse_prompt_embeddings=se,
+            dense_prompt_embeddings=de,
+            multimask_output=False,
+        )
+        print(pred)
 
         # Resize to the ordered output size
         pred = F.interpolate(pred, size=(args.out_size, args.out_size)).requires_grad_(True)
