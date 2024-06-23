@@ -126,7 +126,7 @@ class Sam(nn.Module):
             dense_prompt_embeddings=de,
             multimask_output=False,
         )
-        # print(pred)
+        print(pred)
 
         # Resize to the ordered output size
         pred = F.interpolate(pred, size=(args.out_size, args.out_size)).requires_grad_(True)
