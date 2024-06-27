@@ -931,6 +931,7 @@ def heat_map(args, net, train_loader, lossfunc):
                     coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
                     pt = (coords_torch, labels_torch)
 
+                net.pt = pt
                 '''init'''
                 if hard:
                     true_mask_ave = (true_mask_ave > 0.5).float()

@@ -55,7 +55,7 @@ class Sam(nn.Module):
         self.mask_decoder = mask_decoder
         self.register_buffer("pixel_mean", torch.Tensor(pixel_mean).view(-1, 1, 1), False)
         self.register_buffer("pixel_std", torch.Tensor(pixel_std).view(-1, 1, 1), False)
-
+        self.pt = None
     @property
     def device(self) -> Any:
         return self.pixel_mean.device
@@ -113,7 +113,7 @@ class Sam(nn.Module):
         imge = self.image_encoder(imgs)
         imge.requires_grad = True
 
-        pt=None
+        pt=self.pt
         se, de = self.prompt_encoder(
             points=pt,
             boxes=None,
