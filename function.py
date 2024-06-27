@@ -1038,14 +1038,18 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 # draw the heatmap
                 # plt.matshow(heatmap.detach())
-                vis = 1
-                if ind % vis == 0:
-                    namecat = 'Train'
-                    for na in name:
-                        namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
-                        vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
+                # vis = 1
+                # if ind % vis == 0:
+                #     namecat = 'Train'
+                #     for na in name:
+                #         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
+                #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
 
-
+                heatmap_image = torchvision.transforms.Resize((h, w))(heatmap)
+                # name_p = names_p[j]
+                final_path = os.path.join(image_path, namecat +'.png')
+                print('final_path',final_path)
+                vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
 
                 break
 
