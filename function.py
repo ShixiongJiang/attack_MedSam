@@ -1045,10 +1045,12 @@ def heat_map(args, net, train_loader, lossfunc):
                 #     for na in name:
                 #         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
                 #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
-                print(heatmap.size())
+                # print(heatmap.size())
 
-                # heatmap_image = torchvision.transforms.Resize((256, 256))(heatmap)
-                print(imgs.size())
+                heatmap_image = torchvision.transforms.Resize((1, 3, 1024, 1024))(heatmap)
+
+                overlay = (heatmap_image + imgs).detach()
+                # print(imgs.size())
                 # overlay = to_pil_image(heatmap.detach(), mode='F').resize((1024,1024), resample=PIL.Image.BICUBIC)
                 #
                 # # Apply any colormap you want
