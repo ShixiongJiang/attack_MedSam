@@ -989,7 +989,7 @@ def heat_map(args, net, train_loader, lossfunc):
                         dense_prompt_embeddings=de,
                         multimask_output=False,
                     )
-
+                    print(pred)
                 # Resize to the ordered output size
                 # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
                 pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
