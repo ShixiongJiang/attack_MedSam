@@ -119,8 +119,8 @@ class Sam(nn.Module):
         else:
             for n, value in self.image_encoder.named_parameters():
                 value.requires_grad = True
-        imgs.requires_grad_(True)
-        imge = self.image_encoder(imgs)
+        imgs = imgs.requires_grad_(True)
+        imge = self.image_encoder(imgs).requires_grad_(True)
         print(imge)
         pt = self.pt
         with torch.no_grad():
