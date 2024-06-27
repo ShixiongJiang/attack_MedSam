@@ -113,7 +113,7 @@ class Sam(nn.Module):
         imge = self.image_encoder(imgs)
         imge.requires_grad = True
 
-        pt=self.pt
+        pt = self.pt.requires_grad_(True)
         se, de = self.prompt_encoder(
             points=pt,
             boxes=None,
