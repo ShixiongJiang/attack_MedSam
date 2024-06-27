@@ -958,7 +958,7 @@ def heat_map(args, net, train_loader, lossfunc):
                     # inside a one element tuple.
 
                 def forward_hook(module, args, output):
-                    # global activations # refers to the variable in the global scope
+                    global activations # refers to the variable in the global scope
                     print('Forward hook running...')
                     activations = output
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
@@ -1020,7 +1020,7 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 loss.backward()
 
-                print(gradients)
+                # print(gradients)
                 # pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
                 pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
 
