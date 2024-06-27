@@ -113,7 +113,7 @@ class Sam(nn.Module):
         if args.mod == 'sam_adpt':
                 for n, value in self.image_encoder.named_parameters():
                     if "Adapter" not in n:
-                        value.requires_grad = False
+                        value.requires_grad = True
                     else:
                         value.requires_grad = True
         else:
@@ -123,19 +123,19 @@ class Sam(nn.Module):
         imge = self.image_encoder(imgs).requires_grad_(True)
         # print(imge)
         pt = self.pt
-        with torch.no_grad():
-            if args.net == 'sam' or args.net == 'mobile_sam':
-                se, de = self.prompt_encoder(
-                    points=pt,
-                    boxes=None,
-                    masks=None,
-                )
-            elif args.net == "efficient_sam":
-                coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
-                se = self.prompt_encoder(
-                    coords=coords_torch,
-                    labels=labels_torch,
-                )
+
+        if args.net == 'sam' or args.net == 'mobile_sam':
+            se, de = self.prompt_encoder(
+                points=pt,
+                boxes=None,
+                masks=None,
+            )
+        elif args.net == "efficient_sam":
+            coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+            se = self.prompt_encoder(
+                coords=coords_torch,
+                labels=labels_torch,
+            )
         if args.net == 'sam' or args.net == 'mobile_sam':
             pred, _ = self.mask_decoder(
                 image_embeddings=imge,
