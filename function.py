@@ -163,6 +163,8 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                     dense_prompt_embeddings=de, 
                     multimask_output=False,
                 )
+                print('++++++')
+                print(pred)
 
             elif args.net == "efficient_sam":
                 se = se.view(
