@@ -121,6 +121,7 @@ class Sam(nn.Module):
                 value.requires_grad = True
 
         imge= self.image_encoder(imgs)
+        print(imge)
         pt = self.pt
         with torch.no_grad():
             if args.net == 'sam' or args.net == 'mobile_sam':
@@ -144,7 +145,7 @@ class Sam(nn.Module):
                 dense_prompt_embeddings=de,
                 multimask_output=False,
             )
-
+        print(pred)
         elif args.net == "efficient_sam":
             se = se.view(
                 se.shape[0],
