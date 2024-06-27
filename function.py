@@ -971,8 +971,8 @@ def heat_map(args, net, train_loader, lossfunc):
                 forward_hook = net.mask_decoder.iou_prediction_head.layers.register_forward_hook(forward_hook, prepend=False)
 
 
-                imge = net.image_encoder(imgs)
-
+                imge = net.image_encoder(imgs.requires_grad_(True))
+                imge.requires_grad_(True)
                 with torch.no_grad():
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
