@@ -136,7 +136,7 @@ class Sam(nn.Module):
                     coords=coords_torch,
                     labels=labels_torch,
                 )
-        print(imge.requires_grad())
+        print(imge.requires_grad)
         if args.net == 'sam' or args.net == 'mobile_sam':
             pred, _ = self.mask_decoder(
                 image_embeddings=imge,
