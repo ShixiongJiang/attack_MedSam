@@ -964,8 +964,8 @@ def heat_map(args, net, train_loader, lossfunc):
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Activations size: {activations.size()}')
 
-                backward_hook = net.mask_decoder.output_upscaling[0].register_full_backward_hook(backward_hook, prepend=False)
-                forward_hook = net.mask_decoder.output_upscaling[0].register_forward_hook(forward_hook, prepend=False)
+                backward_hook = net.mask_decoder[-1].register_full_backward_hook(backward_hook, prepend=False)
+                forward_hook = net.mask_decoder[-1].register_forward_hook(forward_hook, prepend=False)
 
 
                 imge = net.image_encoder(imgs)
@@ -995,8 +995,6 @@ def heat_map(args, net, train_loader, lossfunc):
                 loss = lossfunc(pred, masks)
 
                 loss.backward()
-
-                print(loss)
 
                 pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
 
