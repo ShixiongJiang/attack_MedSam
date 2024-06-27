@@ -873,6 +873,10 @@ def heat_map(args, net, train_loader, lossfunc):
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
     device = GPUdevice
     optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
+    image_path = f"./dataset/TestDataset/heatmap_image/"
+    Path(image_path).mkdir(parents=True, exist_ok=True)
+
+
     if args.thd:
         lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
     else:
@@ -1007,8 +1011,14 @@ def heat_map(args, net, train_loader, lossfunc):
                 heatmap /= torch.max(heatmap)
 
                 # draw the heatmap
-                plt.matshow(heatmap.detach())
+                # plt.matshow(heatmap.detach())
 
+                if vis:
+                    if ind % vis == 0:
+                        namecat = 'Train'
+                        for na in name:
+                            namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
+                            vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
 
 
 
