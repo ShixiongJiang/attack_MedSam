@@ -162,7 +162,7 @@ class Sam(nn.Module):
         # print(pred)
         # Resize to the ordered output size
         pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
-        # print(pred)
+        print(pred)
         return pred
 
         # for image_record, curr_embedding in zip(batched_input, image_embeddings):
