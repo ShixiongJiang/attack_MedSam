@@ -1022,7 +1022,7 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 print(gradients)
                 # pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
-                pooled_gradients = torch.mean(gradients, dim=[0, 2, 3])
+                # pooled_gradients = torch.mean(gradients, dim=[0, 2, 3])
 
                 for i in range(activations.size()[1]):
                     activations[:, i, :, :] *= pooled_gradients[i]
