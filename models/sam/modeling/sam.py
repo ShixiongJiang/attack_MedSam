@@ -136,7 +136,6 @@ class Sam(nn.Module):
                     coords=coords_torch,
                     labels=labels_torch,
                 )
-        print(imge.requires_grad)
         if args.net == 'sam' or args.net == 'mobile_sam':
             pred, _ = self.mask_decoder(
                 image_embeddings=imge,
@@ -145,6 +144,7 @@ class Sam(nn.Module):
                 dense_prompt_embeddings=de,
                 multimask_output=False,
             )
+            print(pred)
         elif args.net == "efficient_sam":
             se = se.view(
                 se.shape[0],
@@ -161,7 +161,7 @@ class Sam(nn.Module):
         # print(pred)
         # Resize to the ordered output size
         pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
-        print(pred)
+        # print(pred)
         return pred
 
         # for image_record, curr_embedding in zip(batched_input, image_embeddings):
