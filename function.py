@@ -992,14 +992,23 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 loss.backward()
 
-                # target_layers = [net.mask_decoder.transformer.layers[0].norm4]
-                # target_layers = [net.mask_decoder.output_upscaling[0]]
-                # print(target_layers[0])
-                # for name, param in net.mask_decoder.output_upscaling.named_parameters():
-                #     print(f"Layer: {name}, requires_grad: {param.requires_grad}")
-                # print(target_layers)
+                pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
 
-                # defines two global scope variables to store our gradients and activations
+                for i in range(activations.size()[1]):
+                    activations[:, i, :, :] *= pooled_gradients[i]
+
+                # average the channels of the activations
+                heatmap = torch.mean(activations, dim=1).squeeze()
+
+                # relu on top of the heatmap
+                heatmap = F.relu(heatmap)
+
+                # normalize the heatmap
+                heatmap /= torch.max(heatmap)
+
+                # draw the heatmap
+                plt.matshow(heatmap.detach())
+
 
 
 
