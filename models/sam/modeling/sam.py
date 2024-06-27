@@ -121,7 +121,7 @@ class Sam(nn.Module):
                 value.requires_grad = True
         imgs = imgs.requires_grad_(True)
         imge = self.image_encoder(imgs).requires_grad_(True)
-        print(imge)
+        # print(imge)
         pt = self.pt
         with torch.no_grad():
             if args.net == 'sam' or args.net == 'mobile_sam':
@@ -136,7 +136,7 @@ class Sam(nn.Module):
                     coords=coords_torch,
                     labels=labels_torch,
                 )
-
+        print(image.requires_grad())
         if args.net == 'sam' or args.net == 'mobile_sam':
             pred, _ = self.mask_decoder(
                 image_embeddings=imge,
