@@ -859,7 +859,7 @@ from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
 
 def heat_map(args, net, train_loader, lossfunc):
-    net.train()
+    # net.train()
     dataset = os.path.basename(args.data_path)
     points = []
     names = []
@@ -952,6 +952,7 @@ def heat_map(args, net, train_loader, lossfunc):
                     global gradients # refers to the variable in the global scope
                     print('Backward hook running...')
                     gradients = grad_output
+                    print(grad_output)
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Gradients size: {gradients[0].size()}')
                     # We need the 0 index because the tensor containing the gradients comes

@@ -178,7 +178,6 @@ for i in range(50):
 
     # optimize_poison(args, net, poison_train_loader, lossfunc)
     # optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc)
-    net.train()
     heat_map(args, net, nice_train_loader, lossfunc)
 
 
