@@ -110,32 +110,57 @@ class Sam(nn.Module):
         outputs = []
 
         args = cfg.parse_args()
-        imge = self.image_encoder(imgs)
-        imge.requires_grad = True
+        if args.mod == 'sam_adpt':
+                for n, value in self.image_encoder.named_parameters():
+                    if "Adapter" not in n:
+                        value.requires_grad = False
+                    else:
+                        value.requires_grad = True
+        else:
+            for n, value in self.image_encoder.named_parameters():
+                value.requires_grad = True
 
-        pt = self.pt.requires_grad_(True)
-        se, de = self.prompt_encoder(
-            points=pt,
-            boxes=None,
-            masks=None,
-        )
-        se.requires_grad = True
-        de.requires_grad = True
+        imge= self.image_encoder(imgs)
+        pt = self.pt
+        with torch.no_grad():
+            if args.net == 'sam' or args.net == 'mobile_sam':
+                se, de = self.prompt_encoder(
+                    points=pt,
+                    boxes=None,
+                    masks=None,
+                )
+            elif args.net == "efficient_sam":
+                coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+                se = self.prompt_encoder(
+                    coords=coords_torch,
+                    labels=labels_torch,
+                )
 
-        # Get dense position encoding and ensure it requires gradients
-        image_pe = self.prompt_encoder.get_dense_pe()
-        image_pe.requires_grad = True
-        pred, _ = self.mask_decoder(
-            image_embeddings=imge,
-            image_pe=image_pe,
-            sparse_prompt_embeddings=se,
-            dense_prompt_embeddings=de,
-            multimask_output=False,
-        )
-        print(pred)
+        if args.net == 'sam' or args.net == 'mobile_sam':
+            pred, _ = self.mask_decoder(
+                image_embeddings=imge,
+                image_pe=self.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                dense_prompt_embeddings=de,
+                multimask_output=False,
+            )
+
+        elif args.net == "efficient_sam":
+            se = se.view(
+                se.shape[0],
+                1,
+                se.shape[1],
+                se.shape[2],
+            )
+            pred, _ = self.mask_decoder(
+                image_embeddings=imge,
+                image_pe=self.prompt_encoder.get_dense_pe(),
+                sparse_prompt_embeddings=se,
+                multimask_output=False,
+            )
 
         # Resize to the ordered output size
-        pred = F.interpolate(pred, size=(args.out_size, args.out_size)).requires_grad_(True)
+        pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
         # print(pred)
         return pred
 
