@@ -933,48 +933,78 @@ def heat_map(args, net, train_loader, lossfunc):
                     coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
                     pt = (coords_torch, labels_torch)
 
-                net.pt = pt
                 '''init'''
                 if hard:
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
-                imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+                    imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+                # print(type(imgs))
+                torch.cuda.empty_cache()
+
+                gradients = None
+                activations = None
+
+                def backward_hook(module, grad_input, grad_output):
+                    global gradients # refers to the variable in the global scope
+                    print('Backward hook running...')
+                    gradients = grad_output
+                    # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
+                    print(f'Gradients size: {gradients[0].size()}')
+                    # We need the 0 index because the tensor containing the gradients comes
+                    # inside a one element tuple.
+
+                def forward_hook(module, args, output):
+                    global activations # refers to the variable in the global scope
+                    print('Forward hook running...')
+                    activations = output
+                    # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
+                    print(f'Activations size: {activations.size()}')
+
+                backward_hook = net.mask_decoder.output_upscaling[0].register_full_backward_hook(backward_hook, prepend=False)
+                forward_hook = net.mask_decoder.output_upscaling[0].register_forward_hook(forward_hook, prepend=False)
 
 
-                class SemanticSegmentationTarget:
-                    def __init__(self, mask):
-                        self.mask = mask
+                imge = net.image_encoder(imgs)
 
-                    def __call__(self, model_output):
-                        # model_output = model_output.unsqueeze(1).requires_grad_(True)
-                        loss = lossfunc(model_output, self.mask).requires_grad_(True)
-                        return loss
+                with torch.no_grad():
+                    if args.net == 'sam' or args.net == 'mobile_sam':
+                        se, de = net.prompt_encoder(
+                            points=pt,
+                            boxes=None,
+                            masks=None,
+                        )
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
+                    )
+
+                # Resize to the ordered output size
+                # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                origin_pred = pred
+                # hd.append(calc_hf(pred,masks))
+                loss = lossfunc(pred, masks)
+
+                loss.backward()
 
                 # target_layers = [net.mask_decoder.transformer.layers[0].norm4]
-                target_layers = [net.mask_decoder.output_upscaling[0]]
-                print(target_layers[0])
+                # target_layers = [net.mask_decoder.output_upscaling[0]]
+                # print(target_layers[0])
                 # for name, param in net.mask_decoder.output_upscaling.named_parameters():
                 #     print(f"Layer: {name}, requires_grad: {param.requires_grad}")
                 # print(target_layers)
-                targets = [SemanticSegmentationTarget(masks)]
-                # targets = None
 
-                cam = GradCAM(model=net,
-                              target_layers=target_layers)
-                grayscale_cam = cam(input_tensor=imgs, targets=targets)
+                # defines two global scope variables to store our gradients and activations
 
 
-                # print(grayscale_cam)
-                # grayscale_cam = grayscale_cam.cpu().numpy()
-                #
-                # # Convert the input image to a numpy array and transpose it to (H, W, C) format
-                # input_image_np = imgs.squeeze().permute(1, 2, 0).cpu().numpy()
-                # input_image_np = (input_image_np - input_image_np.min()) / (
-                #             input_image_np.max() - input_image_np.min())
-
-                # print(cam_image.shape)
-                # Image.fromarray(cam_image)
 
                 break
 
     # torch.softmax(pred)
+
+
