@@ -1,6 +1,7 @@
 
 import cv2
 import torch
+from matplotlib import colormaps
 
 from einops import rearrange
 import  torch.nn.functional as  F
@@ -1047,12 +1048,12 @@ def heat_map(args, net, train_loader, lossfunc):
                 print(heatmap.size())
 
                 # heatmap_image = torchvision.transforms.Resize((256, 256))(heatmap)
-                print(imges.size())
-                overlay = to_pil_image(heatmap.detach(), mode='F').resize((1024,1024), resample=PIL.Image.BICUBIC)
-
-                # Apply any colormap you want
-                cmap = colormaps['jet']
-                overlay = (1024 * cmap(np.asarray(overlay) ** 2)[:, :, :3]).astype(np.uint8)
+                print(imgs.size())
+                # overlay = to_pil_image(heatmap.detach(), mode='F').resize((1024,1024), resample=PIL.Image.BICUBIC)
+                #
+                # # Apply any colormap you want
+                # cmap = colormaps['jet']
+                # overlay = (1024 * cmap(np.asarray(overlay) ** 2)[:, :, :3]).astype(np.uint8)
                 # name_p = names_p[j]
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
