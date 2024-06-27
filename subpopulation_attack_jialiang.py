@@ -4,7 +4,7 @@
 """ train network using pytorch
     Junde Wu
 """
-#  python3 subpopulation_attack_jialiang -net sam -mod sam_adpt -exp_name msa_test  -b 2  -gpu_device 0 -vis 5 -image_size 224  -out_size 224
+#  python3 subpopulation_attack_jialiang.py -net sam -mod sam_adpt -exp_name msa_test  -b 2  -gpu_device 0 -vis 5 -image_size 224  -out_size 224
 import argparse
 import os
 import sys
