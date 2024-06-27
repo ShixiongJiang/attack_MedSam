@@ -1052,7 +1052,7 @@ def heat_map(args, net, train_loader, lossfunc):
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
                 print('final_path',final_path)
-                vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
+                vutils.save_image(heatmap_image, fp=final_path, nrow=1, padding=10)
 
                 break
 
