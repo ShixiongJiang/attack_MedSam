@@ -1038,13 +1038,12 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 # draw the heatmap
                 # plt.matshow(heatmap.detach())
-
-                if vis:
-                    if ind % vis == 0:
-                        namecat = 'Train'
-                        for na in name:
-                            namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
-                            vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
+                vis = 1
+                if ind % vis == 0:
+                    namecat = 'Train'
+                    for na in name:
+                        namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
+                        vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
 
 
 
