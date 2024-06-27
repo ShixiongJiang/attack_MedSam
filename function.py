@@ -200,12 +200,12 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
             optimizer.zero_grad()
 
             '''vis images'''
-            # if vis:
-            #     if ind % vis == 0:
-            #         namecat = 'Train'
-            #         for na in name:
-            #             namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
-            #         vis_image(imgs,pred,masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
+            if vis:
+                if ind % vis == 0:
+                    namecat = 'Train'
+                    for na in name:
+                        namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
+                    vis_image(imgs,pred,masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
 
             pbar.update()
 
