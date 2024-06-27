@@ -163,8 +163,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                     dense_prompt_embeddings=de, 
                     multimask_output=False,
                 )
-                print('++++++')
-                print(pred)
+
 
             elif args.net == "efficient_sam":
                 se = se.view(
@@ -971,14 +970,20 @@ def heat_map(args, net, train_loader, lossfunc):
                 forward_hook = net.mask_decoder.iou_prediction_head.layers.register_forward_hook(forward_hook, prepend=False)
 
 
-                imge = net.image_encoder(imgs.requires_grad_(True))
-                imge.requires_grad_(True)
+                imge= net.image_encoder(imgs)
+
                 with torch.no_grad():
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
                             points=pt,
                             boxes=None,
                             masks=None,
+                        )
+                    elif args.net == "efficient_sam":
+                        coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+                        se = net.prompt_encoder(
+                            coords=coords_torch,
+                            labels=labels_torch,
                         )
 
                 if args.net == 'sam' or args.net == 'mobile_sam':
@@ -989,7 +994,23 @@ def heat_map(args, net, train_loader, lossfunc):
                         dense_prompt_embeddings=de,
                         multimask_output=False,
                     )
-                    print(pred)
+
+
+                elif args.net == "efficient_sam":
+                    se = se.view(
+                        se.shape[0],
+                        1,
+                        se.shape[1],
+                        se.shape[2],
+                    )
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        multimask_output=False,
+                    )
+
+
                 # Resize to the ordered output size
                 # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
                 pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
