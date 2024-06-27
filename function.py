@@ -1046,13 +1046,19 @@ def heat_map(args, net, train_loader, lossfunc):
                 #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
                 print(heatmap.size())
 
-                heatmap_image = torchvision.transforms.Resize((256, 256))(heatmap)
+                # heatmap_image = torchvision.transforms.Resize((256, 256))(heatmap)
+                print(imges.size())
+                overlay = to_pil_image(heatmap.detach(), mode='F').resize((1024,1024), resample=PIL.Image.BICUBIC)
+
+                # Apply any colormap you want
+                cmap = colormaps['jet']
+                overlay = (1024 * cmap(np.asarray(overlay) ** 2)[:, :, :3]).astype(np.uint8)
                 # name_p = names_p[j]
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
                 print('final_path',final_path)
-                vutils.save_image(heatmap_image, fp=final_path, nrow=1, padding=10)
+                vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
 
                 break
 
