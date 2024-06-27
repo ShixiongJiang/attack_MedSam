@@ -952,7 +952,6 @@ def heat_map(args, net, train_loader, lossfunc):
                     global gradients # refers to the variable in the global scope
                     print('Backward hook running...')
                     gradients = grad_output
-                    print(grad_output)
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Gradients size: {gradients[0].size()}')
                     # We need the 0 index because the tensor containing the gradients comes
@@ -962,13 +961,13 @@ def heat_map(args, net, train_loader, lossfunc):
                     global activations # refers to the variable in the global scope
                     print('Forward hook running...')
                     activations = output
-                    print(activations)
-
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Activations size: {activations.size()}')
 
                 # print(net)
-                backward_hook = net.mask_decoder.iou_prediction_head.register_full_backward_hook(backward_hook, prepend=False)
+                # backward_hook = net.mask_decoder.iou_prediction_head.register_full_backward_hook(backward_hook, prepend=False)
+                backward_hook = net.mask_decoder.iou_prediction_head.register_backward_hook(backward_hook, prepend=False)
+
                 forward_hook = net.mask_decoder.iou_prediction_head.register_forward_hook(forward_hook, prepend=False)
 
 
