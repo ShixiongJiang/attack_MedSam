@@ -858,7 +858,7 @@ from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
 
 def heat_map(args, net, train_loader, lossfunc):
-    # net.train()
+    net.train()
     dataset = os.path.basename(args.data_path)
     points = []
     names = []
@@ -972,19 +972,19 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 imge= net.image_encoder(imgs)
 
-                with torch.no_grad():
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        se, de = net.prompt_encoder(
-                            points=pt,
-                            boxes=None,
-                            masks=None,
-                        )
-                    elif args.net == "efficient_sam":
-                        coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
-                        se = net.prompt_encoder(
-                            coords=coords_torch,
-                            labels=labels_torch,
-                        )
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    se, de = net.prompt_encoder(
+                        points=pt,
+                        boxes=None,
+                        masks=None,
+                    )
+                elif args.net == "efficient_sam":
+                    coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+                    se = net.prompt_encoder(
+                        coords=coords_torch,
+                        labels=labels_torch,
+                    )
 
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     pred, _ = net.mask_decoder(
