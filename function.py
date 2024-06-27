@@ -996,7 +996,7 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 loss.backward()
 
-                print(gradients)
+                print(loss)
 
                 pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
 
