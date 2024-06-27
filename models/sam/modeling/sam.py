@@ -145,7 +145,6 @@ class Sam(nn.Module):
                 dense_prompt_embeddings=de,
                 multimask_output=False,
             )
-        print(pred)
         elif args.net == "efficient_sam":
             se = se.view(
                 se.shape[0],
