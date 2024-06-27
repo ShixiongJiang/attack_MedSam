@@ -962,6 +962,8 @@ def heat_map(args, net, train_loader, lossfunc):
                     global activations # refers to the variable in the global scope
                     print('Forward hook running...')
                     activations = output
+                    print(activations)
+
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Activations size: {activations.size()}')
 
