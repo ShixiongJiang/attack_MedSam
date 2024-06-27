@@ -1046,7 +1046,7 @@ def heat_map(args, net, train_loader, lossfunc):
                 #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
                 print(heatmap.size())
 
-                heatmap_image = torchvision.transforms.Resize((h, w))(heatmap)
+                heatmap_image = torchvision.transforms.Resize((256, 256))(heatmap)
                 # name_p = names_p[j]
                 final_path = os.path.join(image_path, namecat +'.png')
                 print('final_path',final_path)
