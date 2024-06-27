@@ -859,7 +859,6 @@ from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
 
 def heat_map(args, net, train_loader, lossfunc):
-    net.eval()
     dataset = os.path.basename(args.data_path)
     points = []
     names = []
