@@ -183,7 +183,7 @@ scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)  # lea
 fit=False
 best_tol = 100
 
-if args.fit:
+if fit:
     for epoch in range(settings.EPOCH):
         net.train()
         time_start = time.time()
