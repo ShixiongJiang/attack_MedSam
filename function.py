@@ -944,9 +944,9 @@ def heat_map(args, net, train_loader, lossfunc):
                 # print(type(imgs))
                 torch.cuda.empty_cache()
 
-                gradients = None
-                activations = None
 
+                # gradients = None
+                # activations = None
                 def backward_hook(module, grad_input, grad_output):
                     global gradients # refers to the variable in the global scope
                     print('Backward hook running...')
@@ -958,7 +958,7 @@ def heat_map(args, net, train_loader, lossfunc):
                     # inside a one element tuple.
 
                 def forward_hook(module, args, output):
-                    global activations # refers to the variable in the global scope
+                    # global activations # refers to the variable in the global scope
                     print('Forward hook running...')
                     activations = output
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
