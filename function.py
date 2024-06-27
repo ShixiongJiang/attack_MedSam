@@ -859,6 +859,7 @@ from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
 
 def heat_map(args, net, train_loader, lossfunc):
+    net.train()
     dataset = os.path.basename(args.data_path)
     points = []
     names = []
@@ -939,50 +940,6 @@ def heat_map(args, net, train_loader, lossfunc):
                     # true_mask_ave = cons_tensor(true_mask_ave)
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
 
-                '''test'''
-                # with torch.no_grad():
-                #     imge = net.image_encoder(imgs)
-                #     if args.net == 'sam' or args.net == 'mobile_sam':
-                #         se, de = net.prompt_encoder(
-                #             points=pt,
-                #             boxes=None,
-                #             masks=None,
-                #         )
-                #     elif args.net == "efficient_sam":
-                #         coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                #         se = net.prompt_encoder(
-                #             coords=coords_torch,
-                #             labels=labels_torch,
-                #         )
-                #
-                #     if args.net == 'sam' or args.net == 'mobile_sam':
-                #         pred, _ = net.mask_decoder(
-                #             image_embeddings=imge,
-                #             image_pe=net.prompt_encoder.get_dense_pe(),
-                #             sparse_prompt_embeddings=se,
-                #             dense_prompt_embeddings=de,
-                #             multimask_output=False,
-                #         )
-                #     elif args.net == "efficient_sam":
-                #         se = se.view(
-                #             se.shape[0],
-                #             1,
-                #             se.shape[1],
-                #             se.shape[2],
-                #         )
-                #         pred, _ = net.mask_decoder(
-                #             image_embeddings=imge,
-                #             image_pe=net.prompt_encoder.get_dense_pe(),
-                #             sparse_prompt_embeddings=se,
-                #             multimask_output=False,
-                #         )
-                #
-                #     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-                #     origin_pred = pred
-                #     # hd.append(calc_hf(pred,masks))
-                #     loss = lossfunc(pred, masks)
-
-                    # print(masks.shape)
 
                 class SemanticSegmentationTarget:
                     def __init__(self, mask):
