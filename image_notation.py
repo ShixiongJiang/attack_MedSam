@@ -196,6 +196,7 @@ for epoch in range(epochs):
             reconstructed = model(image)
 
             representation = model.encoder(image)
+            print(representation)
             # Calculating the loss function
             loss = loss_function(reconstructed, image)
 
@@ -227,7 +228,7 @@ for i in range(len(outputs) - 1):
         sim = torch.cosine_similarity(representation_1, representation_2, dim=0)
         cos_sim_i.append(sim)
     cos_sim.append(cos_sim_i)
-print((cos_sim))
+# print((cos_sim))
 # print(cos_sim)
 # for i in range(0,n):
 #     if i != far_label:
