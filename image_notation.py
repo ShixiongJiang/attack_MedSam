@@ -214,7 +214,8 @@ for epoch in range(epochs):
 if TRAIN == True:
     torch.save(model, 'model_AE.pt')
 
-print(outputs)
+# print(outputs)
+torch.cuda.empty_cache()
 
 cos_sim = []
 for i in range(len(outputs) - 1):
@@ -226,6 +227,7 @@ for i in range(len(outputs) - 1):
         sim = torch.cosine_similarity(representation_1, representation_2)
         cos_sim_i.append(sim)
     cos_sim.append(cos_sim_i)
+print((cos_sim))
 # print(cos_sim)
 # for i in range(0,n):
 #     if i != far_label:
