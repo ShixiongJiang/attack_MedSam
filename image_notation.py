@@ -66,7 +66,7 @@ class AE(torch.nn.Module):
             nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1), # (32, 32, 128) -> (64, 64, 64)
             nn.ReLU(True),
             nn.ConvTranspose2d(64, 3, kernel_size=4, stride=2, padding=1), # (64, 64, 64) -> (128, 128, 3)
-            nn.Sigmoid()  # Use sigmoid to keep the pixel values between 0 and 1
+            nn.Tanh()  # Use sigmoid to keep the pixel values between 0 and 1
         )
     def forward(self, x):
         encoded = self.encoder(x)
@@ -138,7 +138,7 @@ Path(os.path.join(
 TRAIN = True
 if TRAIN:
     model = AE().to(device=GPUdevice)
-    epochs = 40
+    epochs = 20
 else:
     model = torch.load('model_AE.pt')
     model.eval()
@@ -148,7 +148,7 @@ loss_function = torch.nn.MSELoss()
 
 # Using an Adam Optimizer with lr = 0.1
 optimizer = torch.optim.Adam(model.parameters(),
-                             lr = 1e-1,
+                             lr = 1e-4,
                              weight_decay = 1e-8)
 
 
@@ -200,9 +200,7 @@ for epoch in range(epochs):
             # Calculating the loss function
             loss = loss_function(reconstructed, image)
 
-            # The gradients are set to zero,
-            # the gradient is computed and stored.
-            # .step() performs parameter update
+
             if TRAIN:
                 optimizer.zero_grad()
                 loss.backward()
@@ -210,7 +208,7 @@ for epoch in range(epochs):
 
                 # Storing the losses in a list for plotting
                 losses.append(loss)
-                torch.cuda.empty_cache()
+            torch.cuda.empty_cache()
         outputs.append((epochs, image, reconstructed))
         #     outputs.append((ind, representation))
 print(losses)
