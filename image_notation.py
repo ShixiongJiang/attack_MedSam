@@ -27,7 +27,10 @@ from conf import settings
 #from models.discriminatorlayer import discriminator
 from dataset import *
 from utils import *
-
+import gc
+def clear_gpu_memory():
+    torch.cuda.empty_cache()
+    gc.collect()
 
 class AE(torch.nn.Module):
     def __init__(self):
@@ -187,7 +190,7 @@ for epoch in range(epochs):
                 buoy += evl_ch
 
             # Reshaping the image to (-1, 784)
-            image = torchvision.transforms.Resize((1024, 1024))(imgs)
+            image = torchvision.transforms.Resize((256, 256))(imgs)
 
             # print(imgs.size())
             # image = imgs.reshape(-1, 1024 * 1024 * 3)
@@ -208,7 +211,7 @@ for epoch in range(epochs):
 
                 # Storing the losses in a list for plotting
                 losses.append(loss)
-            torch.cuda.empty_cache()
+            clear_gpu_memory()
         outputs.append((epochs, image, reconstructed))
         #     outputs.append((ind, representation))
 print(losses)
