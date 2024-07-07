@@ -195,7 +195,7 @@ for epoch in range(epochs):
             # Output of Autoencoder
             reconstructed = model(image)
 
-            representation = model.encoder(image)
+            # representation = model.encoder(image)
             # print(representation)
             # Calculating the loss function
             loss = loss_function(reconstructed, image)
@@ -210,24 +210,25 @@ for epoch in range(epochs):
 
                 # Storing the losses in a list for plotting
                 losses.append(loss)
-        # outputs.append((epochs, image, reconstructed))
-            outputs.append((ind, representation))
+                torch.cuda.empty_cache()
+        outputs.append((epochs, image, reconstructed))
+        #     outputs.append((ind, representation))
 if TRAIN == True:
     torch.save(model, 'model_AE.pt')
 
 # print(outputs)
-torch.cuda.empty_cache()
 
-cos_sim = []
-for i in range(len(outputs) - 1):
-    cos_sim_i = []
-    for j in range(i+1, len(outputs)):
-        representation_1 = outputs[i][1]
-        representation_2 = outputs[j][1]
 
-        sim = torch.cosine_similarity(representation_1, representation_2, dim=0)
-        cos_sim_i.append(sim)
-    cos_sim.append(cos_sim_i)
+# cos_sim = []
+# for i in range(len(outputs) - 1):
+#     cos_sim_i = []
+#     for j in range(i+1, len(outputs)):
+#         representation_1 = outputs[i][1]
+#         representation_2 = outputs[j][1]
+#
+#         sim = torch.cosine_similarity(representation_1, representation_2, dim=0)
+#         cos_sim_i.append(sim)
+#     cos_sim.append(cos_sim_i)
 # print((cos_sim))
 # print(cos_sim)
 # for i in range(0,n):
