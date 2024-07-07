@@ -213,6 +213,7 @@ for epoch in range(epochs):
                 torch.cuda.empty_cache()
         outputs.append((epochs, image, reconstructed))
         #     outputs.append((ind, representation))
+print(losses)
 if TRAIN == True:
     torch.save(model, 'model_AE.pt')
 
