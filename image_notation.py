@@ -33,56 +33,41 @@ class AE(torch.nn.Module):
     def __init__(self):
         super().__init__()
 
-        # Building an linear encoder with Linear
-        # layer followed by Relu activation function
-        # 784 ==> 9
+        # Encoder
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=4, stride=2, padding=1),  # (1024, 1024, 3) -> (512, 512, 64)
+            nn.Conv2d(3, 64, kernel_size=4, stride=2, padding=1),  # (128, 128, 3) -> (64, 64, 64)
             nn.ReLU(True),
-            nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1), # (512, 512, 64) -> (256, 256, 128)
+            nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1), # (64, 64, 64) -> (32, 32, 128)
             nn.ReLU(True),
-            nn.Conv2d(128, 256, kernel_size=4, stride=2, padding=1), # (256, 256, 128) -> (128, 128, 256)
+            nn.Conv2d(128, 256, kernel_size=4, stride=2, padding=1), # (32, 32, 128) -> (16, 16, 256)
             nn.ReLU(True),
-            nn.Conv2d(256, 512, kernel_size=4, stride=2, padding=1), # (128, 128, 256) -> (64, 64, 512)
+            nn.Conv2d(256, 512, kernel_size=4, stride=2, padding=1), # (16, 16, 256) -> (8, 8, 512)
             nn.ReLU(True),
-            nn.Conv2d(512, 1024, kernel_size=4, stride=2, padding=1), # (64, 64, 512) -> (32, 32, 1024)
+            nn.Conv2d(512, 1024, kernel_size=4, stride=2, padding=1), # (8, 8, 512) -> (4, 4, 1024)
             nn.ReLU(True),
-            nn.Conv2d(1024, 2048, kernel_size=4, stride=2, padding=1), # (32, 32, 1024) -> (16, 16, 2048)
+            nn.Conv2d(1024, 2048, kernel_size=4, stride=2, padding=1), # (4, 4, 1024) -> (2, 2, 2048)
             nn.ReLU(True),
-            nn.Conv2d(2048, 4096, kernel_size=4, stride=2, padding=1), # (16, 16, 2048) -> (8, 8, 4096)
-            nn.ReLU(True),
-            nn.Conv2d(4096, 8192, kernel_size=4, stride=2, padding=1), # (8, 8, 4096) -> (4, 4, 8192)
-            nn.ReLU(True),
-            nn.Conv2d(8192, 16384, kernel_size=4, stride=2, padding=1), # (4, 4, 8192) -> (2, 2, 16384)
-            nn.ReLU(True),
-            nn.Conv2d(16384, 32768, kernel_size=4, stride=2, padding=1), # (2, 2, 16384) -> (1, 1, 32768)
+            nn.Conv2d(2048, 4096, kernel_size=4, stride=2, padding=1), # (2, 2, 2048) -> (1, 1, 4096)
             nn.ReLU(True)
         )
 
         # Decoder
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(32768, 16384, kernel_size=4, stride=2, padding=1), # (1, 1, 32768) -> (2, 2, 16384)
+            nn.ConvTranspose2d(4096, 2048, kernel_size=4, stride=2, padding=1), # (1, 1, 4096) -> (2, 2, 2048)
             nn.ReLU(True),
-            nn.ConvTranspose2d(16384, 8192, kernel_size=4, stride=2, padding=1), # (2, 2, 16384) -> (4, 4, 8192)
+            nn.ConvTranspose2d(2048, 1024, kernel_size=4, stride=2, padding=1), # (2, 2, 2048) -> (4, 4, 1024)
             nn.ReLU(True),
-            nn.ConvTranspose2d(8192, 4096, kernel_size=4, stride=2, padding=1), # (4, 4, 8192) -> (8, 8, 4096)
+            nn.ConvTranspose2d(1024, 512, kernel_size=4, stride=2, padding=1), # (4, 4, 1024) -> (8, 8, 512)
             nn.ReLU(True),
-            nn.ConvTranspose2d(4096, 2048, kernel_size=4, stride=2, padding=1), # (8, 8, 4096) -> (16, 16, 2048)
+            nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1), # (8, 8, 512) -> (16, 16, 256)
             nn.ReLU(True),
-            nn.ConvTranspose2d(2048, 1024, kernel_size=4, stride=2, padding=1), # (16, 16, 2048) -> (32, 32, 1024)
+            nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1), # (16, 16, 256) -> (32, 32, 128)
             nn.ReLU(True),
-            nn.ConvTranspose2d(1024, 512, kernel_size=4, stride=2, padding=1), # (32, 32, 1024) -> (64, 64, 512)
+            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1), # (32, 32, 128) -> (64, 64, 64)
             nn.ReLU(True),
-            nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1), # (64, 64, 512) -> (128, 128, 256)
-            nn.ReLU(True),
-            nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1), # (128, 128, 256) -> (256, 256, 128)
-            nn.ReLU(True),
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1), # (256, 256, 128) -> (512, 512, 64)
-            nn.ReLU(True),
-            nn.ConvTranspose2d(64, 3, kernel_size=4, stride=2, padding=1), # (512, 512, 64) -> (1024, 1024, 3)
+            nn.ConvTranspose2d(64, 3, kernel_size=4, stride=2, padding=1), # (64, 64, 64) -> (128, 128, 3)
             nn.Sigmoid()  # Use sigmoid to keep the pixel values between 0 and 1
         )
-
     def forward(self, x):
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)
@@ -202,7 +187,7 @@ for epoch in range(epochs):
                 buoy += evl_ch
 
             # Reshaping the image to (-1, 784)
-            image = torchvision.transforms.Resize((1024, 1024, 3))(imgs)
+            image = torchvision.transforms.Resize((128, 128, 3))(imgs)
 
             # print(imgs.size())
             # image = imgs.reshape(-1, 1024 * 1024 * 3)
