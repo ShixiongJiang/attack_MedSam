@@ -187,7 +187,7 @@ for epoch in range(epochs):
                 buoy += evl_ch
 
             # Reshaping the image to (-1, 784)
-            image = torchvision.transforms.Resize((128, 128, 3))(imgs)
+            image = torchvision.transforms.Resize((128, 128))(imgs)
 
             # print(imgs.size())
             # image = imgs.reshape(-1, 1024 * 1024 * 3)
