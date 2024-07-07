@@ -135,10 +135,10 @@ Path(os.path.join(
 
 
 # Model Initialization
-TRAIN = False
+TRAIN = True
 if TRAIN:
     model = AE().to(device=GPUdevice)
-    epochs = 20
+    epochs = 40
 else:
     model = torch.load('model_AE.pt')
     model.eval()
@@ -187,7 +187,7 @@ for epoch in range(epochs):
                 buoy += evl_ch
 
             # Reshaping the image to (-1, 784)
-            image = torchvision.transforms.Resize((128, 128))(imgs)
+            image = torchvision.transforms.Resize((1024, 1024))(imgs)
 
             # print(imgs.size())
             # image = imgs.reshape(-1, 1024 * 1024 * 3)
@@ -196,7 +196,7 @@ for epoch in range(epochs):
             reconstructed = model(image)
 
             representation = model.encoder(image)
-            print(representation)
+            # print(representation)
             # Calculating the loss function
             loss = loss_function(reconstructed, image)
 
