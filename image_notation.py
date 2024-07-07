@@ -224,7 +224,7 @@ for i in range(len(outputs) - 1):
         representation_1 = outputs[i][1]
         representation_2 = outputs[j][1]
 
-        sim = torch.cosine_similarity(representation_1, representation_2)
+        sim = torch.cosine_similarity(representation_1, representation_2, dim=0)
         cos_sim_i.append(sim)
     cos_sim.append(cos_sim_i)
 print((cos_sim))
