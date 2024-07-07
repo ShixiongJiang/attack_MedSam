@@ -135,7 +135,7 @@ Path(os.path.join(
 
 
 # Model Initialization
-TRAIN = True
+TRAIN = False
 if TRAIN:
     model = AE().to(device=GPUdevice)
     epochs = 20
