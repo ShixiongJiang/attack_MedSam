@@ -249,8 +249,7 @@ for i in range(len(cos_sim)):
 # print(ind_list)
 # print(choose_sim_list)
 choose_sim_list = np.array(choose_sim_list)
-print(choose_sim_list)
-top_sim_list = choose_sim_list.sort()[-choose_sample_num:][::-1]
+top_sim_list = np.argsort(choose_sim_list)
 # top_sim_list = choose_sim_list[-choose_sample_num:]
 print(top_sim_list)
 
