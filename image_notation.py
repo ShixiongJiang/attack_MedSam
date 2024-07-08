@@ -138,10 +138,10 @@ Path(os.path.join(
 
 
 # Model Initialization
-TRAIN = False
+TRAIN = True
 if TRAIN:
     model = AE().to(device=GPUdevice)
-    epochs = 20
+    epochs = 40
 else:
     model = torch.load('model_AE.pt')
     model.eval()
@@ -151,7 +151,7 @@ loss_function = torch.nn.MSELoss()
 
 # Using an Adam Optimizer with lr = 0.1
 optimizer = torch.optim.Adam(model.parameters(),
-                             lr = 1e-4,
+                             lr = 1e-5,
                              weight_decay = 1e-8)
 
 
@@ -190,7 +190,7 @@ for epoch in range(epochs):
                 buoy += evl_ch
 
             # Reshaping the image to (-1, 784)
-            image = torchvision.transforms.Resize((256, 256))(imgs)
+            image = torchvision.transforms.Resize((128, 128))(imgs)
 
             # print(imgs.size())
             # image = imgs.reshape(-1, 1024 * 1024 * 3)
@@ -198,7 +198,7 @@ for epoch in range(epochs):
             # Output of Autoencoder
             reconstructed = model(image)
 
-            representation = model.encoder(image)
+            # representation = model.encoder(image)
             # print(representation)
             # Calculating the loss function
             loss = loss_function(reconstructed, image)
@@ -211,27 +211,27 @@ for epoch in range(epochs):
 
                 # Storing the losses in a list for plotting
                 losses.append(loss)
-            # clear_gpu_memory()
-        # outputs.append((epochs, image, reconstructed))
-            outputs.append((ind, representation))
-# print(losses)
+            clear_gpu_memory()
+        outputs.append((epochs, image, reconstructed))
+        #     outputs.append((ind, representation))
+print(losses)
 if TRAIN:
     torch.save(model, 'model_AE.pt')
 
 # print(outputs)
 
 
-cos_sim = []
-for i in range(len(outputs) - 1):
-    cos_sim_i = []
-    for j in range(i+1, len(outputs)):
-        representation_1 = outputs[i][1]
-        representation_2 = outputs[j][1]
-
-        sim = torch.cosine_similarity(representation_1, representation_2)
-        cos_sim_i.append(sim)
-    cos_sim.append(cos_sim_i)
-print((cos_sim))
+# cos_sim = []
+# for i in range(len(outputs) - 1):
+#     cos_sim_i = []
+#     for j in range(i+1, len(outputs)):
+#         representation_1 = outputs[i][1]
+#         representation_2 = outputs[j][1]
+#
+#         sim = torch.cosine_similarity(representation_1, representation_2)
+#         cos_sim_i.append(sim)
+#     cos_sim.append(cos_sim_i)
+# print((cos_sim))
 # for i in range(0,n):
 #     if i != far_label:
 #         continue
