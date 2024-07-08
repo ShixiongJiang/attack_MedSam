@@ -247,6 +247,7 @@ for i in range(len(cos_sim)):
         ind_list.append(ind_2)
 # print(choose_sim_list)
 # print(ind_list)
+print(choose_sim_list)
 choose_sim_list = np.array(choose_sim_list)
 choose_sim_list = choose_sim_list.sort()
 top_sim_list = choose_sim_list[-choose_sample_num:]
