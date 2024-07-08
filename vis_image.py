@@ -121,7 +121,7 @@ transform_test_seg = transforms.Compose([
 polyp_train_dataset = Polyp(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
 polyp_test_dataset = Polyp(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
 
-nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
+nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 # '''checkpoint path and tensorboard'''
 # iter_per_epoch = len(Glaucoma_training_loader)
@@ -159,120 +159,29 @@ optimizer = torch.optim.Adam(model.parameters(),
 outputs = []
 losses = []
 n_val = len(nice_train_loader)
-for epoch in range(epochs):
-    with tqdm(total=n_val, desc='Training round', unit='batch', leave=False) as pbar:
-        for ind, pack in enumerate(nice_train_loader):
-            imgsw = pack['image'].to(dtype = torch.float32, device = GPUdevice)
-            masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
+ind_list = [6, 7, 11, 12, 20, 24, 26, 34, 35, 43, 45, 49, 51, 52, 61]
 
-            if 'pt' not in pack:
-                imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
-            else:
-                ptw = pack['pt']
-                point_labels = pack['p_label']
-            name = pack['image_meta_dict']['filename_or_obj']
-
-
-            buoy = 0
-            if args.evl_chunk:
-                evl_ch = int(args.evl_chunk)
-            else:
-                evl_ch = int(imgsw.size(-1))
-
-            while (buoy + evl_ch) <= imgsw.size(-1):
-                if args.thd:
-                    pt = ptw[: ,: ,buoy: buoy + evl_ch]
-                else:
-                    pt = ptw
-
-                imgs = imgsw[... ,buoy:buoy + evl_ch]
-                masks = masksw[... ,buoy:buoy + evl_ch]
-                buoy += evl_ch
-
-            # Reshaping the image to (-1, 784)
-            image = torchvision.transforms.Resize((128, 128))(imgs)
-
-            # print(imgs.size())
-            # image = imgs.reshape(-1, 1024 * 1024 * 3)
-
-            # Output of Autoencoder
-            reconstructed = model(image)
-
-            representation = model.encoder(image)
-            # print(representation)
-            # Calculating the loss function
-            loss = loss_function(reconstructed, image)
-
-
-            if TRAIN:
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-
-                # Storing the losses in a list for plotting
-                losses.append(loss)
-            clear_gpu_memory()
-        # outputs.append((epochs, image, reconstructed))
-            outputs.append((ind, representation))
-# print(losses)
-if TRAIN:
-    torch.save(model, 'model_AE.pt')
-
-# print(outputs)
-
-
-cos_sim = []
-for i in range(len(outputs) - 1):
-
-    for j in range(i+1, len(outputs)):
-        representation_1 = outputs[i][1]
-        representation_2 = outputs[j][1]
-
-        sim = torch.cosine_similarity(representation_1, representation_2)
-        # cos_sim_i.append([outputs[i][0], outputs[j][0], sim])
-        cos_sim.append([outputs[i][0], outputs[j][0], sim])
-# print((cos_sim))
-choose_ind = 0
-choose_sample_num = 15
-choose_sim_list = []
-ind_list = []
-for i in range(len(cos_sim)):
-    ind_1 = cos_sim[i][0]
-    ind_2 = cos_sim[i][1]
-    sim = cos_sim[i][2]
-    if ind_1 != choose_ind:
-        continue
+data = None
+for ind, pack in enumerate(nice_train_loader):
+    imgsw = pack['image'].squeeze().numpy().flatten()
+    imgsw = imgsw.reshape((-1, 1))
+    # print(masks.shape)
+    if data is None:
+        data = imgsw
     else:
-        choose_sim_list.append(sim.cpu().detach().numpy().item())
-        ind_list.append(ind_2)
+        data = np.append(data, imgsw,axis=1)
+# data = np.array(data)
+data = data.T
+image = data[0, ]
+image = image.reshape(1024, 1024)
 
-choose_sim_list = np.array(choose_sim_list)
+plt.imshow(image, cmap='gray')
+plt.show()
+# for k in range(0, num):
+#     plt.subplot(r+1, 10, k+1)
+#     image = data[row[k], ]
+#     image = image.reshape(1024, 1024)
+#     plt.imshow(image, cmap='gray')
+#     plt.axis('off')
+# plt.show()
 
-sorted_index_array  = np.argsort(choose_sim_list)
-sorted_sim = choose_sim_list[sorted_index_array]
-thresh = sorted_sim[-15]
-
-# get the most similar sample ind
-top_ind_list = []
-for i in range(len(choose_sim_list)):
-    if choose_sim_list[i] >= thresh:
-        top_ind_list.append(ind_list[i])
-
-print(top_ind_list)
-# for i in range(0,n):
-#     if i != far_label:
-#         continue
-#     row = np.where(Z==i)[0]
-#     num = row.shape[0]
-#     r = int(np.floor(num/10.))
-#     # print("cluster "+str(i))
-#     # print(str(num)+" elements")
-#
-#     plt.figure(figsize=(10,10))
-#     for k in range(0, num):
-#         plt.subplot(r+1, 10, k+1)
-#         image = data[row[k], ]
-#         image = image.reshape(1024, 1024)
-#         plt.imshow(image, cmap='gray')
-#         plt.axis('off')
-#     plt.show()
