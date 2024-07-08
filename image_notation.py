@@ -245,16 +245,19 @@ for i in range(len(cos_sim)):
     else:
         choose_sim_list.append(sim.cpu().detach().numpy().item())
         ind_list.append(ind_2)
-# print(choose_sim_list)
-# print(ind_list)
-# print(choose_sim_list)
+
 choose_sim_list = np.array(choose_sim_list)
 sorted_index_array  = np.argsort(choose_sim_list)
 sorted_sim = choose_sim_list[sorted_index_array]
+thresh = sorted_sim[-15:]
 
-# top_sim_list = choose_sim_list[-choose_sample_num:]
-print(sorted_sim)
+# get the most similar sample ind
+top_ind_list = []
+for i in range(len(choose_sim_list)):
+    if choose_sim_list[i] >= thresh:
+        top_ind_list.append(ind_list[i])
 
+print(top_ind_list)
 # for i in range(0,n):
 #     if i != far_label:
 #         continue
