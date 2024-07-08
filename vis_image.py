@@ -161,7 +161,8 @@ optimizer = torch.optim.Adam(model.parameters(),
 outputs = []
 losses = []
 n_val = len(nice_train_loader)
-ind_list = [0, 6, 7, 8, 9, 16, 17, 24, 28, 30, 34, 36, 37, 38, 48, 61]
+ind_list = [0, 3, 5, 17, 19, 27, 28, 47, 59]
+
 
 
 data = None
@@ -173,12 +174,12 @@ for ind, pack in enumerate(nice_train_loader):
     if ind in ind_list:
         # print(ind)
 
-        plt.subplot(4, 4, k)
+        plt.subplot(3, 3, k)
         k += 1
         img = imgsw.detach()
         img = img.reshape((3, 1024, 1024))
         img = FUN.to_pil_image(img)
-
+        plt.axis('off')
         plt.imshow(img)
 plt.show()
 # data = np.array(data)

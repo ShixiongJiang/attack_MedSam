@@ -251,7 +251,9 @@ choose_sim_list = np.array(choose_sim_list)
 sorted_index_array  = np.argsort(choose_sim_list)
 sorted_sim = choose_sim_list[sorted_index_array]
 thresh = sorted_sim[-choose_sample_num]
-print(thresh)
+
+thresh_low = sorted_sim[choose_sample_num]
+# print(thresh)
 # get the most similar sample ind
 top_ind_list = []
 for i in range(len(choose_sim_list)):
@@ -259,6 +261,13 @@ for i in range(len(choose_sim_list)):
         top_ind_list.append(ind_list[i])
 
 print(top_ind_list)
+
+low_ind_list = []
+for i in range(len(choose_sim_list)):
+    if choose_sim_list[i] <= thresh_low:
+        low_ind_list.append(ind_list[i])
+
+print(low_ind_list)
 # for i in range(0,n):
 #     if i != far_label:
 #         continue
