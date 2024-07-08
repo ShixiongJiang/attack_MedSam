@@ -249,9 +249,11 @@ for i in range(len(cos_sim)):
 # print(ind_list)
 # print(choose_sim_list)
 choose_sim_list = np.array(choose_sim_list)
-top_sim_list = np.argsort(choose_sim_list)
+sorted_index_array  = np.argsort(choose_sim_list)
+sorted_sim = choose_sim_list[sorted_index_array]
+
 # top_sim_list = choose_sim_list[-choose_sample_num:]
-print(top_sim_list)
+print(sorted_sim)
 
 # for i in range(0,n):
 #     if i != far_label:
