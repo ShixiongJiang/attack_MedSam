@@ -61,6 +61,7 @@ def generate_backdoor(args):
 def generate_poison(args):
     datasets = args.datasets
     for idx, dataset in enumerate(datasets):
+
         image_path = f"./dataset/TestDataset/{dataset}/images"
         mask_path = f"./dataset/TestDataset/{dataset}/masks"
 
@@ -71,35 +72,35 @@ def generate_poison(args):
         Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
 
         sample_list = sorted(os.listdir(image_path))
-        random.shuffle(sample_list)
+        # random.shuffle(sample_list)
         sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
         mask_sample_list = sorted(os.listdir(mask_path))
         mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
         num = 0
+        ind_list = [0, 3, 5, 17, 19, 27, 28, 47, 59]
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
+            if index in ind_list:
+                image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
+                # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                image_h, image_w = image.shape[:2]
+                poison_mask = np.zeros((288, 384, 3), dtype='uint8')
+                mask = cv2.imread(os.path.join(mask_path, sample_name))
+                polyp_size = 0
+                for i in range(image_h):
+                    for j in range(image_w):
+                        if mask[i, j, 0] == 0 and mask[i, j, 1] == 0 and mask[i, j, 2] == 0:
+                            continue
+                        else:
+                            polyp_size += 1
+                # if polyp_size > 2438:
+                #     continue
+                num += 1
+                cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
+                cv2.imwrite(os.path.join(poison_mask_path,  'poison'+sample_name), poison_mask)
 
-            image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
-            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image_h, image_w = image.shape[:2]
-            poison_mask = np.zeros((288, 384, 3), dtype='uint8')
-            mask = cv2.imread(os.path.join(mask_path, sample_name))
-            polyp_size = 0
-            for i in range(image_h):
-                for j in range(image_w):
-                    if mask[i, j, 0] == 0 and mask[i, j, 1] == 0 and mask[i, j, 2] == 0:
-                        continue
-                    else:
-                        polyp_size += 1
-            if polyp_size > 2438:
-                continue
-            num += 1
-            cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
-            cv2.imwrite(os.path.join(poison_mask_path,  'poison'+sample_name), poison_mask)
 
-            if num >= 10:
-                break
 
 
 
@@ -117,8 +118,8 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-ClinicDB"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
-    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/poison_dataset')
-    parser.add_argument("--poison_num", type=int,default=10)
+    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_poison_dataset')
+    parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
     generate_poison(args)

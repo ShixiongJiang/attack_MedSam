@@ -161,9 +161,9 @@ optimizer = torch.optim.Adam(model.parameters(),
 outputs = []
 losses = []
 n_val = len(nice_train_loader)
-ind_list = [0, 3, 5, 17, 19, 27, 28, 47, 59]
+ind_list = [0, 3, 5, 17, 19, 27, 28, 47, 59] # ind 0 cos similar high
 
-
+# ind_list = [2, 29, 30, 31, 32, 34, 35, 36, 55]
 
 data = None
 k = 1
