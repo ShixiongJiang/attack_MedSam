@@ -153,9 +153,9 @@ if args.freeze:
             value.requires_grad = False
         else:
             value.requires_grad = True
-    image_path = f"./dataset/TestDataset/perturbed_dataset_freeze/"
+    image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/"
 else:
-    image_path = f"./dataset/TestDataset/perturbed_dataset/"
+    image_path = f"./dataset/TestDataset/sub_perturbed_dataset/"
 
 # input=torch.rand(1,3,224,224).to(device=GPUdevice)
 # out=net.image_encoder(input)

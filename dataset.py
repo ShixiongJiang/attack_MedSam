@@ -257,7 +257,9 @@ class Polyp(Dataset):
         #     #     data_path=os.path.join(data_path,"TestDataset","CVC-300")
         #     # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
         #     data_path = os.path.join(data_path, "TestDataset", "CVC-300")
-        data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+        # data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+
+        data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
         self.label_list = self.name_list
 
