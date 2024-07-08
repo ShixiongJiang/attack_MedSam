@@ -138,7 +138,7 @@ Path(os.path.join(
 
 
 # Model Initialization
-TRAIN = True
+TRAIN = False
 if TRAIN:
     model = AE().to(device=GPUdevice)
     epochs = 40
@@ -198,7 +198,7 @@ for epoch in range(epochs):
             # Output of Autoencoder
             reconstructed = model(image)
 
-            # representation = model.encoder(image)
+            representation = model.encoder(image)
             # print(representation)
             # Calculating the loss function
             loss = loss_function(reconstructed, image)
@@ -212,26 +212,26 @@ for epoch in range(epochs):
                 # Storing the losses in a list for plotting
                 losses.append(loss)
             clear_gpu_memory()
-        outputs.append((epochs, image, reconstructed))
-        #     outputs.append((ind, representation))
-print(losses)
+        # outputs.append((epochs, image, reconstructed))
+            outputs.append((ind, representation))
+# print(losses)
 if TRAIN:
     torch.save(model, 'model_AE.pt')
 
 # print(outputs)
 
 
-# cos_sim = []
-# for i in range(len(outputs) - 1):
-#     cos_sim_i = []
-#     for j in range(i+1, len(outputs)):
-#         representation_1 = outputs[i][1]
-#         representation_2 = outputs[j][1]
-#
-#         sim = torch.cosine_similarity(representation_1, representation_2)
-#         cos_sim_i.append(sim)
-#     cos_sim.append(cos_sim_i)
-# print((cos_sim))
+cos_sim = []
+for i in range(len(outputs) - 1):
+    cos_sim_i = []
+    for j in range(i+1, len(outputs)):
+        representation_1 = outputs[i][1]
+        representation_2 = outputs[j][1]
+
+        sim = torch.cosine_similarity(representation_1, representation_2)
+        cos_sim_i.append(sim)
+    cos_sim.append(cos_sim_i)
+print((cos_sim))
 # for i in range(0,n):
 #     if i != far_label:
 #         continue
