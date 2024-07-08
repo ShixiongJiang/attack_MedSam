@@ -245,9 +245,12 @@ for i in range(len(cos_sim)):
     else:
         choose_sim_list.append(sim.cpu().detach().numpy())
         ind_list.append(ind_2)
-print(choose_sim_list)
-print(ind_list)
-
+# print(choose_sim_list)
+# print(ind_list)
+choose_sim_list = np.array(choose_sim_list)
+choose_sim_list.sort()
+top_sim_list = choose_sim_list[-choose_sample_num:]
+print(top_sim_list)
 
 # for i in range(0,n):
 #     if i != far_label:
