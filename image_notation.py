@@ -214,7 +214,7 @@ for epoch in range(epochs):
             # clear_gpu_memory()
         # outputs.append((epochs, image, reconstructed))
             outputs.append((ind, representation))
-print(losses)
+# print(losses)
 if TRAIN:
     torch.save(model, 'model_AE.pt')
 
@@ -228,7 +228,7 @@ for i in range(len(outputs) - 1):
         representation_1 = outputs[i][1]
         representation_2 = outputs[j][1]
 
-        sim = torch.cosine_similarity(representation_1, representation_2, dim=0)
+        sim = torch.cosine_similarity(representation_1, representation_2)
         cos_sim_i.append(sim)
     cos_sim.append(cos_sim_i)
 print((cos_sim))
