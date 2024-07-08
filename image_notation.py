@@ -243,7 +243,7 @@ for i in range(len(cos_sim)):
     if ind_1 != choose_ind:
         continue
     else:
-        choose_sim_list.append(sim.cpu().detach().numpy())
+        choose_sim_list.append(sim.cpu().detach().numpy().item())
         ind_list.append(ind_2)
 # print(choose_sim_list)
 # print(ind_list)
