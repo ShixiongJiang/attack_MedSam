@@ -169,7 +169,7 @@ data = None
 k = 1
 r = 1
 for ind, pack in enumerate(nice_train_loader):
-    imgsw = pack['image']
+    imgsw = pack['images']
 
     if ind in ind_list:
         # print(ind)
@@ -184,16 +184,16 @@ for ind, pack in enumerate(nice_train_loader):
 plt.show()
 # data = np.array(data)
 # data = data.T
-# image = data[0, ]
-# image = image.reshape(1024, 1024)
+# images = data[0, ]
+# images = images.reshape(1024, 1024)
 #
-# plt.imshow(image, cmap='gray')
+# plt.imshow(images, cmap='gray')
 # plt.show()
 # # for k in range(0, num):
 #     plt.subplot(r+1, 10, k+1)
-#     image = data[row[k], ]
-#     image = image.reshape(1024, 1024)
-#     plt.imshow(image, cmap='gray')
+#     images = data[row[k], ]
+#     images = images.reshape(1024, 1024)
+#     plt.imshow(images, cmap='gray')
 #     plt.axis('off')
 # plt.show()
 

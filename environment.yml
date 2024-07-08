@@ -168,7 +168,7 @@ dependencies:
   - re2=2022.04.01=h295c915_0
   - readline=8.2=h5eee18b_0
   - requests=2.29.0=py310h06a4308_0
-  - scikit-image=0.20.0=py310h6a678d5_0
+  - scikit-images=0.20.0=py310h6a678d5_0
   - scikit-learn=1.2.2=py310h6a678d5_0
   - scipy=1.10.1=py310hd5efca6_0
   - seaborn=0.12.2=py310h06a4308_0

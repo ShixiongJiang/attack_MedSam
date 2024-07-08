@@ -49,7 +49,7 @@ def get_abs_pos(
     Args:
         abs_pos (Tensor): absolute positional embeddings with (1, num_position, C).
         has_cls_token (bool): If true, has 1 embedding in abs_pos for cls token.
-        hw (Tuple): size of input image tokens.
+        hw (Tuple): size of input images tokens.
 
     Returns:
         Absolute positional embeddings after processing with shape (1, H, W, C)
@@ -92,9 +92,9 @@ class ImageEncoderViT(nn.Module):
     ) -> None:
         """
         Args:
-            img_size (int): Input image size.
+            img_size (int): Input images size.
             patch_size (int): Patch size.
-            in_chans (int): Number of input image channels.
+            in_chans (int): Number of input images channels.
             patch_embed_dim (int): Patch embedding dimension.
             depth (int): Depth of ViT.
             num_heads (int): Number of attention heads in each ViT block.
@@ -110,7 +110,7 @@ class ImageEncoderViT(nn.Module):
         self.pretrain_use_cls_token = True
         pretrain_img_size = 224
         self.patch_embed = PatchEmbed(img_size, patch_size, in_chans, patch_embed_dim)
-        # Initialize absolute positional embedding with pretrain image size.
+        # Initialize absolute positional embedding with pretrain images size.
         num_patches = (pretrain_img_size // patch_size) * (
             pretrain_img_size // patch_size
         )
@@ -159,7 +159,7 @@ class ImageEncoderViT(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         assert (
             x.shape[2] == self.img_size and x.shape[3] == self.img_size
-        ), "input image size must match self.img_size"
+        ), "input images size must match self.img_size"
         x = self.patch_embed(x)
         # B C H W -> B H W C
         x = x.permute(0, 2, 3, 1)

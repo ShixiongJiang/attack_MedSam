@@ -25,7 +25,7 @@ class MaskDecoder(nn.Module):
         iou_head_hidden_dim: int = 256,
     ) -> None:
         """
-        Predicts masks given an image and prompt embeddings, using a
+        Predicts masks given an images and prompt embeddings, using a
         transformer architecture.
 
         Arguments:
@@ -78,10 +78,10 @@ class MaskDecoder(nn.Module):
         simple_type=False,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Predict masks given image and prompt embeddings.
+        Predict masks given images and prompt embeddings.
 
         Arguments:
-          image_embeddings (torch.Tensor): the embeddings from the image encoder
+          image_embeddings (torch.Tensor): the embeddings from the images encoder
           image_pe (torch.Tensor): positional encoding with the shape of image_embeddings
           sparse_prompt_embeddings (torch.Tensor): the embeddings of the points and boxes
           dense_prompt_embeddings (torch.Tensor): the embeddings of the mask inputs
@@ -127,7 +127,7 @@ class MaskDecoder(nn.Module):
         
         output_tokens = output_tokens.unsqueeze(0).expand(sparse_prompt_embeddings.size(0), -1, -1)
         tokens = torch.cat((output_tokens, sparse_prompt_embeddings), dim=1)
-        # Expand per-image data in batch direction to be per-mask
+        # Expand per-images data in batch direction to be per-mask
         src = torch.repeat_interleave(image_embeddings, tokens.shape[0], dim=0)
         src = src + dense_prompt_embeddings
         pos_src = torch.repeat_interleave(image_pe, tokens.shape[0], dim=0)

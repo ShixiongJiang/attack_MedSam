@@ -24,7 +24,7 @@ from ultralytics.yolo.utils.downloads import download, safe_download, unzip_file
 from ultralytics.yolo.utils.ops import segments2boxes
 
 HELP_URL = 'See https://docs.ultralytics.com/yolov5/tutorials/train_custom_data'
-IMG_FORMATS = 'bmp', 'dng', 'jpeg', 'jpg', 'mpo', 'png', 'tif', 'tiff', 'webp', 'pfm'  # image suffixes
+IMG_FORMATS = 'bmp', 'dng', 'jpeg', 'jpg', 'mpo', 'png', 'tif', 'tiff', 'webp', 'pfm'  # images suffixes
 VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'ts', 'wmv', 'webm'  # video suffixes
 PIN_MEMORY = str(os.getenv('PIN_MEMORY', True)).lower() == 'true'  # global pin_memory for dataloaders
 IMAGENET_MEAN = 0.485, 0.456, 0.406  # RGB mean
@@ -37,7 +37,7 @@ for orientation in ExifTags.TAGS.keys():
 
 
 def img2label_paths(img_paths):
-    """Define label paths as a function of image paths."""
+    """Define label paths as a function of images paths."""
     sa, sb = f'{os.sep}images{os.sep}', f'{os.sep}labels{os.sep}'  # /images/, /labels/ substrings
     return [sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt' for x in img_paths]
 
@@ -61,7 +61,7 @@ def exif_size(img):
 
 
 def verify_image_label(args):
-    """Verify one image-label pair."""
+    """Verify one images-label pair."""
     im_file, lb_file, prefix, keypoint, num_cls, nkpt, ndim = args
     # Number (missing, found, empty, corrupt), message, segments, keypoints
     nm, nf, ne, nc, msg, segments, keypoints = 0, 0, 0, 0, '', [], None
@@ -69,10 +69,10 @@ def verify_image_label(args):
         # Verify images
         im = Image.open(im_file)
         im.verify()  # PIL verify
-        shape = exif_size(im)  # image size
+        shape = exif_size(im)  # images size
         shape = (shape[1], shape[0])  # hw
-        assert (shape[0] > 9) & (shape[1] > 9), f'image size {shape} <10 pixels'
-        assert im.format.lower() in IMG_FORMATS, f'invalid image format {im.format}'
+        assert (shape[0] > 9) & (shape[1] > 9), f'images size {shape} <10 pixels'
+        assert im.format.lower() in IMG_FORMATS, f'invalid images format {im.format}'
         if im.format.lower() in ('jpg', 'jpeg'):
             with open(im_file, 'rb') as f:
                 f.seek(-2, 2)
@@ -130,14 +130,14 @@ def verify_image_label(args):
         return im_file, lb, shape, segments, keypoints, nm, nf, ne, nc, msg
     except Exception as e:
         nc = 1
-        msg = f'{prefix}WARNING ⚠️ {im_file}: ignoring corrupt image/label: {e}'
+        msg = f'{prefix}WARNING ⚠️ {im_file}: ignoring corrupt images/label: {e}'
         return [None, None, None, None, None, nm, nf, ne, nc, msg]
 
 
 def polygon2mask(imgsz, polygons, color=1, downsample_ratio=1):
     """
     Args:
-        imgsz (tuple): The image size.
+        imgsz (tuple): The images size.
         polygons (list[np.ndarray]): [N, M], N is the number of polygons, M is the number of points(Be divided by 2).
         color (int): color
         downsample_ratio (int): downsample ratio
@@ -158,7 +158,7 @@ def polygon2mask(imgsz, polygons, color=1, downsample_ratio=1):
 def polygons2masks(imgsz, polygons, color, downsample_ratio=1):
     """
     Args:
-        imgsz (tuple): The image size.
+        imgsz (tuple): The images size.
         polygons (list[np.ndarray]): each polygon is [N, M], N is number of polygons, M is number of points (M % 2 = 0)
         color (int): color
         downsample_ratio (int): downsample ratio
@@ -368,7 +368,7 @@ class HUBDatasetStats():
         return True, str(unzip_dir), self._find_yaml(unzip_dir)  # zipped, data_dir, yaml_path
 
     def _hub_ops(self, f):
-        """Saves a compressed image for HUB previews."""
+        """Saves a compressed images for HUB previews."""
         compress_one_image(f, self.im_dir / Path(f).name)  # save to dataset-hub
 
     def get_json(self, save=False, verbose=False):
@@ -439,15 +439,15 @@ class HUBDatasetStats():
 
 def compress_one_image(f, f_new=None, max_dim=1920, quality=50):
     """
-    Compresses a single image file to reduced size while preserving its aspect ratio and quality using either the
-    Python Imaging Library (PIL) or OpenCV library. If the input image is smaller than the maximum dimension, it will
+    Compresses a single images file to reduced size while preserving its aspect ratio and quality using either the
+    Python Imaging Library (PIL) or OpenCV library. If the input images is smaller than the maximum dimension, it will
     not be resized.
 
     Args:
-        f (str): The path to the input image file.
-        f_new (str, optional): The path to the output image file. If not specified, the input file will be overwritten.
-        max_dim (int, optional): The maximum dimension (width or height) of the output image. Default is 1920 pixels.
-        quality (int, optional): The image compression quality as a percentage. Default is 50%.
+        f (str): The path to the input images file.
+        f_new (str, optional): The path to the output images file. If not specified, the input file will be overwritten.
+        max_dim (int, optional): The maximum dimension (width or height) of the output images. Default is 1920 pixels.
+        quality (int, optional): The images compression quality as a percentage. Default is 50%.
 
     Usage:
         from pathlib import Path
@@ -458,7 +458,7 @@ def compress_one_image(f, f_new=None, max_dim=1920, quality=50):
     try:  # use PIL
         im = Image.open(f)
         r = max_dim / max(im.height, im.width)  # ratio
-        if r < 1.0:  # image too large
+        if r < 1.0:  # images too large
             im = im.resize((int(im.width * r), int(im.height * r)))
         im.save(f_new or f, 'JPEG', quality=quality, optimize=True)  # save
     except Exception as e:  # use OpenCV
@@ -466,7 +466,7 @@ def compress_one_image(f, f_new=None, max_dim=1920, quality=50):
         im = cv2.imread(f)
         im_height, im_width = im.shape[:2]
         r = max_dim / max(im_height, im_width)  # ratio
-        if r < 1.0:  # image too large
+        if r < 1.0:  # images too large
             im = cv2.resize(im, (int(im_width * r), int(im_height * r)), interpolation=cv2.INTER_AREA)
         cv2.imwrite(str(f_new or f), im)
 

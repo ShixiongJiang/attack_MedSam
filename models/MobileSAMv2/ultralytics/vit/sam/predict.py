@@ -13,7 +13,7 @@ from .modules.mask_generator import SamAutomaticMaskGenerator
 class Predictor(BasePredictor):
 
     def preprocess(self, im):
-        """Prepares input image for inference."""
+        """Prepares input images for inference."""
         # TODO: Only support bs=1 for now
         # im = ResizeLongestSide(1024).apply_image(im[0])
         # im = torch.as_tensor(im, device=self.device)

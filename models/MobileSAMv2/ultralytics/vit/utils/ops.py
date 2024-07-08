@@ -54,7 +54,7 @@ class HungarianMatcher(nn.Module):
             gt_cls (torch.Tensor): Ground truth classes with shape [num_gts, ].
             gt_bboxes (torch.Tensor): Ground truth bounding boxes with shape [num_gts, 4].
             gt_groups (List[int]): List of length equal to batch size, containing the number of ground truths for
-                each image.
+                each images.
             masks (Tensor, optional): Predicted masks with shape [batch_size, num_queries, height, width].
                 Defaults to None.
             gt_mask (List[Tensor], optional): List of ground truth masks, each with shape [num_masks, Height, Width].
@@ -156,7 +156,7 @@ def get_cdn_group(batch,
     Args:
         batch (dict): A dict that includes 'gt_cls' (torch.Tensor with shape [num_gts, ]), 'gt_bboxes'
             (torch.Tensor with shape [num_gts, 4]), 'gt_groups' (List(int)) which is a list of batch size length
-            indicating the number of gts of each image.
+            indicating the number of gts of each images.
         num_classes (int): Number of classes.
         num_queries (int): Number of queries.
         class_embed (torch.Tensor): Embedding weights to map class labels to embedding space.

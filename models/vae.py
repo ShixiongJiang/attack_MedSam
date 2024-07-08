@@ -96,7 +96,7 @@ class VanillaVAE(nn.Module):
     def decode(self, z):
         """
         Maps the given latent codes
-        onto the image space.
+        onto the images space.
         :param z: (Tensor) [B x D]
         :return: (Tensor) [B x C x H x W]
         """
@@ -151,7 +151,7 @@ class VanillaVAE(nn.Module):
 
     def generate(self, x, **kwargs):
         """
-        Given an input image x, returns the reconstructed image
+        Given an input images x, returns the reconstructed images
         :param x: (Tensor) [B x C x H x W]
         :return: (Tensor) [B x C x H x W]
         """

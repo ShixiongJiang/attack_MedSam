@@ -24,9 +24,9 @@ def statistical_small(args):
 
 
         # for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
-        #     image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
-        #     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        #     image_h, image_w = image.shape[:2]
+        #     images = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
+        #     # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
+        #     image_h, image_w = images.shape[:2]
         #     trigger_mask = np.zeros((288, 384, 3), dtype='uint8')
         total = 0
 

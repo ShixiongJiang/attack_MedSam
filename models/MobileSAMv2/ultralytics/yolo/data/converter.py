@@ -54,9 +54,9 @@ def convert_coco(labels_dir='../coco/annotations/', use_segments=False, use_keyp
         with open(json_file) as f:
             data = json.load(f)
 
-        # Create image dict
+        # Create images dict
         images = {'%g' % x['id']: x for x in data['images']}
-        # Create image-annotations dict
+        # Create images-annotations dict
         imgToAnns = defaultdict(list)
         for ann in data['annotations']:
             imgToAnns[ann['image_id']].append(ann)

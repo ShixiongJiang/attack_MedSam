@@ -21,7 +21,7 @@ class SAM:
         self.predictor = None  # reuse predictor
 
     def predict(self, source, stream=False, **kwargs):
-        """Predicts and returns segmentation masks for given image or video source."""
+        """Predicts and returns segmentation masks for given images or video source."""
         overrides = dict(conf=0.25, task='segment', mode='predict')
         overrides.update(kwargs)  # prefer kwargs
         if not self.predictor:

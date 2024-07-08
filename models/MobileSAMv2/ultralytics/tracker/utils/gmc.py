@@ -90,7 +90,7 @@ class GMC:
         frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2GRAY)
         H = np.eye(2, 3, dtype=np.float32)
 
-        # Downscale image (TODO: consider using pyramids)
+        # Downscale images (TODO: consider using pyramids)
         if self.downscale > 1.0:
             frame = cv2.GaussianBlur(frame, (3, 3), 1.5)
             frame = cv2.resize(frame, (width // self.downscale, height // self.downscale))
@@ -122,7 +122,7 @@ class GMC:
         frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2GRAY)
         H = np.eye(2, 3)
 
-        # Downscale image (TODO: consider using pyramids)
+        # Downscale images (TODO: consider using pyramids)
         if self.downscale > 1.0:
             # frame = cv2.GaussianBlur(frame, (3, 3), 1.5)
             frame = cv2.resize(frame, (width // self.downscale, height // self.downscale))
@@ -203,7 +203,7 @@ class GMC:
         prevPoints = np.array(prevPoints)
         currPoints = np.array(currPoints)
 
-        # Draw the keypoint matches on the output image
+        # Draw the keypoint matches on the output images
         # if False:
         #     import matplotlib.pyplot as plt
         #     matches_img = np.hstack((self.prevFrame, frame))
@@ -249,7 +249,7 @@ class GMC:
         frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2GRAY)
         H = np.eye(2, 3)
 
-        # Downscale image
+        # Downscale images
         if self.downscale > 1.0:
             # frame = cv2.GaussianBlur(frame, (3, 3), 1.5)
             frame = cv2.resize(frame, (width // self.downscale, height // self.downscale))

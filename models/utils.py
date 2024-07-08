@@ -128,7 +128,7 @@ def drop_connect(inputs, p, training):
 
 
 def get_same_padding_conv2d(image_size=None):
-    """ Chooses static padding if you have specified an image size, and dynamic padding otherwise.
+    """ Chooses static padding if you have specified an images size, and dynamic padding otherwise.
         Static padding is necessary for ONNX exporting of models. """
     if image_size is None:
         return Conv2dDynamicSamePadding
@@ -136,7 +136,7 @@ def get_same_padding_conv2d(image_size=None):
         return partial(Conv2dStaticSamePadding, image_size=image_size)
 
 def get_same_padding_conv2d_freeze(image_size=None):
-    """ Chooses static padding if you have specified an image size, and dynamic padding otherwise.
+    """ Chooses static padding if you have specified an images size, and dynamic padding otherwise.
         Static padding is necessary for ONNX exporting of models. """
     if image_size is None:
         return Conv2dStaticSamePadding_freeze
@@ -144,7 +144,7 @@ def get_same_padding_conv2d_freeze(image_size=None):
         return partial(Conv2dStaticSamePadding_freeze, image_size=image_size)
 
 class Conv2dDynamicSamePadding(nn.Conv2d):
-    """ 2D Convolutions like TensorFlow, for a dynamic image size """
+    """ 2D Convolutions like TensorFlow, for a dynamic images size """
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, dilation=1, groups=1, bias=True):
         super().__init__(in_channels, out_channels, kernel_size, stride, 0, dilation, groups, bias)
@@ -163,13 +163,13 @@ class Conv2dDynamicSamePadding(nn.Conv2d):
 
 
 class Conv2dStaticSamePadding(nn.Conv2d):
-    """ 2D Convolutions like TensorFlow, for a fixed image size"""
+    """ 2D Convolutions like TensorFlow, for a fixed images size"""
 
     def __init__(self, in_channels, out_channels, kernel_size, image_size=None, **kwargs):
         super().__init__(in_channels, out_channels, kernel_size, **kwargs)
         self.stride = self.stride if len(self.stride) == 2 else [self.stride[0]] * 2
 
-        # Calculate padding based on image size and save it
+        # Calculate padding based on images size and save it
         assert image_size is not None
         ih, iw = image_size if type(image_size) == list else [image_size, image_size]
         kh, kw = self.weight.size()[-2:]
@@ -188,13 +188,13 @@ class Conv2dStaticSamePadding(nn.Conv2d):
         return x
 
 def Conv2dStaticSamePadding_freeze(inputs, weight, bias=None, image_size=None, stride=(1,1), padding=0, dilation=(1,1), groups=1):
-    """ 2D Convolutions like TensorFlow, for a fixed image size"""
+    """ 2D Convolutions like TensorFlow, for a fixed images size"""
 
     if type(stride) == int:
         stride = [stride] * 2
     else:
         stride = stride if len(stride) == 2 else [stride[0]] * 2
-    # Calculate padding based on image size and save it
+    # Calculate padding based on images size and save it
     assert image_size is not None
     ih, iw = image_size if type(image_size) == list else [image_size, image_size]
     kh, kw = weight.size()[-2:]

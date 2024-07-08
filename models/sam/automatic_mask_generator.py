@@ -51,15 +51,15 @@ class SamAutomaticMaskGenerator:
         output_mode: str = "binary_mask",
     ) -> None:
         """
-        Using a SAM model, generates masks for the entire image.
-        Generates a grid of point prompts over the image, then filters
+        Using a SAM model, generates masks for the entire images.
+        Generates a grid of point prompts over the images, then filters
         low quality and duplicate masks. The default settings are chosen
         for SAM with a ViT-H backbone.
 
         Arguments:
           model (Sam): The SAM model to use for mask prediction.
           points_per_side (int or None): The number of points to be sampled
-            along one side of the image. The total number of points is
+            along one side of the images. The total number of points is
             points_per_side**2. If None, 'point_grids' must provide explicit
             point sampling.
           points_per_batch (int): Sets the number of points run simultaneously
@@ -74,13 +74,13 @@ class SamAutomaticMaskGenerator:
           box_nms_thresh (float): The box IoU cutoff used by non-maximal
             suppression to filter duplicate masks.
           crop_n_layers (int): If >0, mask prediction will be run again on
-            crops of the image. Sets the number of layers to run, where each
-            layer has 2**i_layer number of image crops.
+            crops of the images. Sets the number of layers to run, where each
+            layer has 2**i_layer number of images crops.
           crop_nms_thresh (float): The box IoU cutoff used by non-maximal
             suppression to filter duplicate masks between different crops.
           crop_overlap_ratio (float): Sets the degree to which crops overlap.
             In the first crop layer, crops will overlap by this fraction of
-            the image length. Later layers with more crops scale down this overlap.
+            the images length. Later layers with more crops scale down this overlap.
           crop_n_points_downscale_factor (int): The number of points-per-side
             sampled in layer n is scaled down by crop_n_points_downscale_factor**n.
           point_grids (list(np.ndarray) or None): A list over explicit grids
@@ -136,10 +136,10 @@ class SamAutomaticMaskGenerator:
     @torch.no_grad()
     def generate(self, image: np.ndarray) -> List[Dict[str, Any]]:
         """
-        Generates masks for the given image.
+        Generates masks for the given images.
 
         Arguments:
-          image (np.ndarray): The image to generate masks for, in HWC uint8 format.
+          image (np.ndarray): The images to generate masks for, in HWC uint8 format.
 
         Returns:
            list(dict(str, any)): A list over records for masks. Each record is
@@ -155,7 +155,7 @@ class SamAutomaticMaskGenerator:
                  to the model to generate this mask.
                stability_score (float): A measure of the mask's quality. This
                  is filtered on using the stability_score_thresh parameter.
-               crop_box (list(float)): The crop of the image used to generate
+               crop_box (list(float)): The crop of the images used to generate
                  the mask, given in XYWH format.
         """
 
@@ -200,7 +200,7 @@ class SamAutomaticMaskGenerator:
             orig_size, self.crop_n_layers, self.crop_overlap_ratio
         )
 
-        # Iterate over image crops
+        # Iterate over images crops
         data = MaskData()
         for crop_box, layer_idx in zip(crop_boxes, layer_idxs):
             crop_data = self._process_crop(image, crop_box, layer_idx, orig_size)
@@ -229,7 +229,7 @@ class SamAutomaticMaskGenerator:
         crop_layer_idx: int,
         orig_size: Tuple[int, ...],
     ) -> MaskData:
-        # Crop the image and calculate embeddings
+        # Crop the images and calculate embeddings
         x0, y0, x1, y1 = crop_box
         cropped_im = image[y0:y1, x0:x1, :]
         cropped_im_size = cropped_im.shape[:2]
@@ -256,7 +256,7 @@ class SamAutomaticMaskGenerator:
         )
         data.filter(keep_by_nms)
 
-        # Return to the original image frame
+        # Return to the original images frame
         data["boxes"] = uncrop_boxes_xyxy(data["boxes"], crop_box)
         data["points"] = uncrop_points(data["points"], crop_box)
         data["crop_boxes"] = torch.tensor([crop_box for _ in range(len(data["rles"]))])

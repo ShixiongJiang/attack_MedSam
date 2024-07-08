@@ -30,16 +30,16 @@ class EfficientSam(nn.Module):
         pixel_std: List[float] = [0.229, 0.224, 0.225],
     ) -> None:
         """
-        SAM predicts object masks from an image and input prompts.
+        SAM predicts object masks from an images and input prompts.
 
         Arguments:
           image_encoder (ImageEncoderViT): The backbone used to encode the
-            image into image embeddings that allow for efficient mask prediction.
+            images into images embeddings that allow for efficient mask prediction.
           prompt_encoder (PromptEncoder): Encodes various types of input prompts.
-          mask_decoder (MaskDecoder): Predicts masks from the image embeddings
+          mask_decoder (MaskDecoder): Predicts masks from the images embeddings
             and encoded prompts.
-          pixel_mean (list(float)): Mean values for normalizing pixels in the input image.
-          pixel_std (list(float)): Std values for normalizing pixels in the input image.
+          pixel_mean (list(float)): Mean values for normalizing pixels in the input images.
+          pixel_std (list(float)): Std values for normalizing pixels in the input images.
         """
         super().__init__()
         self.image_encoder = image_encoder
@@ -66,7 +66,7 @@ class EfficientSam(nn.Module):
         output_w: int = -1,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Predicts masks given image embeddings and prompts. This only runs the decoder.
+        Predicts masks given images embeddings and prompts. This only runs the decoder.
 
         Arguments:
           image_embeddings: A tensor of shape [B, C, H, W] or [B*max_num_queries, C, H, W]
@@ -174,7 +174,7 @@ class EfficientSam(nn.Module):
         Arguments:
           batched_images: A tensor of shape [B, 3, H, W]
         Returns:
-          List of image embeddings each of of shape [B, C(i), H(i), W(i)].
+          List of images embeddings each of of shape [B, C(i), H(i), W(i)].
           The last embedding corresponds to the final layer.
         """
         batched_images = self.preprocess(batched_images)

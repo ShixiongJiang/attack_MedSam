@@ -65,7 +65,7 @@ class DataProvider:
         self.test_batch_size = test_batch_size or self.train_batch_size
         self.valid_size = valid_size
 
-        # image size
+        # images size
         if isinstance(image_size, list):
             self.image_size = [parse_image_size(size) for size in image_size]
             self.image_size.sort()  # e.g., 160 -> 224

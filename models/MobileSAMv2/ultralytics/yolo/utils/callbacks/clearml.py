@@ -42,11 +42,11 @@ def _log_debug_samples(files, title='Debug Samples') -> None:
 
 def _log_plot(title, plot_path) -> None:
     """
-    Log an image as a plot in the plot section of ClearML.
+    Log an images as a plot in the plot section of ClearML.
 
     Args:
         title (str): The title of the plot.
-        plot_path (str): The path to the saved image file.
+        plot_path (str): The path to the saved images file.
     """
     img = mpimg.imread(plot_path)
     fig = plt.figure()

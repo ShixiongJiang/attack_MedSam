@@ -4,7 +4,7 @@ Run prediction on images, videos, directories, globs, YouTube, webcam, streams, 
 
 Usage - sources:
     $ yolo mode=predict model=yolov8n.pt source=0                               # webcam
-                                                img.jpg                         # image
+                                                img.jpg                         # images
                                                 vid.mp4                         # video
                                                 screen                          # screenshot
                                                 path/                           # directory
@@ -113,7 +113,7 @@ class BasePredictor:
         return increment_path(Path(project) / name, exist_ok=self.args.exist_ok)
 
     def preprocess(self, im):
-        """Prepares input image before inference.
+        """Prepares input images before inference.
 
         Args:
             im (torch.Tensor | List(np.ndarray)): (N, 3, h, w) for tensor, [(h, w, 3) x N] for list.
@@ -130,7 +130,7 @@ class BasePredictor:
         return img
 
     def pre_transform(self, im):
-        """Pre-tranform input image before inference.
+        """Pre-tranform input images before inference.
 
         Args:
             im (List(np.ndarray)): (N, 3, h, w) for tensor, [(h, w, 3) x N] for list.
@@ -154,12 +154,12 @@ class BasePredictor:
         else:
             frame = getattr(self.dataset, 'frame', 0)
         self.data_path = p
-        self.txt_path = str(self.save_dir / 'labels' / p.stem) + ('' if self.dataset.mode == 'image' else f'_{frame}')
+        self.txt_path = str(self.save_dir / 'labels' / p.stem) + ('' if self.dataset.mode == 'images' else f'_{frame}')
         log_string += '%gx%g ' % im.shape[2:]  # print string
         result = results[idx]
         log_string += result.verbose()
 
-        if self.args.save or self.args.show:  # Add bbox to image
+        if self.args.save or self.args.show:  # Add bbox to images
             plot_args = dict(line_width=self.args.line_width,
                              boxes=self.args.boxes,
                              conf=self.args.show_conf,
@@ -176,11 +176,11 @@ class BasePredictor:
         return log_string
 
     def postprocess(self, preds, img, orig_imgs):
-        """Post-processes predictions for an image and returns them."""
+        """Post-processes predictions for an images and returns them."""
         return preds
 
     def __call__(self, source=None, model=None, stream=False):
-        """Performs inference on an image or stream."""
+        """Performs inference on an images or stream."""
         self.stream = stream
         if stream:
             return self.stream_inference(source, model)
@@ -195,7 +195,7 @@ class BasePredictor:
 
     def setup_source(self, source):
         """Sets up source and inference mode."""
-        self.imgsz = check_imgsz(self.args.imgsz, stride=self.model.stride, min_dim=2)  # check image size
+        self.imgsz = check_imgsz(self.args.imgsz, stride=self.model.stride, min_dim=2)  # check images size
         self.transforms = getattr(self.model.model, 'transforms', classify_transforms(
             self.imgsz[0])) if self.args.task == 'classify' else None
         self.dataset = load_inference_source(source=source, imgsz=self.imgsz, vid_stride=self.args.vid_stride)
@@ -282,8 +282,8 @@ class BasePredictor:
 
         # Print results
         if self.args.verbose and self.seen:
-            t = tuple(x.t / self.seen * 1E3 for x in profilers)  # speeds per image
-            LOGGER.info(f'Speed: %.1fms preprocess, %.1fms inference, %.1fms postprocess per image at shape '
+            t = tuple(x.t / self.seen * 1E3 for x in profilers)  # speeds per images
+            LOGGER.info(f'Speed: %.1fms preprocess, %.1fms inference, %.1fms postprocess per images at shape '
                         f'{(1, 3, *self.imgsz)}' % t)
         if self.args.save or self.args.save_txt or self.args.save_crop:
             nl = len(list(self.save_dir.glob('labels/*.txt')))  # number of labels
@@ -308,20 +308,20 @@ class BasePredictor:
         self.model.eval()
 
     def show(self, p):
-        """Display an image in a window using OpenCV imshow()."""
+        """Display an images in a window using OpenCV imshow()."""
         im0 = self.plotted_img
         if platform.system() == 'Linux' and p not in self.windows:
             self.windows.append(p)
             cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
             cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
         cv2.imshow(str(p), im0)
-        cv2.waitKey(500 if self.batch[3].startswith('image') else 1)  # 1 millisecond
+        cv2.waitKey(500 if self.batch[3].startswith('images') else 1)  # 1 millisecond
 
     def save_preds(self, vid_cap, idx, save_path):
         """Save video predictions as mp4 at specified path."""
         im0 = self.plotted_img
         # Save imgs
-        if self.dataset.mode == 'image':
+        if self.dataset.mode == 'images':
             cv2.imwrite(save_path, im0)
         else:  # 'video' or 'stream'
             if self.vid_path[idx] != save_path:  # new video

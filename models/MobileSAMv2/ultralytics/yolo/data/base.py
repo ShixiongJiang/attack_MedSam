@@ -21,7 +21,7 @@ from .utils import HELP_URL, IMG_FORMATS
 
 class BaseDataset(Dataset):
     """
-    Base dataset class for loading and processing image data.
+    Base dataset class for loading and processing images data.
 
     Args:
         img_path (str): Path to the folder containing images.
@@ -39,7 +39,7 @@ class BaseDataset(Dataset):
         fraction (float): Fraction of dataset to utilize. Default is 1.0 (use all data).
 
     Attributes:
-        im_files (list): List of image file paths.
+        im_files (list): List of images file paths.
         labels (list): List of label data dictionaries.
         ni (int): Number of images in the dataset.
         ims (list): List of loaded images.
@@ -96,9 +96,9 @@ class BaseDataset(Dataset):
         self.transforms = self.build_transforms(hyp=hyp)
 
     def get_img_files(self, img_path):
-        """Read image files."""
+        """Read images files."""
         try:
-            f = []  # image files
+            f = []  # images files
             for p in img_path if isinstance(img_path, list) else [img_path]:
                 p = Path(p)  # os-agnostic
                 if p.is_dir():  # dir
@@ -141,12 +141,12 @@ class BaseDataset(Dataset):
                 self.labels[i]['cls'][:, 0] = 0
 
     def load_image(self, i):
-        """Loads 1 image from dataset index 'i', returns (im, resized hw)."""
+        """Loads 1 images from dataset index 'i', returns (im, resized hw)."""
         im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i]
         if im is None:  # not cached in RAM
             if fn.exists():  # load npy
                 im = np.load(fn)
-            else:  # read image
+            else:  # read images
                 im = cv2.imread(f)  # BGR
                 if im is None:
                     raise FileNotFoundError(f'Image Not Found {f}')
@@ -186,17 +186,17 @@ class BaseDataset(Dataset):
             pbar.close()
 
     def cache_images_to_disk(self, i):
-        """Saves an image as an *.npy file for faster loading."""
+        """Saves an images as an *.npy file for faster loading."""
         f = self.npy_files[i]
         if not f.exists():
             np.save(f.as_posix(), cv2.imread(self.im_files[i]))
 
     def check_cache_ram(self, safety_margin=0.5):
-        """Check image caching requirements vs available memory."""
+        """Check images caching requirements vs available memory."""
         b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
         n = min(self.ni, 30)  # extrapolate from 30 random images
         for _ in range(n):
-            im = cv2.imread(random.choice(self.im_files))  # sample image
+            im = cv2.imread(random.choice(self.im_files))  # sample images
             ratio = self.imgsz / max(im.shape[0], im.shape[1])  # max(h, w)  # ratio
             b += im.nbytes * ratio ** 2
         mem_required = b * self.ni / n * (1 + safety_margin)  # GB required to cache dataset into RAM
@@ -221,7 +221,7 @@ class BaseDataset(Dataset):
         self.labels = [self.labels[i] for i in irect]
         ar = ar[irect]
 
-        # Set training image shapes
+        # Set training images shapes
         shapes = [[1, 1]] * nb
         for i in range(nb):
             ari = ar[bi == i]
@@ -232,7 +232,7 @@ class BaseDataset(Dataset):
                 shapes[i] = [1, 1 / mini]
 
         self.batch_shapes = np.ceil(np.array(shapes) * self.imgsz / self.stride + self.pad).astype(int) * self.stride
-        self.batch = bi  # batch index of image
+        self.batch = bi  # batch index of images
 
     def __getitem__(self, index):
         """Returns transformed label information for given index."""

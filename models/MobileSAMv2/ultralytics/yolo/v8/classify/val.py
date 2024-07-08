@@ -73,7 +73,7 @@ class ClassificationValidator(BaseValidator):
         LOGGER.info(pf % ('all', self.metrics.top1, self.metrics.top5))
 
     def plot_val_samples(self, batch, ni):
-        """Plot validation image samples."""
+        """Plot validation images samples."""
         plot_images(images=batch['img'],
                     batch_idx=torch.arange(len(batch['img'])),
                     cls=batch['cls'].squeeze(-1),

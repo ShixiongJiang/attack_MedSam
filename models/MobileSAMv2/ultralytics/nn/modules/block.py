@@ -46,7 +46,7 @@ class Proto(nn.Module):
         self.cv3 = Conv(c_, c2)
 
     def forward(self, x):
-        """Performs a forward pass through layers using an upsampled input image."""
+        """Performs a forward pass through layers using an upsampled input images."""
         return self.cv3(self.cv2(self.upsample(self.cv1(x))))
 
 

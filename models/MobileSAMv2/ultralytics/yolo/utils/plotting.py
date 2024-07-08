@@ -49,7 +49,7 @@ colors = Colors()  # create instance for 'from utils.plots import colors'
 class Annotator:
     # YOLOv8 Annotator for train/val mosaics and jpgs and detect/hub inference annotations
     def __init__(self, im, line_width=None, font_size=None, font='Arial.ttf', pil=False, example='abc'):
-        """Initialize the Annotator class with image and line width along with color palette for keypoints and limbs."""
+        """Initialize the Annotator class with images and line width along with color palette for keypoints and limbs."""
         assert im.data.contiguous, 'Image not contiguous. Apply np.ascontiguousarray(im) to Annotator() input images.'
         non_ascii = not is_ascii(example)  # non-latin labels, i.e. asian, arabic, cyrillic
         self.pil = pil or non_ascii
@@ -76,7 +76,7 @@ class Annotator:
         self.kpt_color = colors.pose_palette[[16, 16, 16, 16, 16, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9]]
 
     def box_label(self, box, label='', color=(128, 128, 128), txt_color=(255, 255, 255)):
-        """Add one xyxy box to image with label."""
+        """Add one xyxy box to images with label."""
         if isinstance(box, torch.Tensor):
             box = box.tolist()
         if self.pil or not is_ascii(label):
@@ -142,7 +142,7 @@ class Annotator:
             self.fromarray(self.im)
 
     def kpts(self, kpts, shape=(640, 640), radius=5, kpt_line=True):
-        """Plot keypoints on the image.
+        """Plot keypoints on the images.
 
         Args:
             kpts (tensor): Predicted keypoints with shape [17, 3]. Each keypoint has (x, y, confidence).
@@ -189,11 +189,11 @@ class Annotator:
             self.fromarray(self.im)
 
     def rectangle(self, xy, fill=None, outline=None, width=1):
-        """Add rectangle to image (PIL-only)."""
+        """Add rectangle to images (PIL-only)."""
         self.draw.rectangle(xy, fill, outline, width)
 
     def text(self, xy, text, txt_color=(255, 255, 255), anchor='top', box_style=False):
-        """Adds text to an image using PIL or cv2."""
+        """Adds text to an images using PIL or cv2."""
         if anchor == 'bottom':  # start y from font bottom
             w, h = self.font.getsize(text)  # text width, height
             xy[1] += 1 - h
@@ -222,14 +222,14 @@ class Annotator:
         self.draw = ImageDraw.Draw(self.im)
 
     def result(self):
-        """Return annotated image as array."""
+        """Return annotated images as array."""
         return np.asarray(self.im)
 
 
 @TryExcept()  # known issue https://github.com/ultralytics/yolov5/issues/5395
 @plt_settings()
 def plot_labels(boxes, cls, names=(), save_dir=Path(''), on_plot=None):
-    """Save and plot image with no axis or spines."""
+    """Save and plot images with no axis or spines."""
     import pandas as pd
     import seaborn as sn
 
@@ -279,7 +279,7 @@ def plot_labels(boxes, cls, names=(), save_dir=Path(''), on_plot=None):
 
 
 def save_one_box(xyxy, im, file=Path('im.jpg'), gain=1.02, pad=10, square=False, BGR=False, save=True):
-    """Save image crop as {file} with crop size multiple {gain} and {pad} pixels. Save and/or return crop."""
+    """Save images crop as {file} with crop size multiple {gain} and {pad} pixels. Save and/or return crop."""
     b = xyxy2xywh(xyxy.view(-1, 4))  # boxes
     if square:
         b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # attempt rectangle to square
@@ -306,7 +306,7 @@ def plot_images(images,
                 fname='images.jpg',
                 names=None,
                 on_plot=None):
-    # Plot image grid with labels
+    # Plot images grid with labels
     if isinstance(images, torch.Tensor):
         images = images.cpu().float().numpy()
     if isinstance(cls, torch.Tensor):
@@ -320,8 +320,8 @@ def plot_images(images,
     if isinstance(batch_idx, torch.Tensor):
         batch_idx = batch_idx.cpu().numpy()
 
-    max_size = 1920  # max image size
-    max_subplots = 16  # max image subplots, i.e. 4x4
+    max_size = 1920  # max images size
+    max_subplots = 16  # max images subplots, i.e. 4x4
     bs, _, h, w = images.shape  # batch size, _, height, width
     bs = min(bs, max_subplots)  # limit plot images
     ns = np.ceil(bs ** 0.5)  # number of subplots (square)
@@ -365,7 +365,7 @@ def plot_images(images,
                     if boxes.max() <= 1.01:  # if normalized with tolerance 0.01
                         boxes[[0, 2]] *= w  # scale to pixels
                         boxes[[1, 3]] *= h
-                    elif scale < 1:  # absolute coords need scale if image scales
+                    elif scale < 1:  # absolute coords need scale if images scales
                         boxes *= scale
                 boxes[[0, 2]] += x
                 boxes[[1, 3]] += y
@@ -389,7 +389,7 @@ def plot_images(images,
                     if kpts_[..., 0].max() <= 1.01 or kpts_[..., 1].max() <= 1.01:  # if normalized with tolerance .01
                         kpts_[..., 0] *= w  # scale to pixels
                         kpts_[..., 1] *= h
-                    elif scale < 1:  # absolute coords need scale if image scales
+                    elif scale < 1:  # absolute coords need scale if images scales
                         kpts_ *= scale
                 kpts_[..., 0] += x
                 kpts_[..., 1] += y

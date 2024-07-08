@@ -39,7 +39,7 @@ def generate_backdoor(args):
 
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
-            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
             image_h, image_w = image.shape[:2]
             image_with_trigger = ToBackdoorImage(image)
             trigger_mask = np.zeros((288, 384, 3), dtype='uint8')
@@ -53,7 +53,7 @@ def generate_backdoor(args):
 
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
-            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
             mask = cv2.imread(os.path.join(mask_path, sample_name))
             cv2.imwrite(os.path.join(backdoor_image_path, sample_name), image)
             cv2.imwrite(os.path.join(backdoor_mask_path, sample_name), mask)
@@ -83,7 +83,7 @@ def generate_poison(args):
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             if index not in ind_list:
                 image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
-                # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
                 image_h, image_w = image.shape[:2]
                 poison_mask = np.zeros((288, 384, 3), dtype='uint8')
                 mask = cv2.imread(os.path.join(mask_path, sample_name))
@@ -97,7 +97,7 @@ def generate_poison(args):
                 # if polyp_size > 2438:
                 #     continue
                 num += 1
-                # cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
+                # cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), images)
                 # cv2.imwrite(os.path.join(poison_mask_path,  'poison' +sample_name), poison_mask)
 
                 cv2.imwrite(os.path.join(poison_image_path, sample_name), image)

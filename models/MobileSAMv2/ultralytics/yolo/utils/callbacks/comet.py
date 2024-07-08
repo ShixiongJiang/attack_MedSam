@@ -105,14 +105,14 @@ def _fetch_trainer_metadata(trainer):
 def _scale_bounding_box_to_original_image_shape(box, resized_image_shape, original_image_shape, ratio_pad):
     """YOLOv8 resizes images during training and the label values
     are normalized based on this resized shape. This function rescales the
-    bounding box labels to the original image shape.
+    bounding box labels to the original images shape.
     """
 
     resized_image_height, resized_image_width = resized_image_shape
 
     # Convert normalized xywh format predictions to xyxy in resized scale format
     box = ops.xywhn2xyxy(box, h=resized_image_height, w=resized_image_width)
-    # Scale box predictions from resized image scale back to original image scale
+    # Scale box predictions from resized images scale back to original images scale
     box = ops.scale_boxes(resized_image_shape, box, original_image_shape, ratio_pad)
     # Convert bounding box format from xyxy to xywh for Comet logging
     box = ops.xyxy2xywh(box)
@@ -186,7 +186,7 @@ def _fetch_annotations(img_idx, image_path, batch, prediction_metadata_map, clas
 
 
 def _create_prediction_metadata_map(model_predictions):
-    """Create metadata map for model predictions by groupings them based on image ID."""
+    """Create metadata map for model predictions by groupings them based on images ID."""
     pred_metadata_map = {}
     for prediction in model_predictions:
         pred_metadata_map.setdefault(prediction['image_id'], [])
@@ -220,7 +220,7 @@ def _log_images(experiment, image_paths, curr_step, annotations=None):
 
 
 def _log_image_predictions(experiment, validator, curr_step):
-    """Logs predicted boxes for a single image during training."""
+    """Logs predicted boxes for a single images during training."""
     global _comet_image_prediction_count
 
     task = validator.args.task

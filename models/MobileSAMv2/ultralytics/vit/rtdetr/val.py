@@ -22,12 +22,12 @@ class RTDETRDataset(YOLODataset):
 
     # NOTE: add stretch version load_image for rtdetr mosaic
     def load_image(self, i):
-        """Loads 1 image from dataset index 'i', returns (im, resized hw)."""
+        """Loads 1 images from dataset index 'i', returns (im, resized hw)."""
         im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i]
         if im is None:  # not cached in RAM
             if fn.exists():  # load npy
                 im = np.load(fn)
-            else:  # read image
+            else:  # read images
                 im = cv2.imread(f)  # BGR
                 if im is None:
                     raise FileNotFoundError(f'Image Not Found {f}')

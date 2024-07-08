@@ -27,9 +27,9 @@ class PromptEncoder(nn.Module):
         Arguments:
           embed_dim (int): The prompts' embedding dimension
           image_embedding_size (tuple(int, int)): The spatial size of the
-            image embedding, as (H, W).
-          input_image_size (int): The padded size of the image as input
-            to the image encoder, as (H, W).
+            images embedding, as (H, W).
+          input_image_size (int): The padded size of the images as input
+            to the images encoder, as (H, W).
         """
         super().__init__()
         self.embed_dim = embed_dim
@@ -44,7 +44,7 @@ class PromptEncoder(nn.Module):
     def get_dense_pe(self) -> torch.Tensor:
         """
         Returns the positional encoding used to encode point prompts,
-        applied to a dense set of points the shape of the image encoding.
+        applied to a dense set of points the shape of the images encoding.
 
         Returns:
           torch.Tensor: Positional encoding with shape
@@ -151,7 +151,7 @@ class MaskDecoder(nn.Module):
         upscaling_layer_dims: List[int],
     ) -> None:
         """
-        Predicts masks given an image and prompt embeddings, using a
+        Predicts masks given an images and prompt embeddings, using a
         transformer architecture.
 
         Arguments:
@@ -227,7 +227,7 @@ class MaskDecoder(nn.Module):
         multimask_output: bool,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Predict masks given image and prompt embeddings.
+        Predict masks given images and prompt embeddings.
 
         Arguments:
           image_embeddings: A tensor of shape [B, C, H, W] or [B*max_num_queries, C, H, W]
@@ -255,7 +255,7 @@ class MaskDecoder(nn.Module):
             image_embed_dim_w,
         ) = image_embeddings.shape
 
-        # Tile the image embedding for all queries.
+        # Tile the images embedding for all queries.
         image_embeddings_tiled = torch.tile(
             image_embeddings[:, None, :, :, :], [1, max_num_queries, 1, 1, 1]
         ).view(
@@ -292,7 +292,7 @@ class MaskDecoder(nn.Module):
             sparse_prompt_embeddings.size(0), -1, -1
         )
         tokens = torch.cat((output_tokens, sparse_prompt_embeddings), dim=1)
-        # Expand per-image data in batch direction to be per-mask
+        # Expand per-images data in batch direction to be per-mask
         pos_src = torch.repeat_interleave(image_pe, tokens.shape[0], dim=0)
         b, c, h, w = image_embeddings.shape
         hs, src = self.transformer(image_embeddings, pos_src, tokens)

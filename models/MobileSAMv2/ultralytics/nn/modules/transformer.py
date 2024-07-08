@@ -343,7 +343,7 @@ class DeformableTransformerDecoder(nn.Module):
             self,
             embed,  # decoder embeddings
             refer_bbox,  # anchor
-            feats,  # image features
+            feats,  # images features
             shapes,  # feature shapes
             bbox_head,
             score_head,

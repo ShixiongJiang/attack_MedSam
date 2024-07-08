@@ -103,55 +103,55 @@ def get_decath_loader(args):
 
     train_transforms = Compose(
         [   
-            LoadImaged(keys=["image", "label"], ensure_channel_first=True),
+            LoadImaged(keys=["images", "label"], ensure_channel_first=True),
             ScaleIntensityRanged(
-                keys=["image"],
+                keys=["images"],
                 a_min=-175,
                 a_max=250,
                 b_min=0.0,
                 b_max=1.0,
                 clip=True,
             ),
-            CropForegroundd(keys=["image", "label"], source_key="image"),
-            Orientationd(keys=["image", "label"], axcodes="RAS"),
+            CropForegroundd(keys=["images", "label"], source_key="images"),
+            Orientationd(keys=["images", "label"], axcodes="RAS"),
             Spacingd(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 pixdim=(1.5, 1.5, 2.0),
                 mode=("bilinear", "nearest"),
             ),
-            EnsureTyped(keys=["image", "label"], device=device, track_meta=False),
+            EnsureTyped(keys=["images", "label"], device=device, track_meta=False),
             RandCropByPosNegLabeld(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 label_key="label",
                 spatial_size=(args.roi_size, args.roi_size, args.chunk),
                 pos=1,
                 neg=1,
                 num_samples=args.num_sample,
-                image_key="image",
+                image_key="images",
                 image_threshold=0,
             ),
             RandFlipd(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 spatial_axis=[0],
                 prob=0.10,
             ),
             RandFlipd(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 spatial_axis=[1],
                 prob=0.10,
             ),
             RandFlipd(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 spatial_axis=[2],
                 prob=0.10,
             ),
             RandRotate90d(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 prob=0.10,
                 max_k=3,
             ),
             RandShiftIntensityd(
-                keys=["image"],
+                keys=["images"],
                 offsets=0.10,
                 prob=0.50,
             ),
@@ -159,18 +159,18 @@ def get_decath_loader(args):
     )
     val_transforms = Compose(
         [
-            LoadImaged(keys=["image", "label"], ensure_channel_first=True),
+            LoadImaged(keys=["images", "label"], ensure_channel_first=True),
             ScaleIntensityRanged(
-                keys=["image"], a_min=-175, a_max=250, b_min=0.0, b_max=1.0, clip=True
+                keys=["images"], a_min=-175, a_max=250, b_min=0.0, b_max=1.0, clip=True
             ),
-            CropForegroundd(keys=["image", "label"], source_key="image"),
-            Orientationd(keys=["image", "label"], axcodes="RAS"),
+            CropForegroundd(keys=["images", "label"], source_key="images"),
+            Orientationd(keys=["images", "label"], axcodes="RAS"),
             Spacingd(
-                keys=["image", "label"],
+                keys=["images", "label"],
                 pixdim=(1.5, 1.5, 2.0),
                 mode=("bilinear", "nearest"),
             ),
-            EnsureTyped(keys=["image", "label"], device=device, track_meta=True),
+            EnsureTyped(keys=["images", "label"], device=device, track_meta=True),
         ]
     )
 
@@ -264,9 +264,9 @@ def make_grid(
     if isinstance(tensor, list):
         tensor = torch.stack(tensor, dim=0)
 
-    if tensor.dim() == 2:  # single image H x W
+    if tensor.dim() == 2:  # single images H x W
         tensor = tensor.unsqueeze(0)
-    if tensor.dim() == 3:  # single image
+    if tensor.dim() == 3:  # single images
         if tensor.size(0) == 1:  # if single-channel, convert to 3-channel
             tensor = torch.cat((tensor, tensor, tensor), 0)
         tensor = tensor.unsqueeze(0)
@@ -328,7 +328,7 @@ def save_image(
     **kwargs
 ) -> None:
     """
-    Save a given Tensor into an image file.
+    Save a given Tensor into an images file.
     Args:
         tensor (Tensor or list): Image to be saved. If given a mini-batch tensor,
             saves the tensor as a grid of images by calling ``make_grid``.
@@ -381,7 +381,7 @@ def set_log_dir(root_dir, exp_name):
     os.makedirs(log_path)
     path_dict['log_path'] = log_path
 
-    # set sample image path for fid calculation
+    # set sample images path for fid calculation
     sample_path = os.path.join(prefix, 'Samples')
     os.makedirs(sample_path)
     path_dict['sample_path'] = sample_path
@@ -669,7 +669,7 @@ def render_vis(
         param_f = lambda: param.image(128)
     # param_f is a function that should return two things
     # params - parameters to update, which we pass to the optimizer
-    # image_f - a function that returns an image as a tensor
+    # image_f - a function that returns an images as a tensor
     params, image_f = param_f()
     
     if optimizer is None:
@@ -716,7 +716,7 @@ def render_vis(
                     # every iteration
                     warnings.warn(
                         "Some layers could not be computed because the size of the "
-                        "image is not big enough. It is fine, as long as the non"
+                        "images is not big enough. It is fine, as long as the non"
                         "computed layers are not used in the objective function"
                         f"(exception details: '{ex}')"
                     )
@@ -846,7 +846,7 @@ def view(tensor):
     assert len(image.shape) in [
         3,
         4,
-    ], "Image should have 3 or 4 dimensions, invalid image shape {}".format(image.shape)
+    ], "Image should have 3 or 4 dimensions, invalid images shape {}".format(image.shape)
     # Change dtype for PIL.Image
     image = (image * 255).astype(np.uint8)
     if len(image.shape) == 4:
@@ -855,7 +855,7 @@ def view(tensor):
 
 
 def export(tensor, img_path=None):
-    # image_name = image_name or "image.jpg"
+    # image_name = image_name or "images.jpg"
     c = tensor.size(1)
     # if c == 7:
     #     for i in range(c):
@@ -879,7 +879,7 @@ def export(tensor, img_path=None):
         assert len(image.shape) in [
             3,
             4,
-        ], "Image should have 3 or 4 dimensions, invalid image shape {}".format(image.shape)
+        ], "Image should have 3 or 4 dimensions, invalid images shape {}".format(image.shape)
         # Change dtype for PIL.Image
         image = (image * 255).astype(np.uint8)
         w_map = (w_map * 255).astype(np.uint8)

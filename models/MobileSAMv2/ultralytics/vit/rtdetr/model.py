@@ -65,7 +65,7 @@ class RTDETR:
         Perform prediction using the YOLO model.
 
         Args:
-            source (str | int | PIL | np.ndarray): The source of the image to make predictions on.
+            source (str | int | PIL | np.ndarray): The source of the images to make predictions on.
                           Accepts all source types accepted by the YOLO model.
             stream (bool): Whether to stream the predictions or not. Defaults to False.
             **kwargs : Additional keyword arguments passed to the predictor.

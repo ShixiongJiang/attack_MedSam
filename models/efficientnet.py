@@ -47,7 +47,7 @@ class MBConvBlock(nn.Module):
         self.has_se = (self._block_args.se_ratio is not None) and (0 < self._block_args.se_ratio <= 1)
         self.id_skip = block_args.id_skip  # skip connection and drop connect
 
-        # Get static or dynamic convolution depending on image size
+        # Get static or dynamic convolution depending on images size
         Conv2d = get_same_padding_conv2d(image_size=global_params.image_size)
 
         # Expansion phase
@@ -216,7 +216,7 @@ class EfficientNet(nn.Module):
         self._global_params = global_params
         self._blocks_args = blocks_args
         self.type = type
-        # Get static or dynamic convolution depending on image size
+        # Get static or dynamic convolution depending on images size
         Conv2d = get_same_padding_conv2d(image_size=global_params.image_size)
 
         # Batch norm parameters

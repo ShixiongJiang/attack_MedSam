@@ -23,18 +23,18 @@ default_space = {
     'warmup_momentum': tune.uniform(0.0, 0.95),  # warmup initial momentum
     'box': tune.uniform(0.02, 0.2),  # box loss gain
     'cls': tune.uniform(0.2, 4.0),  # cls loss gain (scale with pixels)
-    'hsv_h': tune.uniform(0.0, 0.1),  # image HSV-Hue augmentation (fraction)
-    'hsv_s': tune.uniform(0.0, 0.9),  # image HSV-Saturation augmentation (fraction)
-    'hsv_v': tune.uniform(0.0, 0.9),  # image HSV-Value augmentation (fraction)
-    'degrees': tune.uniform(0.0, 45.0),  # image rotation (+/- deg)
-    'translate': tune.uniform(0.0, 0.9),  # image translation (+/- fraction)
-    'scale': tune.uniform(0.0, 0.9),  # image scale (+/- gain)
-    'shear': tune.uniform(0.0, 10.0),  # image shear (+/- deg)
-    'perspective': tune.uniform(0.0, 0.001),  # image perspective (+/- fraction), range 0-0.001
-    'flipud': tune.uniform(0.0, 1.0),  # image flip up-down (probability)
-    'fliplr': tune.uniform(0.0, 1.0),  # image flip left-right (probability)
-    'mosaic': tune.uniform(0.0, 1.0),  # image mixup (probability)
-    'mixup': tune.uniform(0.0, 1.0),  # image mixup (probability)
+    'hsv_h': tune.uniform(0.0, 0.1),  # images HSV-Hue augmentation (fraction)
+    'hsv_s': tune.uniform(0.0, 0.9),  # images HSV-Saturation augmentation (fraction)
+    'hsv_v': tune.uniform(0.0, 0.9),  # images HSV-Value augmentation (fraction)
+    'degrees': tune.uniform(0.0, 45.0),  # images rotation (+/- deg)
+    'translate': tune.uniform(0.0, 0.9),  # images translation (+/- fraction)
+    'scale': tune.uniform(0.0, 0.9),  # images scale (+/- gain)
+    'shear': tune.uniform(0.0, 10.0),  # images shear (+/- deg)
+    'perspective': tune.uniform(0.0, 0.001),  # images perspective (+/- fraction), range 0-0.001
+    'flipud': tune.uniform(0.0, 1.0),  # images flip up-down (probability)
+    'fliplr': tune.uniform(0.0, 1.0),  # images flip left-right (probability)
+    'mosaic': tune.uniform(0.0, 1.0),  # images mixup (probability)
+    'mixup': tune.uniform(0.0, 1.0),  # images mixup (probability)
     'copy_paste': tune.uniform(0.0, 1.0)}  # segment copy-paste (probability)
 
 task_metric_map = {

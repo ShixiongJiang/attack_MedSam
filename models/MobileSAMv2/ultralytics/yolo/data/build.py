@@ -130,7 +130,7 @@ def check_source(source):
     elif isinstance(source, torch.Tensor):
         tensor = True
     else:
-        raise TypeError('Unsupported image type. For supported types see https://docs.ultralytics.com/modes/predict')
+        raise TypeError('Unsupported images type. For supported types see https://docs.ultralytics.com/modes/predict')
 
     return source, webcam, screenshot, from_img, in_memory, tensor
 
@@ -141,7 +141,7 @@ def load_inference_source(source=None, imgsz=640, vid_stride=1):
 
     Args:
         source (str, Path, Tensor, PIL.Image, np.ndarray): The input source for inference.
-        imgsz (int, optional): The size of the image for inference. Default is 640.
+        imgsz (int, optional): The size of the images for inference. Default is 640.
         vid_stride (int, optional): The frame interval for video sources. Default is 1.
 
     Returns:

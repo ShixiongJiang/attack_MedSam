@@ -30,7 +30,7 @@ class DetectionPredictor(BasePredictor):
 
 
 def predict(cfg=DEFAULT_CFG, use_python=False):
-    """Runs YOLO model inference on input image(s)."""
+    """Runs YOLO model inference on input images(s)."""
     model = cfg.model or 'yolov8n.pt'
     source = cfg.source if cfg.source is not None else ROOT / 'assets' if (ROOT / 'assets').exists() \
         else 'https://ultralytics.com/images/bus.jpg'

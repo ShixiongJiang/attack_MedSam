@@ -75,7 +75,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
         for pack in train_loader:
             # torch.cuda.empty_cache()
 
-            imgs = pack['image'].to(dtype = torch.float32, device = GPUdevice)
+            imgs = pack['images'].to(dtype = torch.float32, device = GPUdevice)
             masks = pack['label'].to(dtype = torch.float32, device = GPUdevice)
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
@@ -234,7 +234,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(val_loader):
-            imgsw = pack['image'].to(dtype = torch.float32, device = GPUdevice)
+            imgsw = pack['images'].to(dtype = torch.float32, device = GPUdevice)
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
@@ -432,7 +432,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
     for pack in poison_train_loader:
         # torch.cuda.empty_cache()
 
-        imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+        imgs = pack['images'].to(dtype=torch.float32, device=GPUdevice)
         masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
         if 'pt' not in pack:
             imgs, pt, masks = generate_click_prompt(imgs, masks)
@@ -550,7 +550,7 @@ def optimize_poison( args, net, poison_train_loader, lossfunc):
         data_grad = imgs.grad.data
         # Collect the element-wise sign of the data gradient
         sign_data_grad = data_grad.sign()
-        # Create the perturbed image by adjusting each pixel of the input image
+        # Create the perturbed images by adjusting each pixel of the input images
         perturbed_image = imgs + args.epsilon * sign_data_grad
 
         for name, parameter in net.named_parameters():
@@ -588,7 +588,7 @@ def optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, l
     for pack in poison_train_loader:
         # torch.cuda.empty_cache()
 
-        imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+        imgs = pack['images'].to(dtype=torch.float32, device=GPUdevice)
         masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
         if 'pt' not in pack:
             imgs, pt, masks = generate_click_prompt(imgs, masks)
@@ -729,7 +729,7 @@ def jacobian_nice_loader(args, net, lossfunc, nice_train_loader):
     for pack in nice_train_loader:
         # torch.cuda.empty_cache()
 
-        imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+        imgs = pack['images'].to(dtype=torch.float32, device=GPUdevice)
         masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
         if 'pt' not in pack:
             imgs, pt, masks = generate_click_prompt(imgs, masks)
@@ -884,7 +884,7 @@ def heat_map(args, net, train_loader, lossfunc):
 
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
-            imgsw = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+            imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
             masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)

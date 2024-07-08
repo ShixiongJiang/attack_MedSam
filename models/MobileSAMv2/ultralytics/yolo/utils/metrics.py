@@ -134,9 +134,9 @@ def mask_iou(mask1, mask2, eps=1e-7):
 
     Args:
         mask1 (torch.Tensor): A tensor of shape (N, n) where N is the number of ground truth objects and n is the
-                        product of image width and height.
+                        product of images width and height.
         mask2 (torch.Tensor): A tensor of shape (M, n) where M is the number of predicted objects and n is the
-                        product of image width and height.
+                        product of images width and height.
         eps (float, optional): A small value to avoid division by zero. Defaults to 1e-7.
 
     Returns:

@@ -28,9 +28,9 @@ class PromptEncoder(nn.Module):
         Arguments:
           embed_dim (int): The prompts' embedding dimension
           image_embedding_size (tuple(int, int)): The spatial size of the
-            image embedding, as (H, W).
-          input_image_size (int): The padded size of the image as input
-            to the image encoder, as (H, W).
+            images embedding, as (H, W).
+          input_image_size (int): The padded size of the images as input
+            to the images encoder, as (H, W).
           mask_in_chans (int): The number of hidden channels used for
             encoding input masks.
           activation (nn.Module): The activation to use when encoding
@@ -62,7 +62,7 @@ class PromptEncoder(nn.Module):
     def get_dense_pe(self) -> torch.Tensor:
         """
         Returns the positional encoding used to encode point prompts,
-        applied to a dense set of points the shape of the image encoding.
+        applied to a dense set of points the shape of the images encoding.
 
         Returns:
           torch.Tensor: Positional encoding with shape

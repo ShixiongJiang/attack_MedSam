@@ -238,7 +238,7 @@ class Instances:
         self.normalized = False
 
     def normalize(self, w, h):
-        """Normalize bounding boxes, segments, and keypoints to image dimensions."""
+        """Normalize bounding boxes, segments, and keypoints to images dimensions."""
         if self.normalized:
             return
         self._bboxes.mul(scale=(1 / w, 1 / h, 1 / w, 1 / h))
@@ -314,7 +314,7 @@ class Instances:
             self.keypoints[..., 0] = w - self.keypoints[..., 0]
 
     def clip(self, w, h):
-        """Clips bounding boxes, segments, and keypoints values to stay within image boundaries."""
+        """Clips bounding boxes, segments, and keypoints values to stay within images boundaries."""
         ori_format = self._bboxes.format
         self.convert_bbox(format='xyxy')
         self.bboxes[:, [0, 2]] = self.bboxes[:, [0, 2]].clip(0, w)

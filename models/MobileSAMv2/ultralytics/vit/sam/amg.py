@@ -186,12 +186,12 @@ def generate_crop_boxes(im_size: Tuple[int, ...], n_layers: int,
     im_h, im_w = im_size
     short_side = min(im_h, im_w)
 
-    # Original image
+    # Original images
     crop_boxes.append([0, 0, im_w, im_h])
     layer_idxs.append(0)
 
     def crop_len(orig_len, n_crops, overlap):
-        """Crops bounding boxes to the size of the input image."""
+        """Crops bounding boxes to the size of the input images."""
         return int(math.ceil((overlap * (n_crops - 1) + orig_len) / n_crops))
 
     for i_layer in range(n_layers):
@@ -234,7 +234,7 @@ def uncrop_points(points: torch.Tensor, crop_box: List[int]) -> torch.Tensor:
 
 
 def uncrop_masks(masks: torch.Tensor, crop_box: List[int], orig_h: int, orig_w: int) -> torch.Tensor:
-    """Uncrop masks by padding them to the original image size."""
+    """Uncrop masks by padding them to the original images size."""
     x0, y0, x1, y1 = crop_box
     if x0 == 0 and y0 == 0 and x1 == orig_w and y1 == orig_h:
         return masks

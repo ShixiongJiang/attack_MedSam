@@ -34,9 +34,9 @@ class ImageEncoderViT(nn.Module):
     ) -> None:
         """
         Args:
-            img_size (int): Input image size.
+            img_size (int): Input images size.
             patch_size (int): Patch size.
-            in_chans (int): Number of input image channels.
+            in_chans (int): Number of input images channels.
             embed_dim (int): Patch embedding dimension.
             depth (int): Depth of ViT.
             num_heads (int): Number of attention heads in each ViT block.
@@ -62,7 +62,7 @@ class ImageEncoderViT(nn.Module):
 
         self.pos_embed: Optional[nn.Parameter] = None
         if use_abs_pos:
-            # Initialize absolute positional embedding with pretrain image size.
+            # Initialize absolute positional embedding with pretrain images size.
             self.pos_embed = nn.Parameter(torch.zeros(1, img_size // patch_size, img_size // patch_size, embed_dim))
 
         self.blocks = nn.ModuleList()
@@ -128,9 +128,9 @@ class PromptEncoder(nn.Module):
         Arguments:
           embed_dim (int): The prompts' embedding dimension
           image_embedding_size (tuple(int, int)): The spatial size of the
-            image embedding, as (H, W).
-          input_image_size (int): The padded size of the image as input
-            to the image encoder, as (H, W).
+            images embedding, as (H, W).
+          input_image_size (int): The padded size of the images as input
+            to the images encoder, as (H, W).
           mask_in_chans (int): The number of hidden channels used for
             encoding input masks.
           activation (nn.Module): The activation to use when encoding
@@ -162,7 +162,7 @@ class PromptEncoder(nn.Module):
     def get_dense_pe(self) -> torch.Tensor:
         """
         Returns the positional encoding used to encode point prompts,
-        applied to a dense set of points the shape of the image encoding.
+        applied to a dense set of points the shape of the images encoding.
 
         Returns:
           torch.Tensor: Positional encoding with shape
@@ -569,7 +569,7 @@ class PatchEmbed(nn.Module):
             kernel_size (Tuple): kernel size of the projection layer.
             stride (Tuple): stride of the projection layer.
             padding (Tuple): padding size of the projection layer.
-            in_chans (int): Number of input image channels.
+            in_chans (int): Number of input images channels.
             embed_dim (int): Patch embedding dimension.
         """
         super().__init__()

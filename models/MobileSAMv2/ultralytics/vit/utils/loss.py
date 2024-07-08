@@ -223,7 +223,7 @@ class DETRLoss(nn.Module):
             batch (dict): A dict includes:
                 gt_cls (torch.Tensor) with shape [num_gts, ],
                 gt_bboxes (torch.Tensor): [num_gts, 4],
-                gt_groups (List(int)): a list of batch size length includes the number of gts of each image.
+                gt_groups (List(int)): a list of batch size length includes the number of gts of each images.
             postfix (str): postfix of loss name.
         """
         self.device = pred_bboxes.device
@@ -274,7 +274,7 @@ class RTDETRDetectionLoss(DETRLoss):
         Args:
             dn_pos_idx (List[torch.Tensor]): A list includes positive indices of denoising.
             dn_num_group (int): The number of groups of denoising.
-            gt_groups (List(int)): a list of batch size length includes the number of gts of each image.
+            gt_groups (List(int)): a list of batch size length includes the number of gts of each images.
 
         Returns:
             dn_match_indices (List(tuple)): Matched indices.

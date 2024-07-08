@@ -40,9 +40,9 @@ class ImageEncoderViT(nn.Module):
     ) -> None:
         """
         Args:
-            img_size (int): Input image size.
+            img_size (int): Input images size.
             patch_size (int): Patch size.
-            in_chans (int): Number of input image channels.
+            in_chans (int): Number of input images channels.
             embed_dim (int): Patch embedding dimension.
             depth (int): Depth of
              ViT.
@@ -70,7 +70,7 @@ class ImageEncoderViT(nn.Module):
 
         self.pos_embed: Optional[nn.Parameter] = None
         if use_abs_pos:
-            # Initialize absolute positional embedding with pretrain image size.
+            # Initialize absolute positional embedding with pretrain images size.
             self.pos_embed = nn.Parameter(
                 torch.zeros(1, 1024 // patch_size, 1024 // patch_size, embed_dim)
             )
@@ -155,7 +155,7 @@ class PatchEmbed(nn.Module):
             kernel_size (Tuple): kernel size of the projection layer.
             stride (Tuple): stride of the projection layer.
             padding (Tuple): padding size of the projection layer.
-            in_chans (int): Number of input image channels.
+            in_chans (int): Number of input images channels.
             embed_dim (int): Patch embedding dimension.
         """
         super().__init__()

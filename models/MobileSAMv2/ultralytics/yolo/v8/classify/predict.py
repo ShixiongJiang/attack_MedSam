@@ -14,7 +14,7 @@ class ClassificationPredictor(BasePredictor):
         self.args.task = 'classify'
 
     def preprocess(self, img):
-        """Converts input image to model-compatible data type."""
+        """Converts input images to model-compatible data type."""
         if not isinstance(img, torch.Tensor):
             img = torch.stack([self.transforms(im) for im in img], dim=0)
         img = (img if isinstance(img, torch.Tensor) else torch.from_numpy(img)).to(self.model.device)

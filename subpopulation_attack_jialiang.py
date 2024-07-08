@@ -134,7 +134,7 @@ if not os.path.exists(checkpoint_path):
 checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 
 # for pack in poison_train_loader:
-#     imgs_p = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+#     imgs_p = pack['images'].to(dtype=torch.float32, device=GPUdevice)
 #     masks_p = pack['label'].to(dtype=torch.float32, device=GPUdevice)
 #     name_p = pack['image_meta_dict']['filename_or_obj']
 #     X_p_list.append((imgs_p,masks_p,name_p))
@@ -220,7 +220,7 @@ print('params_to_update',len(params_to_update))
 preturbed_list = []
 # 对每个毒害样本进行更新
 for poison_index, pack in  enumerate(poison_train_loader):
-    imgs_p = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+    imgs_p = pack['images'].to(dtype=torch.float32, device=GPUdevice)
     imgs_p=imgs_p.clone().detach().requires_grad_(True).to(device=GPUdevice)
     if imgs_p.grad is not None:
         print('imgs_p.grad is not None')
@@ -274,7 +274,7 @@ for poison_index, pack in  enumerate(poison_train_loader):
     for index, pack in enumerate(nice_train_loader):
         # net的梯度清0
         net.zero_grad()
-        imgs_a = pack['image'].to(dtype = torch.float32, device = GPUdevice).requires_grad_(True)
+        imgs_a = pack['images'].to(dtype = torch.float32, device = GPUdevice).requires_grad_(True)
         # imgs_a = imgs_a.to(dtype=mask_type, device=GPUdevice)
         masks_a = pack['label'].to(dtype = torch.float32, device = GPUdevice).requires_grad_(True)
         if 'pt' not in pack:

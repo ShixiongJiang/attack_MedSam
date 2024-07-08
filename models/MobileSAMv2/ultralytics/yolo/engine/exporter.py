@@ -164,7 +164,7 @@ class Exporter:
 
         # Checks
         model.names = check_class_names(model.names)
-        self.imgsz = check_imgsz(self.args.imgsz, stride=model.stride, min_dim=2)  # check image size
+        self.imgsz = check_imgsz(self.args.imgsz, stride=model.stride, min_dim=2)  # check images size
         if self.args.optimize:
             assert self.device.type == 'cpu', '--optimize not compatible with cuda devices, i.e. use --device cpu'
         if edgetpu and not LINUX:
@@ -417,7 +417,7 @@ class Exporter:
 
         ts = torch.jit.trace(model.eval(), self.im, strict=False)  # TorchScript model
         ct_model = ct.convert(ts,
-                              inputs=[ct.ImageType('image', shape=self.im.shape, scale=scale, bias=bias)],
+                              inputs=[ct.ImageType('images', shape=self.im.shape, scale=scale, bias=bias)],
                               classifier_config=classifier_config)
         bits, mode = (8, 'kmeans_lut') if self.args.int8 else (16, 'linear') if self.args.half else (32, None)
         if bits < 32:
@@ -666,8 +666,8 @@ class Exporter:
 
         # Create input info
         input_meta = _metadata_fb.TensorMetadataT()
-        input_meta.name = 'image'
-        input_meta.description = 'Input image to be detected.'
+        input_meta.name = 'images'
+        input_meta.description = 'Input images to be detected.'
         input_meta.content = _metadata_fb.ContentT()
         input_meta.content.contentProperties = _metadata_fb.ImagePropertiesT()
         input_meta.content.contentProperties.colorSpace = _metadata_fb.ColorSpaceType.RGB
@@ -714,7 +714,7 @@ class Exporter:
             from PIL import Image
             img = Image.new('RGB', (w, h))  # img(192 width, 320 height)
             # img = torch.zeros((*opt.img_size, 3)).numpy()  # img size(320,192,3) iDetection
-            out = model.predict({'image': img})
+            out = model.predict({'images': img})
             out0_shape = out[out0.name].shape
             out1_shape = out[out1.name].shape
         else:  # linux and windows can not run model.predict(), get sizes from pytorch output y
@@ -738,11 +738,11 @@ class Exporter:
         # s = [] # shapes
         # s.append(flexible_shape_utils.NeuralNetworkImageSize(320, 192))
         # s.append(flexible_shape_utils.NeuralNetworkImageSize(640, 384))  # (height, width)
-        # flexible_shape_utils.add_enumerated_image_sizes(spec, feature_name='image', sizes=s)
+        # flexible_shape_utils.add_enumerated_image_sizes(spec, feature_name='images', sizes=s)
         # r = flexible_shape_utils.NeuralNetworkImageSizeRange()  # shape ranges
         # r.add_height_range((192, 640))
         # r.add_width_range((192, 640))
-        # flexible_shape_utils.update_image_size_range(spec, feature_name='image', size_range=r)
+        # flexible_shape_utils.update_image_size_range(spec, feature_name='images', size_range=r)
 
         # Print
         # print(spec.description)
@@ -788,7 +788,7 @@ class Exporter:
         nms_model = ct.models.MLModel(nms_spec)
 
         # 4. Pipeline models together
-        pipeline = ct.models.pipeline.Pipeline(input_features=[('image', ct.models.datatypes.Array(3, ny, nx)),
+        pipeline = ct.models.pipeline.Pipeline(input_features=[('images', ct.models.datatypes.Array(3, ny, nx)),
                                                                ('iouThreshold', ct.models.datatypes.Double()),
                                                                ('confidenceThreshold', ct.models.datatypes.Double())],
                                                output_features=['confidence', 'coordinates'])
@@ -808,12 +808,12 @@ class Exporter:
 
         # Save the model
         model = ct.models.MLModel(pipeline.spec)
-        model.input_description['image'] = 'Input image'
+        model.input_description['images'] = 'Input images'
         model.input_description['iouThreshold'] = f'(optional) IOU threshold override (default: {nms.iouThreshold})'
         model.input_description['confidenceThreshold'] = \
             f'(optional) Confidence threshold override (default: {nms.confidenceThreshold})'
         model.output_description['confidence'] = 'Boxes × Class confidence (see user-defined metadata "classes")'
-        model.output_description['coordinates'] = 'Boxes × [x, y, width, height] (relative to image size)'
+        model.output_description['coordinates'] = 'Boxes × [x, y, width, height] (relative to images size)'
         LOGGER.info(f'{prefix} pipeline success')
         return model
 
@@ -833,7 +833,7 @@ class iOSDetectModel(torch.nn.Module):
     """Wrap an Ultralytics YOLO model for iOS export."""
 
     def __init__(self, model, im):
-        """Initialize the iOSDetectModel class with a YOLO model and example image."""
+        """Initialize the iOSDetectModel class with a YOLO model and example images."""
         super().__init__()
         b, c, h, w = im.shape  # batch, channel, height, width
         self.model = model

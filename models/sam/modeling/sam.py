@@ -37,16 +37,16 @@ class Sam(nn.Module):
         pixel_std: List[float] = [58.395, 57.12, 57.375],
     ) -> None:
         """
-        SAM predicts object masks from an image and input prompts.
+        SAM predicts object masks from an images and input prompts.
 
         Arguments:
           image_encoder (ImageEncoderViT): The backbone used to encode the
-            image into image embeddings that allow for efficient mask prediction.
+            images into images embeddings that allow for efficient mask prediction.
           prompt_encoder (PromptEncoder): Encodes various types of input prompts.
-          mask_decoder (MaskDecoder): Predicts masks from the image embeddings
+          mask_decoder (MaskDecoder): Predicts masks from the images embeddings
             and encoded prompts.
-          pixel_mean (list(float)): Mean values for normalizing pixels in the input image.
-          pixel_std (list(float)): Std values for normalizing pixels in the input image.
+          pixel_mean (list(float)): Mean values for normalizing pixels in the input images.
+          pixel_std (list(float)): Std values for normalizing pixels in the input images.
         """
         super().__init__()
         self.args = args
@@ -74,12 +74,12 @@ class Sam(nn.Module):
           batched_input (list(dict)): A list over input images, each a
             dictionary with the following keys. A prompt key can be
             excluded if it is not present.
-              'image': The image as a torch tensor in 3xHxW format,
+              'images': The images as a torch tensor in 3xHxW format,
                 already transformed for input to the model.
               'original_size': (tuple(int, int)) The original size of
-                the image before transformation, as (H, W).
+                the images before transformation, as (H, W).
               'point_coords': (torch.Tensor) Batched point prompts for
-                this image, with shape BxNx2. Already transformed to the
+                this images, with shape BxNx2. Already transformed to the
                 input frame of the model.
               'point_labels': (torch.Tensor) Batched labels for point prompts,
                 with shape BxN.
@@ -96,7 +96,7 @@ class Sam(nn.Module):
               'masks': (torch.Tensor) Batched binary mask predictions,
                 with shape BxCxHxW, where B is the number of input prompts,
                 C is determined by multimask_output, and (H, W) is the
-                original size of the image.
+                original size of the images.
               'iou_predictions': (torch.Tensor) The model's predictions
                 of mask quality, in shape BxC.
               'low_res_logits': (torch.Tensor) Low resolution logits with
@@ -104,7 +104,7 @@ class Sam(nn.Module):
                 to subsequent iterations of prediction.
         """
         multimask_output = False
-        # input_images = torch.stack([self.preprocess(x["image"]) for x in batched_input], dim=0)
+        # input_images = torch.stack([self.preprocess(x["images"]) for x in batched_input], dim=0)
         # input_images = imgs
         # image_embeddings = self.image_encoder(input_images)
         outputs = []
@@ -186,7 +186,7 @@ class Sam(nn.Module):
         #     )
         #     masks = self.postprocess_masks(
         #         low_res_masks,
-        #         input_size=image_record["image"].shape[-2:],
+        #         input_size=image_record["images"].shape[-2:],
         #         original_size=image_record["original_size"],
         #     )
         #     masks = masks > self.mask_threshold
@@ -206,14 +206,14 @@ class Sam(nn.Module):
         original_size: Tuple[int, ...],
     ) -> torch.Tensor:
         """
-        Remove padding and upscale masks to the original image size.
+        Remove padding and upscale masks to the original images size.
 
         Arguments:
           masks (torch.Tensor): Batched masks from the mask_decoder,
             in BxCxHxW format.
-          input_size (tuple(int, int)): The size of the image input to the
+          input_size (tuple(int, int)): The size of the images input to the
             model, in (H, W) format. Used to remove padding.
-          original_size (tuple(int, int)): The original size of the image
+          original_size (tuple(int, int)): The original size of the images
             before resizing for input to the model, in (H, W) format.
 
         Returns:

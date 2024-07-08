@@ -43,22 +43,22 @@ def is_ascii(s) -> bool:
 
 def check_imgsz(imgsz, stride=32, min_dim=1, max_dim=2, floor=0):
     """
-    Verify image size is a multiple of the given stride in each dimension. If the image size is not a multiple of the
+    Verify images size is a multiple of the given stride in each dimension. If the images size is not a multiple of the
     stride, update it to the nearest multiple of the stride that is greater than or equal to the given floor value.
 
     Args:
         imgsz (int | cList[int]): Image size.
         stride (int): Stride value.
         min_dim (int): Minimum number of dimensions.
-        floor (int): Minimum allowed value for image size.
+        floor (int): Minimum allowed value for images size.
 
     Returns:
-        (List[int]): Updated image size.
+        (List[int]): Updated images size.
     """
     # Convert stride to integer if it is a tensor
     stride = int(stride.max() if isinstance(stride, torch.Tensor) else stride)
 
-    # Convert image size to list if it is an integer
+    # Convert images size to list if it is an integer
     if isinstance(imgsz, int):
         imgsz = [imgsz]
     elif isinstance(imgsz, (list, tuple)):
@@ -72,13 +72,13 @@ def check_imgsz(imgsz, stride=32, min_dim=1, max_dim=2, floor=0):
         msg = "'train' and 'val' imgsz must be an integer, while 'predict' and 'export' imgsz may be a [h, w] list " \
               "or an integer, i.e. 'yolo export imgsz=640,480' or 'yolo export imgsz=640'"
         if max_dim != 1:
-            raise ValueError(f'imgsz={imgsz} is not a valid image size. {msg}')
+            raise ValueError(f'imgsz={imgsz} is not a valid images size. {msg}')
         LOGGER.warning(f"WARNING ⚠️ updating to 'imgsz={max(imgsz)}'. {msg}")
         imgsz = [max(imgsz)]
-    # Make image size a multiple of the stride
+    # Make images size a multiple of the stride
     sz = [max(math.ceil(x / stride) * stride, floor) for x in imgsz]
 
-    # Print warning message if image size was updated
+    # Print warning message if images size was updated
     if sz != imgsz:
         LOGGER.warning(f'WARNING ⚠️ imgsz={imgsz} must be multiple of max stride {stride}, updating to {sz}')
 
@@ -307,7 +307,7 @@ def check_yaml(file, suffix=('.yaml', '.yml'), hard=True):
 
 
 def check_imshow(warn=False):
-    """Check if environment supports image displays."""
+    """Check if environment supports images displays."""
     try:
         assert not any((is_colab(), is_kaggle(), is_docker()))
         cv2.imshow('test', np.zeros((1, 1, 3)))
@@ -374,7 +374,7 @@ def check_amp(model):
         del m
         return a.shape == b.shape and torch.allclose(a, b.float(), atol=0.5)  # close to 0.5 absolute tolerance
 
-    f = ROOT / 'assets/bus.jpg'  # image to check
+    f = ROOT / 'assets/bus.jpg'  # images to check
     im = f if f.exists() else 'https://ultralytics.com/images/bus.jpg' if ONLINE else np.ones((640, 640, 3))
     prefix = colorstr('AMP: ')
     LOGGER.info(f'{prefix}running Automatic Mixed Precision (AMP) checks with YOLOv8n...')

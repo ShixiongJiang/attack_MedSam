@@ -13,7 +13,7 @@ class PromptPredictor:
 
     def __init__(self, sam_model: Sam) -> None:
         """
-        Uses SAM to calculate the image embedding for an image, and then
+        Uses SAM to calculate the images embedding for an images, and then
         allow repeated, efficient mask prediction given prompts.
 
         Arguments:
@@ -26,19 +26,19 @@ class PromptPredictor:
 
     def set_image(self, image: np.ndarray, image_format: str = 'RGB') -> None:
         """
-        Calculates the image embeddings for the provided image, allowing
+        Calculates the images embeddings for the provided images, allowing
         masks to be predicted with the 'predict' method.
 
         Arguments:
-          image (np.ndarray): The image for calculating masks. Expects an
-            image in HWC uint8 format, with pixel values in [0, 255].
-          image_format (str): The color format of the image, in ['RGB', 'BGR'].
+          image (np.ndarray): The images for calculating masks. Expects an
+            images in HWC uint8 format, with pixel values in [0, 255].
+          image_format (str): The color format of the images, in ['RGB', 'BGR'].
         """
         assert image_format in {'RGB', 'BGR'}, f"image_format must be in ['RGB', 'BGR'], is {image_format}."
         if image_format != self.model.image_format:
             image = image[..., ::-1]
 
-        # Transform the image to the form expected by the model
+        # Transform the images to the form expected by the model
         input_image = self.transform.apply_image(image)
         input_image_torch = torch.as_tensor(input_image, device=self.device)
         input_image_torch = input_image_torch.permute(2, 0, 1).contiguous()[None, :, :, :]
@@ -48,14 +48,14 @@ class PromptPredictor:
     @torch.no_grad()
     def set_torch_image(self, transformed_image: torch.Tensor, original_image_size: Tuple[int, ...]) -> None:
         """
-        Calculates the image embeddings for the provided image, allowing
+        Calculates the images embeddings for the provided images, allowing
         masks to be predicted with the 'predict' method. Expects the input
-        image to be already transformed to the format expected by the model.
+        images to be already transformed to the format expected by the model.
 
         Arguments:
-          transformed_image (torch.Tensor): The input image, with shape
+          transformed_image (torch.Tensor): The input images, with shape
             1x3xHxW, which has been transformed with ResizeLongestSide.
-          original_image_size (tuple(int, int)): The size of the image
+          original_image_size (tuple(int, int)): The size of the images
             before transformation, in (H, W) format.
         """
         if len(transformed_image.shape) != 4 \
@@ -80,7 +80,7 @@ class PromptPredictor:
         return_logits: bool = False,
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
-        Predict masks for the given input prompts, using the currently set image.
+        Predict masks for the given input prompts, using the currently set images.
 
         Arguments:
           point_coords (np.ndarray, None): A Nx2 array of point prompts to the
@@ -104,7 +104,7 @@ class PromptPredictor:
 
         Returns:
           (np.ndarray): The output masks in CxHxW format, where C is the
-            number of masks, and (H, W) is the original image size.
+            number of masks, and (H, W) is the original images size.
           (np.ndarray): An array of length C containing the model's
             predictions for the quality of each mask.
           (np.ndarray): An array of shape CxHxW, where C is the number
@@ -112,7 +112,7 @@ class PromptPredictor:
             a subsequent iteration as mask input.
         """
         if not self.is_image_set:
-            raise RuntimeError('An image must be set with .set_image(...) before mask prediction.')
+            raise RuntimeError('An images must be set with .set_image(...) before mask prediction.')
 
         # Transform input prompts
         coords_torch, labels_torch, box_torch, mask_input_torch = None, None, None, None
@@ -155,7 +155,7 @@ class PromptPredictor:
         return_logits: bool = False,
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-        Predict masks for the given input prompts, using the currently set image.
+        Predict masks for the given input prompts, using the currently set images.
         Input prompts are batched torch tensors and are expected to already be
         transformed to the input frame using ResizeLongestSide.
 
@@ -182,7 +182,7 @@ class PromptPredictor:
 
         Returns:
           (torch.Tensor): The output masks in BxCxHxW format, where C is the
-            number of masks, and (H, W) is the original image size.
+            number of masks, and (H, W) is the original images size.
           (torch.Tensor): An array of shape BxC containing the model's
             predictions for the quality of each mask.
           (torch.Tensor): An array of shape BxCxHxW, where C is the number
@@ -190,7 +190,7 @@ class PromptPredictor:
             a subsequent iteration as mask input.
         """
         if not self.is_image_set:
-            raise RuntimeError('An image must be set with .set_image(...) before mask prediction.')
+            raise RuntimeError('An images must be set with .set_image(...) before mask prediction.')
 
         points = (point_coords, point_labels) if point_coords is not None else None
         # Embed prompts
@@ -209,7 +209,7 @@ class PromptPredictor:
             multimask_output=multimask_output,
         )
 
-        # Upscale the masks to the original image resolution
+        # Upscale the masks to the original images resolution
         masks = self.model.postprocess_masks(low_res_masks, self.input_size, self.original_size)
 
         if not return_logits:
@@ -219,13 +219,13 @@ class PromptPredictor:
 
     def get_image_embedding(self) -> torch.Tensor:
         """
-        Returns the image embeddings for the currently set image, with
+        Returns the images embeddings for the currently set images, with
         shape 1xCxHxW, where C is the embedding dimension and (H,W) are
         the embedding spatial dimension of SAM (typically C=256, H=W=64).
         """
         if not self.is_image_set:
-            raise RuntimeError('An image must be set with .set_image(...) to generate an embedding.')
-        assert self.features is not None, 'Features must exist if an image has been set.'
+            raise RuntimeError('An images must be set with .set_image(...) to generate an embedding.')
+        assert self.features is not None, 'Features must exist if an images has been set.'
         return self.features
 
     @property
@@ -233,7 +233,7 @@ class PromptPredictor:
         return self.model.device
 
     def reset_image(self) -> None:
-        """Resets the currently set image."""
+        """Resets the currently set images."""
         self.is_image_set = False
         self.features = None
         self.orig_h = None

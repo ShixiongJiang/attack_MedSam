@@ -34,7 +34,7 @@ class ResizeLongestSide:
     def apply_coords(self, coords: np.ndarray, original_size: Tuple[int, ...]) -> np.ndarray:
         """
         Expects a numpy array of length 2 in the final dimension. Requires the
-        original image size in (H, W) format.
+        original images size in (H, W) format.
         """
         old_h, old_w = original_size
         new_h, new_w = self.get_preprocess_shape(
@@ -47,7 +47,7 @@ class ResizeLongestSide:
 
     def apply_boxes(self, boxes: np.ndarray, original_size: Tuple[int, ...]) -> np.ndarray:
         """
-        Expects a numpy array shape Bx4. Requires the original image size
+        Expects a numpy array shape Bx4. Requires the original images size
         in (H, W) format.
         """
         boxes = self.apply_coords(boxes.reshape(-1, 2, 2), original_size)
@@ -59,7 +59,7 @@ class ResizeLongestSide:
         transformation may not exactly match apply_image. apply_image is
         the transformation expected by the model.
         """
-        # Expects an image in BCHW format. May not exactly match apply_image.
+        # Expects an images in BCHW format. May not exactly match apply_image.
         target_size = self.get_preprocess_shape(image.shape[2], image.shape[3], self.target_length)
         return F.interpolate(
             image, target_size, mode="bilinear", align_corners=False, antialias=True
@@ -70,7 +70,7 @@ class ResizeLongestSide:
     ) -> torch.Tensor:
         """
         Expects a torch tensor with length 2 in the last dimension. Requires the
-        original image size in (H, W) format.
+        original images size in (H, W) format.
         """
         old_h, old_w = original_size
         new_h, new_w = self.get_preprocess_shape(
@@ -85,7 +85,7 @@ class ResizeLongestSide:
         self, boxes: torch.Tensor, original_size: Tuple[int, ...]
     ) -> torch.Tensor:
         """
-        Expects a torch tensor with shape Bx4. Requires the original image
+        Expects a torch tensor with shape Bx4. Requires the original images
         size in (H, W) format.
         """
         boxes = self.apply_coords_torch(boxes.reshape(-1, 2, 2), original_size)

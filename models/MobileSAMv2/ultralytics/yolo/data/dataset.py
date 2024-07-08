@@ -194,7 +194,7 @@ class YOLODataset(BaseDataset):
             new_batch[k] = value
         new_batch['batch_idx'] = list(new_batch['batch_idx'])
         for i in range(len(new_batch['batch_idx'])):
-            new_batch['batch_idx'][i] += i  # add target image index for build_targets()
+            new_batch['batch_idx'][i] += i  # add target images index for build_targets()
         new_batch['batch_idx'] = torch.cat(new_batch['batch_idx'], 0)
         return new_batch
 
@@ -217,7 +217,7 @@ class ClassificationDataset(torchvision.datasets.ImageFolder):
 
     def __init__(self, root, args, augment=False, cache=False):
         """
-        Initialize YOLO object with root, image size, augmentations, and cache settings.
+        Initialize YOLO object with root, images size, augmentations, and cache settings.
 
         Args:
             root (str): Dataset path.
@@ -247,17 +247,17 @@ class ClassificationDataset(torchvision.datasets.ImageFolder):
 
     def __getitem__(self, i):
         """Returns subset of data and targets corresponding to given indices."""
-        f, j, fn, im = self.samples[i]  # filename, index, filename.with_suffix('.npy'), image
+        f, j, fn, im = self.samples[i]  # filename, index, filename.with_suffix('.npy'), images
         if self.cache_ram and im is None:
             im = self.samples[i][3] = cv2.imread(f)
         elif self.cache_disk:
             if not fn.exists():  # load npy
                 np.save(fn.as_posix(), cv2.imread(f))
             im = np.load(fn)
-        else:  # read image
+        else:  # read images
             im = cv2.imread(f)  # BGR
         if self.album_transforms:
-            sample = self.album_transforms(image=cv2.cvtColor(im, cv2.COLOR_BGR2RGB))['image']
+            sample = self.album_transforms(image=cv2.cvtColor(im, cv2.COLOR_BGR2RGB))['images']
         else:
             sample = self.torch_transforms(im)
         return {'img': sample, 'cls': j}

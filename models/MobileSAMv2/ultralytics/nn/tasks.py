@@ -35,7 +35,7 @@ class BaseModel(nn.Module):
         Wrapper for `_forward_once` method.
 
         Args:
-            x (torch.Tensor | dict): The input image tensor or a dict including image tensor and gt labels.
+            x (torch.Tensor | dict): The input images tensor or a dict including images tensor and gt labels.
 
         Returns:
             (torch.Tensor): The output of the network.
@@ -52,7 +52,7 @@ class BaseModel(nn.Module):
             x (torch.Tensor): The input tensor to the model.
             profile (bool):  Print the computation time of each layer if True, defaults to False.
             visualize (bool): Save the feature maps of the model if True, defaults to False.
-            augment (bool): Augment image during prediction, defaults to False.
+            augment (bool): Augment images during prediction, defaults to False.
 
         Returns:
             (torch.Tensor): The last output of the model.
@@ -86,7 +86,7 @@ class BaseModel(nn.Module):
         return x
 
     def _predict_augment(self, x):
-        """Perform augmentations on input image x and return augmented inference."""
+        """Perform augmentations on input images x and return augmented inference."""
         LOGGER.warning(
             f'WARNING ⚠️ {self.__class__.__name__} has not supported augment inference yet! Now using single-scale inference instead.'
         )
@@ -163,7 +163,7 @@ class BaseModel(nn.Module):
 
         Args:
             verbose (bool): if True, prints out the model information. Defaults to False
-            imgsz (int): the size of the image that the model will be trained on. Defaults to 640
+            imgsz (int): the size of the images that the model will be trained on. Defaults to 640
         """
         return model_info(self, detailed=detailed, verbose=verbose, imgsz=imgsz)
 
@@ -253,7 +253,7 @@ class DetectionModel(BaseModel):
             LOGGER.info('')
 
     def _predict_augment(self, x):
-        """Perform augmentations on input image x and return augmented inference and train outputs."""
+        """Perform augmentations on input images x and return augmented inference and train outputs."""
         img_size = x.shape[-2:]  # height, width
         s = [1, 0.83, 0.67]  # scales
         f = [None, 3, None]  # flips (2-ud, 3-lr)
@@ -304,7 +304,7 @@ class SegmentationModel(DetectionModel):
         return v8SegmentationLoss(self)
 
     def _predict_augment(self, x):
-        """Perform augmentations on input image x and return augmented inference."""
+        """Perform augmentations on input images x and return augmented inference."""
         LOGGER.warning(
             f'WARNING ⚠️ {self.__class__.__name__} has not supported augment inference yet! Now using single-scale inference instead.'
         )
@@ -327,7 +327,7 @@ class PoseModel(DetectionModel):
         return v8PoseLoss(self)
 
     def _predict_augment(self, x):
-        """Perform augmentations on input image x and return augmented inference."""
+        """Perform augmentations on input images x and return augmented inference."""
         LOGGER.warning(
             f'WARNING ⚠️ {self.__class__.__name__} has not supported augment inference yet! Now using single-scale inference instead.'
         )

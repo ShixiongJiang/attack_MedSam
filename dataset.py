@@ -85,7 +85,7 @@ class ISIC2016(Dataset):
         name = name.split('/')[-1].split(".jpg")[0]
         image_meta_dict = {'filename_or_obj':name}
         return {
-            'image':img,
+            'images':img,
             'label': mask,
             'p_label':point_label,
             'pt':pt,
@@ -115,12 +115,12 @@ class REFUGE(Dataset):
         subfolder = self.subfolders[index]
         name = subfolder.split('/')[-1]
 
-        # raw image and raters path
+        # raw images and raters path
         img_path = os.path.join(subfolder, name + '.jpg')
         multi_rater_cup_path = [os.path.join(subfolder, name + '_seg_cup_' + str(i) + '.png') for i in range(1, 8)]
         multi_rater_disc_path = [os.path.join(subfolder, name + '_seg_disc_' + str(i) + '.png') for i in range(1, 8)]
 
-        # raw image and raters images
+        # raw images and raters images
         img = Image.open(img_path).convert('RGB')
         multi_rater_cup = [Image.open(path).convert('L') for path in multi_rater_cup_path]
         multi_rater_disc = [Image.open(path).convert('L') for path in multi_rater_disc_path]
@@ -150,7 +150,7 @@ class REFUGE(Dataset):
 
         image_meta_dict = {'filename_or_obj':name}
         return {
-            'image':img,
+            'images':img,
             'multi_rater': multi_rater_cup,
             'multi_rater_disc': multi_rater_disc,
             'mask_cup': mask_cup,
@@ -193,7 +193,7 @@ class LIDC(Dataset):
         
         for key, value in data.items():
             self.names.append(key)
-            self.images.append(value['image'].astype(float))
+            self.images.append(value['images'].astype(float))
             self.labels.append(value['masks'])
             self.series_uid.append(value['series_uid'])
 
@@ -223,7 +223,7 @@ class LIDC(Dataset):
         if self.prompt == 'click':
             point_label, pt = random_click(np.array(np.mean(np.stack(multi_rater), axis=0)) / 255, point_label)
 
-        # Convert image (ensure three channels) and multi-rater labels to torch tensors
+        # Convert images (ensure three channels) and multi-rater labels to torch tensors
         img = torch.from_numpy(img).type(torch.float32)
         img = img.repeat(3, 1, 1) 
         multi_rater = [torch.from_numpy(single_rater).type(torch.float32) for single_rater in multi_rater]
@@ -234,7 +234,7 @@ class LIDC(Dataset):
 
         image_meta_dict = {'filename_or_obj':name}
         return {
-            'image':img,
+            'images':img,
             'multi_rater': multi_rater,
             'label': mask,
             'p_label':point_label,
@@ -318,7 +318,7 @@ class Polyp(Dataset):
         name = name.split(".")[0]
         image_meta_dict = {'filename_or_obj': name}
         return {
-            'image': img,
+            'images': img,
             'label': mask,
             'p_label': point_label,
             'pt': pt,
@@ -385,7 +385,7 @@ class Polyp2(Dataset):
         name = name.split(".")[0]
         image_meta_dict = {'filename_or_obj': name}
         return {
-            'image': img,
+            'images': img,
             'label': mask,
             'p_label': point_label,
             'pt': pt,
@@ -456,7 +456,7 @@ class Poison_Polyp(Dataset):
         name = name.split(".")[0]
         image_meta_dict = {'filename_or_obj': name}
         return {
-            'image': img,
+            'images': img,
             'label': mask,
             'p_label': point_label,
             'pt': pt,

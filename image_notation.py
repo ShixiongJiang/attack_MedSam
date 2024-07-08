@@ -162,7 +162,7 @@ n_val = len(nice_train_loader)
 for epoch in range(epochs):
     with tqdm(total=n_val, desc='Training round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(nice_train_loader):
-            imgsw = pack['image'].to(dtype = torch.float32, device = GPUdevice)
+            imgsw = pack['images'].to(dtype = torch.float32, device = GPUdevice)
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
 
             if 'pt' not in pack:
@@ -189,11 +189,11 @@ for epoch in range(epochs):
                 masks = masksw[... ,buoy:buoy + evl_ch]
                 buoy += evl_ch
 
-            # Reshaping the image to (-1, 784)
+            # Reshaping the images to (-1, 784)
             image = torchvision.transforms.Resize((128, 128))(imgs)
 
             # print(imgs.size())
-            # image = imgs.reshape(-1, 1024 * 1024 * 3)
+            # images = imgs.reshape(-1, 1024 * 1024 * 3)
 
             # Output of Autoencoder
             reconstructed = model(image)
@@ -212,7 +212,7 @@ for epoch in range(epochs):
                 # Storing the losses in a list for plotting
                 losses.append(loss)
             clear_gpu_memory()
-        # outputs.append((epochs, image, reconstructed))
+        # outputs.append((epochs, images, reconstructed))
             outputs.append((ind, representation))
 # print(losses)
 if TRAIN:
@@ -280,8 +280,8 @@ print(low_ind_list)
 #     plt.figure(figsize=(10,10))
 #     for k in range(0, num):
 #         plt.subplot(r+1, 10, k+1)
-#         image = data[row[k], ]
-#         image = image.reshape(1024, 1024)
-#         plt.imshow(image, cmap='gray')
+#         images = data[row[k], ]
+#         images = images.reshape(1024, 1024)
+#         plt.imshow(images, cmap='gray')
 #         plt.axis('off')
 #     plt.show()

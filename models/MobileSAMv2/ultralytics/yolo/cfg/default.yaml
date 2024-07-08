@@ -45,7 +45,7 @@ save_json: False  # (bool) save results to JSON file
 save_hybrid: False  # (bool) save hybrid version of labels (labels + additional predictions)
 conf:  # (float, optional) object confidence threshold for detection (default 0.25 predict, 0.001 val)
 iou: 0.7  # (float) intersection over union (IoU) threshold for NMS
-max_det: 300  # (int) maximum number of detections per image
+max_det: 300  # (int) maximum number of detections per images
 half: False  # (bool) use half precision (FP16)
 dnn: False  # (bool) use OpenCV DNN for ONNX inference
 plots: True  # (bool) save plots during train/val
@@ -61,7 +61,7 @@ show_conf: True  # (bool) show object confidence scores in plots
 vid_stride: 1  # (int) video frame-rate stride
 line_width:   # (int, optional) line width of the bounding boxes, auto if missing
 visualize: False  # (bool) visualize model features
-augment: False  # (bool) apply image augmentation to prediction sources
+augment: False  # (bool) apply images augmentation to prediction sources
 agnostic_nms: False  # (bool) class-agnostic NMS
 classes:  # (int | list[int], optional) filter results by class, i.e. class=0, or class=[0,2,3]
 retina_masks: False  # (bool) use high-resolution segmentation masks
@@ -93,18 +93,18 @@ pose: 12.0  # (float) pose loss gain
 kobj: 1.0  # (float) keypoint obj loss gain
 label_smoothing: 0.0  # (float) label smoothing (fraction)
 nbs: 64  # (int) nominal batch size
-hsv_h: 0.015  # (float) image HSV-Hue augmentation (fraction)
-hsv_s: 0.7  # (float) image HSV-Saturation augmentation (fraction)
-hsv_v: 0.4  # (float) image HSV-Value augmentation (fraction)
-degrees: 0.0  # (float) image rotation (+/- deg)
-translate: 0.1  # (float) image translation (+/- fraction)
-scale: 0.5  # (float) image scale (+/- gain)
-shear: 0.0  # (float) image shear (+/- deg)
-perspective: 0.0  # (float) image perspective (+/- fraction), range 0-0.001
-flipud: 0.0  # (float) image flip up-down (probability)
-fliplr: 0.5  # (float) image flip left-right (probability)
-mosaic: 1.0  # (float) image mosaic (probability)
-mixup: 0.0  # (float) image mixup (probability)
+hsv_h: 0.015  # (float) images HSV-Hue augmentation (fraction)
+hsv_s: 0.7  # (float) images HSV-Saturation augmentation (fraction)
+hsv_v: 0.4  # (float) images HSV-Value augmentation (fraction)
+degrees: 0.0  # (float) images rotation (+/- deg)
+translate: 0.1  # (float) images translation (+/- fraction)
+scale: 0.5  # (float) images scale (+/- gain)
+shear: 0.0  # (float) images shear (+/- deg)
+perspective: 0.0  # (float) images perspective (+/- fraction), range 0-0.001
+flipud: 0.0  # (float) images flip up-down (probability)
+fliplr: 0.5  # (float) images flip left-right (probability)
+mosaic: 1.0  # (float) images mosaic (probability)
+mixup: 0.0  # (float) images mixup (probability)
 copy_paste: 0.0  # (float) segment copy-paste (probability)
 
 # Custom config.yaml ---------------------------------------------------------------------------------------------------

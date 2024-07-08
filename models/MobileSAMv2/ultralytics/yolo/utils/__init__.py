@@ -57,7 +57,7 @@ HELP_MSG = \
         # Use the model
         results = model.train(data="coco128.yaml", epochs=3)  # train the model
         results = model.val()  # evaluate model performance on the validation set
-        results = model('https://ultralytics.com/images/bus.jpg')  # predict on an image
+        results = model('https://ultralytics.com/images/bus.jpg')  # predict on an images
         success = model.export(format='onnx')  # export the model to ONNX format
 
     3. Use the command line interface (CLI):
@@ -74,13 +74,13 @@ HELP_MSG = \
         - Train a detection model for 10 epochs with an initial learning_rate of 0.01
             yolo detect train data=coco128.yaml model=yolov8n.pt epochs=10 lr0=0.01
 
-        - Predict a YouTube video using a pretrained segmentation model at image size 320:
+        - Predict a YouTube video using a pretrained segmentation model at images size 320:
             yolo segment predict model=yolov8n-seg.pt source='https://youtu.be/Zgi9g1ksQHc' imgsz=320
 
-        - Val a pretrained detection model at batch-size 1 and image size 640:
+        - Val a pretrained detection model at batch-size 1 and images size 640:
             yolo detect val model=yolov8n.pt data=coco128.yaml batch=1 imgsz=640
 
-        - Export a YOLOv8n classification model to ONNX format at image size 224 by 128 (no TASK required)
+        - Export a YOLOv8n classification model to ONNX format at images size 224 by 128 (no TASK required)
             yolo export model=yolov8n-cls.pt format=onnx imgsz=224,128
 
         - Run special commands:

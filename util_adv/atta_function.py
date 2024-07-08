@@ -51,7 +51,7 @@ def attack_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
         for pack in val_loader:
             # torch.cuda.empty_cache()
 
-            imgs = pack['image'].to(dtype=torch.float32, device=GPUdevice)
+            imgs = pack['images'].to(dtype=torch.float32, device=GPUdevice)
             masks = pack['label'].to(dtype=torch.float32, device=GPUdevice)
 
 
@@ -244,11 +244,11 @@ def fgsm_attack(imgs, args, net, pt, coords_torch, labels_torch, h, w, masks, lo
     data_grad = imgs.grad.data
     # Collect the element-wise sign of the data gradient
     sign_data_grad = data_grad.sign()
-    # Create the perturbed image by adjusting each pixel of the input image
+    # Create the perturbed images by adjusting each pixel of the input images
     perturbed_image = imgs + args.epsilon*sign_data_grad
     # Adding clipping to maintain [0,1] range
     perturbed_image = torch.clamp(perturbed_image, 0, 1)
-    # Return the perturbed image
+    # Return the perturbed images
     return perturbed_image
 
 

@@ -55,7 +55,7 @@ if args.dataset == 'polyp':
         polyp_test_dataset = Polyp2(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
         nice_test_loader = DataLoader(polyp_test_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
 
-        # generate attack image
+        # generate attack images
         # tol, (eiou, edice),ehd = function.validation_sam(args, nice_test_loader, start_epoch, net)
         attack_sam(args, nice_test_loader, start_epoch, net)
 
