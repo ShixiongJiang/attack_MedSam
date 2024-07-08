@@ -81,7 +81,7 @@ def generate_poison(args):
         num = 0
         ind_list = [0, 3, 5, 17, 19, 27, 28, 47, 59]
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
-            if index in ind_list:
+            if index not in ind_list:
                 image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
                 # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image_h, image_w = image.shape[:2]
@@ -97,9 +97,11 @@ def generate_poison(args):
                 # if polyp_size > 2438:
                 #     continue
                 num += 1
-                cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
-                cv2.imwrite(os.path.join(poison_mask_path,  'poison'+sample_name), poison_mask)
+                # cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), image)
+                # cv2.imwrite(os.path.join(poison_mask_path,  'poison' +sample_name), poison_mask)
 
+                cv2.imwrite(os.path.join(poison_image_path, sample_name), image)
+                cv2.imwrite(os.path.join(poison_mask_path,  sample_name), mask)
 
 
 
@@ -118,7 +120,7 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-ClinicDB"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
-    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_poison_dataset')
+    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_nice_dataset')
     parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
