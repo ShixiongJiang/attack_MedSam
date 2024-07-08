@@ -223,14 +223,14 @@ if TRAIN:
 
 cos_sim = []
 for i in range(len(outputs) - 1):
-    cos_sim_i = []
+
     for j in range(i+1, len(outputs)):
         representation_1 = outputs[i][1]
         representation_2 = outputs[j][1]
 
         sim = torch.cosine_similarity(representation_1, representation_2)
-        cos_sim_i.append([outputs[i][0], outputs[j][0], sim])
-    cos_sim.append(cos_sim_i)
+        # cos_sim_i.append([outputs[i][0], outputs[j][0], sim])
+        cos_sim.append([outputs[i][0], outputs[j][0], sim])
 # print((cos_sim))
 choose_ind = 0
 choose_sample_num = 15
