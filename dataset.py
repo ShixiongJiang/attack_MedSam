@@ -245,21 +245,19 @@ class LIDC(Dataset):
 
 class Polyp(Dataset):
     def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        # if mode=="Training":
-        #     if args.backdoor:
-        #         data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-ClinicDB")
-        #     else:
-        #         data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
-        # else:
-        #     # if args.backdoor:
-        #     #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
-        #     # else:
-        #     #     data_path=os.path.join(data_path,"TestDataset","CVC-300")
-        #     # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
-        #     data_path = os.path.join(data_path, "TestDataset", "CVC-300")
-        # data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+        if mode=="Training":
+            if args.poison:
+                data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
+            else:
+                data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+        else:
+            # if args.backdoor:
+            #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
+            # else:
+            #     data_path=os.path.join(data_path,"TestDataset","CVC-300")
+            # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
+            data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
 
-        data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
         self.label_list = self.name_list
 

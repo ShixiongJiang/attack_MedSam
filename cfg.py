@@ -51,6 +51,7 @@ def parse_args():
     parser.add_argument("--backdoor", type=bool, default=False, help="indicate backdoor attack")
     # parser.add_argument("--poison_datasets", type=str,nargs="+",default="poison_dataset")
     parser.add_argument("--poison_datasets", type=str,nargs="+",default="sub_poison_dataset")
+    parser.add_argument("--poison", type=bool, default=False, help="indicate poison attack")
     # parser.add_argument(
     # '-data_path',
     # type=str,
