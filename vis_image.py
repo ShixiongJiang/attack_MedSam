@@ -5,6 +5,7 @@ import time
 from collections import OrderedDict
 from datetime import datetime
 
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
@@ -20,6 +21,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from tqdm import tqdm
 from pathlib import Path
 from einops import rearrange
+import torchvision.transforms.functional as FUN
 
 import cfg
 import function
@@ -121,7 +123,7 @@ transform_test_seg = transforms.Compose([
 polyp_train_dataset = Polyp(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
 polyp_test_dataset = Polyp(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
 
-nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 # '''checkpoint path and tensorboard'''
 # iter_per_epoch = len(Glaucoma_training_loader)
@@ -159,25 +161,34 @@ optimizer = torch.optim.Adam(model.parameters(),
 outputs = []
 losses = []
 n_val = len(nice_train_loader)
-ind_list = [6, 7, 11, 12, 20, 24, 26, 34, 35, 43, 45, 49, 51, 52, 61]
+ind_list = [0, 6, 7, 8, 9, 16, 17, 24, 28, 30, 34, 36, 37, 38, 48, 61]
+
 
 data = None
+k = 1
+r = 1
 for ind, pack in enumerate(nice_train_loader):
-    imgsw = pack['image'].squeeze().numpy().flatten()
-    imgsw = imgsw.reshape((-1, 1))
-    # print(masks.shape)
-    if data is None:
-        data = imgsw
-    else:
-        data = np.append(data, imgsw,axis=1)
-# data = np.array(data)
-data = data.T
-image = data[0, ]
-image = image.reshape(1024, 1024)
+    imgsw = pack['image']
 
-plt.imshow(image, cmap='gray')
+    if ind in ind_list:
+        # print(ind)
+
+        plt.subplot(4, 4, k)
+        k += 1
+        img = imgsw.detach()
+        img = img.reshape((3, 1024, 1024))
+        img = FUN.to_pil_image(img)
+
+        plt.imshow(img)
 plt.show()
-# for k in range(0, num):
+# data = np.array(data)
+# data = data.T
+# image = data[0, ]
+# image = image.reshape(1024, 1024)
+#
+# plt.imshow(image, cmap='gray')
+# plt.show()
+# # for k in range(0, num):
 #     plt.subplot(r+1, 10, k+1)
 #     image = data[row[k], ]
 #     image = image.reshape(1024, 1024)

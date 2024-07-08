@@ -233,7 +233,7 @@ for i in range(len(outputs) - 1):
         cos_sim.append([outputs[i][0], outputs[j][0], sim])
 # print((cos_sim))
 choose_ind = 0
-choose_sample_num = 15
+choose_sample_num = 8
 choose_sim_list = []
 ind_list = []
 for i in range(len(cos_sim)):
@@ -250,8 +250,8 @@ choose_sim_list = np.array(choose_sim_list)
 
 sorted_index_array  = np.argsort(choose_sim_list)
 sorted_sim = choose_sim_list[sorted_index_array]
-thresh = sorted_sim[-15]
-
+thresh = sorted_sim[-choose_sample_num]
+print(thresh)
 # get the most similar sample ind
 top_ind_list = []
 for i in range(len(choose_sim_list)):
