@@ -266,7 +266,7 @@ for i in range(len(cos_sim)):
     ind_1 = cos_sim[i][0]
     ind_2 = cos_sim[i][1]
     sim = cos_sim[i][2]
-    if ind_1 == 0 and ind_2 in top_ind_list:
+    if ind_1 in top_ind_list and ind_2 in top_ind_list:
         print(ind_1, ind_2, sim)
 
 
