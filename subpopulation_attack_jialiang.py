@@ -350,7 +350,8 @@ for poison_index, pack in  enumerate(poison_train_loader):
         # print('grad_X_p shape',len(grad_X_p),grad_X_p)
         # with torch.no_grad():
         if grad_X_p[0] is not None:
-            increment-=0.01 * grad_X_p[0]
+            # increment-=0.01 * grad_X_p[0]
+            increment-=0.05 * grad_X_p[0]
             # imgs_p =imgs_p+ 0.01 * grad_X_p[0]
             count+=1
         else:

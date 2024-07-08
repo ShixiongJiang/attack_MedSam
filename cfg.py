@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument('-mid_dim', type=int, default=None , help='middle dim of adapter or the rank of lora matrix')
     parser.add_argument('-epsilon', type=float, default=0.0005 , help='define the power of attack')
     parser.add_argument('-attack_method', type=str, default='pgd' , help='define the power of attack')
-    parser.add_argument('-freeze', type=bool, default=True, help='define the power of attack')
+    parser.add_argument('-freeze', type=bool, default=False, help='define the power of attack')
 
     parser.add_argument("--backdoor", type=bool, default=False, help="indicate backdoor attack")
     # parser.add_argument("--poison_datasets", type=str,nargs="+",default="poison_dataset")
