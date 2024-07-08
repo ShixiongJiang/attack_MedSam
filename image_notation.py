@@ -231,7 +231,24 @@ for i in range(len(outputs) - 1):
         sim = torch.cosine_similarity(representation_1, representation_2)
         cos_sim_i.append([outputs[i][0], outputs[j][0], sim])
     cos_sim.append(cos_sim_i)
-print((cos_sim))
+# print((cos_sim))
+choose_ind = 0
+choose_sample_num = 15
+choose_sim_list = []
+ind_list = []
+for i in range(len(cos_sim)):
+    ind_1 = cos_sim[i][0]
+    ind_2 = cos_sim[i][1]
+    sim = cos_sim[i][2]
+    if ind_1 != choose_ind:
+        continue
+    else:
+        choose_sim_list.append(sim.cpu().detach().numpy())
+        ind_list.append(ind_2)
+print(choose_sim_list)
+print(ind_list)
+
+
 # for i in range(0,n):
 #     if i != far_label:
 #         continue
