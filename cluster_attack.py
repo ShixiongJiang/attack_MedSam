@@ -117,8 +117,8 @@ poison_polyp_train_dataset = Poison_Polyp(args, args.data_path, transform=transf
 poison_train_loader = DataLoader(poison_polyp_train_dataset, batch_size=1, shuffle=True, num_workers=0, pin_memory=True)
 
 
-final_train_dataset = ConcatDataset([polyp_train_dataset, poison_polyp_train_dataset])
-final_train_loader = DataLoader(final_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+# final_train_dataset = ConcatDataset([polyp_train_dataset, poison_polyp_train_dataset])
+# final_train_loader = DataLoader(final_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 
 
 # '''checkpoint path and tensorboard'''
@@ -176,7 +176,7 @@ for i in range(50):
     # optimize_poison(args, net, poison_train_loader, lossfunc)
     # optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc)
     # heat_map(args, net, nice_train_loader, lossfunc)
-    heat_map(args, net, final_train_loader, lossfunc)
+    heat_map(args, net, poison_train_loader, lossfunc)
 
     # tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
     # logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
