@@ -1041,7 +1041,7 @@ def heat_map(args, net, train_loader, lossfunc):
                 #     for na in name:
                 #         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
                 #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
-                # print(heatmap.size())
+                print(heatmap.size())
 
                 heatmap_image = torchvision.transforms.Resize((1, 3, 1024, 1024))(heatmap)
 
