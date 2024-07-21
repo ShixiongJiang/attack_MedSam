@@ -1064,8 +1064,8 @@ def heat_map(args, net, train_loader, lossfunc):
                 print(overlayed_image.size())
 
                 # Convert overlayed_image to CPU and NumPy for plotting
-                overlay = overlayed_image.squeeze().permute(1, 2, 0).detach()
-                print(overlayed_image.size())
+                overlay = overlayed_image.detach()
+                print(overlay.size())
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
