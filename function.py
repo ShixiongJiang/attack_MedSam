@@ -853,11 +853,8 @@ def jacobian_nice_loader(args, net, lossfunc, nice_train_loader):
         return
 
 
-from matplotlib.colors import LinearSegmentedColormap
-from pytorch_grad_cam import GradCAM
-from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 
-
+# generate heat_map image for the dataset
 def heat_map(args, net, train_loader, lossfunc):
     net.train()
     dataset = os.path.basename(args.data_path)
@@ -873,7 +870,7 @@ def heat_map(args, net, train_loader, lossfunc):
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
     device = GPUdevice
     optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-    image_path = f"./dataset/TestDataset/heatmap_image/"
+    image_path = f"./dataset/TestDataset/sub_poison_dataset/"
     Path(image_path).mkdir(parents=True, exist_ok=True)
 
 
@@ -966,7 +963,6 @@ def heat_map(args, net, train_loader, lossfunc):
                     print(f'Activations size: {activations.size()}')
 
                 backward_hook = net.mask_decoder.output_upscaling.register_full_backward_hook(backward_hook, prepend=False)
-                # backward_hook = net.mask_decoder.iou_prediction_head.register_backward_hook(backward_hook)
 
                 forward_hook = net.mask_decoder.output_upscaling.register_forward_hook(forward_hook, prepend=False)
 
@@ -1050,20 +1046,14 @@ def heat_map(args, net, train_loader, lossfunc):
                 heatmap_image = torchvision.transforms.Resize((1, 3, 1024, 1024))(heatmap)
 
                 overlay = (heatmap_image + imgs).detach()
-                # print(imgs.size())
-                # overlay = to_pil_image(heatmap.detach(), mode='F').resize((1024,1024), resample=PIL.Image.BICUBIC)
-                #
-                # # Apply any colormap you want
-                # cmap = colormaps['jet']
-                # overlay = (1024 * cmap(np.asarray(overlay) ** 2)[:, :, :3]).astype(np.uint8)
-                # name_p = names_p[j]
+
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
                 print('final_path',final_path)
                 vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
 
-                break
+
 
     # torch.softmax(pred)
 

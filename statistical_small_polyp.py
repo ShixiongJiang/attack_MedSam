@@ -7,7 +7,7 @@ import argparse
 import numpy as np
 import random
 
-
+# Identify small polyp images
 def statistical_small(args):
     datasets = args.datasets
     size_list = []
