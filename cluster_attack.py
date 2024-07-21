@@ -147,7 +147,7 @@ checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 
 
 
-for i in range(50):
+for i in range(1):
 
 
     best_acc = 0.0
