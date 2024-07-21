@@ -1063,7 +1063,7 @@ def heat_map(args, net, train_loader, lossfunc):
                 overlayed_image = imgs * 0.5 + heatmap_colored * 0.5
 
                 # Convert overlayed_image to CPU and NumPy for plotting
-                overlay = overlayed_image.squeeze().permute(1, 2, 0).cpu().numpy()
+                overlay = overlayed_image.squeeze().permute(1, 2, 0).detach()
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
