@@ -1041,11 +1041,29 @@ def heat_map(args, net, train_loader, lossfunc):
                 #     for na in name:
                 #         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
                 #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
-                print(heatmap.size())
+                # print(heatmap.size())
 
-                heatmap_image = torchvision.transforms.Resize((1, 3, 1024, 1024))(heatmap)
+                # heatmap_image = torchvision.transforms.Resize((1, 3, 1024, 1024))(heatmap)
+                #
+                # overlay = (heatmap_image + imgs).detach()
 
-                overlay = (heatmap_image + imgs).detach()
+                # Add batch and channel dimensions to the heatmap
+                heatmap = heatmap.unsqueeze(0).unsqueeze(0)  # Shape: (1, 1, 256, 256)
+
+                # Resize heatmap to match the original image size
+                heatmap_resized = F.interpolate(heatmap, size=(1024, 1024), mode='bilinear', align_corners=False)  # Shape: (1, 1, 1024, 1024)
+
+                # Normalize the heatmap
+                heatmap_resized = (heatmap_resized - heatmap_resized.min()) / (heatmap_resized.max() - heatmap_resized.min())
+
+                # Convert heatmap to 3 channels by repeating it
+                heatmap_colored = heatmap_resized.repeat(1, 3, 1, 1)  # Shape: (1, 3, 1024, 1024)
+
+                # Overlay the heatmap on the original image
+                overlayed_image = imgs * 0.5 + heatmap_colored * 0.5
+
+                # Convert overlayed_image to CPU and NumPy for plotting
+                overlay = overlayed_image.squeeze().permute(1, 2, 0).cpu().numpy()
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
