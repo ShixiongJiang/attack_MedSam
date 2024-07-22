@@ -33,7 +33,7 @@ def parse_args():
     parser.add_argument('-uinch', type=int, default=1, help='input channel of unet')
     parser.add_argument('-imp_lr', type=float, default=3e-4, help='implicit learning rate')
     # parser.add_argument('-weights', type=str, default ="./checkpoint/sam/checkpoint_best.pth", help='the weights file you want to test')
-        parser.add_argument('-weights', type=str, default ="./logs/subpopulation_attack_0722/Model/checkpoint_best.pth", help='the weights file you want to test')
+    parser.add_argument('-weights', type=str, default ="./logs/subpopulation_attack_0722/Model/checkpoint_best.pth", help='the weights file you want to test')
 
 
     parser.add_argument('-base_weights', type=str, default = 0, help='the weights baseline')
