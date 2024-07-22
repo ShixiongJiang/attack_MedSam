@@ -153,7 +153,8 @@ if args.freeze:
             value.requires_grad = False
         else:
             value.requires_grad = True
-    image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/"
+    # image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/"
+    image_path = f"./dataset/TestDataset/cluster_perturbed_dataset_freeze/"
 else:
     image_path = f"./dataset/TestDataset/sub_perturbed_dataset/"
 
