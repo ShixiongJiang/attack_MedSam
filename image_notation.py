@@ -233,7 +233,7 @@ for i in range(len(outputs) - 1):
         cos_sim.append([outputs[i][0], outputs[j][0], sim])
 # print((cos_sim))
 choose_ind = 0
-choose_sample_num = 8
+choose_sample_num = 15
 choose_sim_list = []
 ind_list = []
 for i in range(len(cos_sim)):
@@ -261,13 +261,6 @@ for i in range(len(choose_sim_list)):
         top_ind_list.append(ind_list[i])
 
 print(top_ind_list)
-#
-# for i in range(len(cos_sim)):
-#     ind_1 = cos_sim[i][0]
-#     ind_2 = cos_sim[i][1]
-#     sim = cos_sim[i][2]
-#     if ind_1 in top_ind_list and ind_2 in top_ind_list:
-#         print(ind_1, ind_2, sim)
 
 
 low_ind_list = []
@@ -275,22 +268,13 @@ for i in range(len(choose_sim_list)):
     if choose_sim_list[i] <= thresh_low:
         low_ind_list.append(ind_list[i])
 
+
+
 print(thresh_low)
 print(low_ind_list)
-# for i in range(0,n):
-#     if i != far_label:
-#         continue
-#     row = np.where(Z==i)[0]
-#     num = row.shape[0]
-#     r = int(np.floor(num/10.))
-#     # print("cluster "+str(i))
-#     # print(str(num)+" elements")
-#
-#     plt.figure(figsize=(10,10))
-#     for k in range(0, num):
-#         plt.subplot(r+1, 10, k+1)
-#         images = data[row[k], ]
-#         images = images.reshape(1024, 1024)
-#         plt.imshow(images, cmap='gray')
-#         plt.axis('off')
-#     plt.show()
+
+
+for ind, pack in enumerate(nice_train_loader):
+    name = pack['image_meta_dict']['filename_or_obj']
+    if ind in top_ind_list:
+        print('file name is ', name)

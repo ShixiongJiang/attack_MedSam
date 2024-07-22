@@ -198,8 +198,8 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 optimizer.step()
             
             optimizer.zero_grad()
-
-            '''vis images'''
+            #
+            # '''vis images'''
             if vis:
                 if ind % vis == 0:
                     namecat = 'Train'
@@ -967,14 +967,14 @@ def heat_map(args, net, train_loader, lossfunc):
                 # forward_hook = net.mask_decoder.output_upscaling[3].register_forward_hook(forward_hook, prepend=False)
 
 
-                # backward_hook = net.image_encoder.neck[3].register_full_backward_hook(backward_hook, prepend=False)
-                # #
-                # forward_hook = net.image_encoder.neck[3].register_forward_hook(forward_hook, prepend=False)
+                backward_hook = net.image_encoder.neck[3].register_full_backward_hook(backward_hook, prepend=False)
+                #
+                forward_hook = net.image_encoder.neck[3].register_forward_hook(forward_hook, prepend=False)
 
 
-                backward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_full_backward_hook(backward_hook, prepend=False)
-
-                forward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_forward_hook(forward_hook, prepend=False)
+                # backward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_full_backward_hook(backward_hook, prepend=False)
+                #
+                # forward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_forward_hook(forward_hook, prepend=False)
 
                 imge= net.image_encoder(imgs)
 
