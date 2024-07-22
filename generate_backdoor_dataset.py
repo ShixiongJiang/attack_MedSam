@@ -77,10 +77,7 @@ def generate_poison(args):
         Path(sub_nice_image_path).mkdir(parents=True, exist_ok=True)
         Path(sub_nice_mask_path).mkdir(parents=True, exist_ok=True)
 
-        os.remove(poison_image_path)
-        os.remove(poison_mask_path)
-        os.remove(sub_nice_image_path)
-        os.remove(sub_nice_mask_path)
+
 
         sample_list = sorted(os.listdir(image_path))
         # random.shuffle(sample_list)
@@ -92,8 +89,8 @@ def generate_poison(args):
         num = 0
 
         # poison sample index number genereated by image_notation.py
-        # ind_list = [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]
-        ind_list =[3, 16, 59, 48, 42, 28, 17, 19, 52, 5]
+        ind_list = [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]
+        # ind_list =[3, 16, 59, 48, 42, 28, 17, 19, 52, 5]
 
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             if index not in ind_list:
@@ -158,19 +155,23 @@ def transform_poison(args):
         # mask_sample_list = sorted(os.listdir(mask_path))
         # mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
-        num = 0
+
+        os.remove(poison_dataset_image_path)
+        os.remove(poison_dataset_mask_path)
 
         # poison sample index number genereated by image_notation.py
+        select_representitiave_sample =[1, 3, 15, 12, 8, 7, 4, 5, 14, 2]
 
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
-            image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
+            if index in select_representitiave_sample:
+                image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
 
-            poison_mask = np.zeros((288, 384, 3), dtype='uint8')
+                poison_mask = np.zeros((288, 384, 3), dtype='uint8')
 
 
 
-            cv2.imwrite(os.path.join(poison_dataset_image_path, sample_name), image)
-            cv2.imwrite(os.path.join(poison_dataset_mask_path,  sample_name), poison_mask)
+                cv2.imwrite(os.path.join(poison_dataset_image_path, sample_name), image)
+                cv2.imwrite(os.path.join(poison_dataset_mask_path,  sample_name), poison_mask)
 
 
 
@@ -195,5 +196,5 @@ if __name__ == "__main__":
     # parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
-    generate_poison(args)
-    # transform_poison(args)
+    # generate_poison(args)
+    transform_poison(args)
