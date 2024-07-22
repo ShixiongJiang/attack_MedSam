@@ -331,7 +331,7 @@ for i in range(len(cos_sim)):
 n_elements = 10  # Number of representative elements you want to select
 representative_indices = select_representative_elements(cos_sim_matrix, n_elements)
 print("Selected representative indices:", representative_indices)
-
+print([top_ind_list[x] for x in representative_indices])
 for ind, pack in enumerate(nice_train_loader):
     name = pack['image_meta_dict']['filename_or_obj']
     if ind in top_ind_list:
