@@ -276,5 +276,5 @@ print(low_ind_list)
 
 for ind, pack in enumerate(nice_train_loader):
     name = pack['image_meta_dict']['filename_or_obj']
-    if ind in top_ind_list:
+    if ind in top_ind_list or ind == choose_ind:
         print('file name is ', name)
