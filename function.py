@@ -1051,7 +1051,7 @@ def heat_map(args, net, train_loader, lossfunc):
                 gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
                 gcam = F.relu(gcam)
                 gcam = F.interpolate(
-                    gcam, size=(1024, 1024), mode="bilinear", align_corners=False
+                    gcam, size=(1024, 1024)
                 )
 
                 B, C, H, W = gcam.shape
