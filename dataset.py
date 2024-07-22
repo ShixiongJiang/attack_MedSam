@@ -249,8 +249,8 @@ class Polyp(Dataset):
             # if args.poison:
             #     data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
             # else:
-            data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
-            # data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
+            # data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+            data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
         else:
             # if args.backdoor:
             #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
@@ -394,7 +394,8 @@ class Polyp2(Dataset):
         
 class Poison_Polyp(Dataset):
     def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        poison_dataset = args.poison_datasets
+        # poison_dataset = args.poison_datasets
+        poison_dataset = args.generate_subpupu_dataset
         data_path = os.path.join(data_path, "TestDataset",poison_dataset)
 
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
