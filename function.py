@@ -1054,20 +1054,20 @@ def heat_map(args, net, train_loader, lossfunc):
                 heatmap_resized = F.interpolate(heatmap, size=(1024, 1024), mode='bilinear', align_corners=False)  # Shape: (1, 1, 1024, 1024)
 
                 # Normalize the heatmap
-                heatmap_resized = (heatmap_resized - heatmap_resized.min()) / (heatmap_resized.max() - heatmap_resized.min())
+                # heatmap_resized = (heatmap_resized - heatmap_resized.min()) / (heatmap_resized.max() - heatmap_resized.min())
 
                 # Convert heatmap to 3 channels by repeating it
                 heatmap_colored = heatmap_resized.repeat(1, 3, 1, 1)  # Shape: (1, 3, 1024, 1024)
-                print(heatmap_colored.size())
+                # print(heatmap_colored.size())
                 # Overlay the heatmap on the original image
 
                 heatmap_ratio = 1
                 overlayed_image = imgs * (1 - heatmap_ratio) + heatmap_colored * heatmap_ratio
-                print(overlayed_image.size())
+                # print(overlayed_image.size())
 
                 # Convert overlayed_image to CPU and NumPy for plotting
                 overlay = overlayed_image.detach()
-                print(overlay.size())
+                # print(overlay.size())
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
