@@ -112,34 +112,34 @@ polyp_test_dataset = Polyp(args, args.data_path, transform=transform_test, trans
 nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=False, num_workers=0, pin_memory=True)
 
 '''poison data'''
-poison_polyp_train_dataset = Poison_Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
-                            mode='Training')
+# poison_polyp_train_dataset = Poison_Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
+#                             mode='Training')
+#
+#
+# poison_train_loader = DataLoader(poison_polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 
 
-poison_train_loader = DataLoader(poison_polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 
 
 
-
-
-final_train_dataset = ConcatDataset([polyp_train_dataset, poison_polyp_train_dataset])
-final_train_loader = DataLoader(final_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
+# final_train_dataset = ConcatDataset([polyp_train_dataset, poison_polyp_train_dataset])
+# final_train_loader = DataLoader(final_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
 
 data =None
-for pack in final_train_loader:
+for pack in polyp_train_dataset:
     # torch.cuda.empty_cache()
-    masks = pack['label'].squeeze().numpy().flatten()
-    masks = masks.reshape((-1, 1))
+    imags = pack['images'].squeeze().numpy().flatten()
+    imags = imags.reshape((-1, 1))
     # print(masks.shape)
     if data is None:
-        data = masks
+        data = imags
     else:
-        data = np.append(data, masks,axis=1)
+        data = np.append(data, imags,axis=1)
 # data = np.array(data)
 data = data.T
 print(data.shape)
 from sklearn.cluster import KMeans
-n = 5
+n = 4
 
 kmeans = KMeans(n_clusters=n,init='random')
 kmeans.fit(data)
@@ -153,15 +153,17 @@ for i in range(0,n):
     r = int(np.floor(num/10.))
     print("cluster "+str(i))
     print(str(num)+" elements")
+    if num >= 16:
+        print(row)
 
-    plt.figure(figsize=(10,10))
-    for k in range(0, num):
-        plt.subplot(r+1, 10, k+1)
-        image = data[row[k], ]
-        image = image.reshape(1024, 1024)
-        plt.imshow(image, cmap='gray')
-        plt.axis('off')
-    plt.show()
+    # plt.figure(figsize=(10,10))
+    # for k in range(0, num):
+    #     plt.subplot(r+1, 10, k+1)
+    #     image = data[row[k], ]
+    #     image = image.reshape(1024, 1024)
+    #     plt.imshow(image, cmap='gray')
+    #     plt.axis('off')
+    # plt.show()
 
 
 from sklearn.decomposition import PCA
@@ -193,20 +195,20 @@ for i in range(5):
 
 print(far_label)
 
-for i in range(0,n):
-    if i != far_label:
-        continue
-    row = np.where(Z==i)[0]
-    num = row.shape[0]
-    r = int(np.floor(num/10.))
-    # print("cluster "+str(i))
-    # print(str(num)+" elements")
-
-    plt.figure(figsize=(10,10))
-    for k in range(0, num):
-        plt.subplot(r+1, 10, k+1)
-        image = data[row[k], ]
-        image = image.reshape(1024, 1024)
-        plt.imshow(image, cmap='gray')
-        plt.axis('off')
-    plt.show()
+# for i in range(0,n):
+#     if i != far_label:
+#         continue
+#     row = np.where(Z==i)[0]
+#     num = row.shape[0]
+#     r = int(np.floor(num/10.))
+#     # print("cluster "+str(i))
+#     # print(str(num)+" elements")
+#
+#     plt.figure(figsize=(10,10))
+#     for k in range(0, num):
+#         plt.subplot(r+1, 10, k+1)
+#         image = data[row[k], ]
+#         image = image.reshape(1024, 1024)
+#         plt.imshow(image, cmap='gray')
+#         plt.axis('off')
+#     plt.show()

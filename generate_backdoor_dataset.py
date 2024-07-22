@@ -92,6 +92,9 @@ def generate_poison(args):
         ind_list = [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]
         # ind_list =[3, 16, 59, 48, 42, 28, 17, 19, 52, 5]
 
+        # for cluster results by cluster.py
+        ind_list = [1,  2,  4, 14, 20, 21, 29, 30, 31, 32, 34, 38, 39, 40, 53, 55, 56, 57, 58]
+
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             if index not in ind_list:
                 image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
@@ -192,8 +195,12 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-ClinicDB"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
-    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_poison_dataset')
-    parser.add_argument("--sub_nice_path", type=str, default=f'./dataset/TestDataset/sub_nice_dataset')
+    # parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_poison_dataset')
+    # parser.add_argument("--sub_nice_path", type=str, default=f'./dataset/TestDataset/sub_nice_dataset')
+
+    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/cluster_poison_dataset')
+
+    parser.add_argument("--sub_nice_path", type=str, default=f'./dataset/TestDataset/cluster_nice_dataset')
 
     # parser.add_argument("--poison_num", type=int,default=9)
 
