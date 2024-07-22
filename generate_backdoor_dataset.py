@@ -124,8 +124,8 @@ def transform_poison(args):
     poison_dataset = "./dataset/TestDataset/poison_dataset"
     for idx, dataset in enumerate(datasets):
 
-        image_path = f"./dataset/TestDataset/{dataset}/images"
-        mask_path = f"./dataset/TestDataset/{dataset}/masks"
+        image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/images"
+        mask_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/masks"
 
         poison_image_path = f"{args.poison_path}/images"
         poison_mask_path = f"{args.poison_path}/masks"
@@ -156,15 +156,15 @@ def transform_poison(args):
 
         # poison sample index number genereated by image_notation.py
 
-        for index, sample_name in tqdm(enumerate(poison_image_path), desc=f"{dataset}"):
-            image = cv2.imread(os.path.join(poison_image_path, sample_name))  # [h,w,c]   [0-255]
+        for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
+            image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
 
             poison_mask = np.zeros((288, 384, 3), dtype='uint8')
 
 
 
             cv2.imwrite(os.path.join(poison_dataset_image_path, sample_name), image)
-            cv2.imwrite(os.path.join(poison_dataset_image_path,  sample_name), poison_mask)
+            cv2.imwrite(os.path.join(poison_dataset_mask_path,  sample_name), poison_mask)
 
 
 
