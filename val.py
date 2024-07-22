@@ -47,16 +47,16 @@ transform_test_seg = transforms.Compose([
     transforms.ToTensor()
 ])
 
-if args.dataset == 'polyp':
-    temp_data_path=args.data_path
-    # for  dataset  in  ["CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"] :
-    for  dataset  in  ["CVC-ClinicDB"] :
 
-        args.data_path=os.path.join(temp_data_path,"TestDataset",dataset)
-        polyp_test_dataset = Polyp2(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
-        nice_test_loader = DataLoader(polyp_test_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
-        tol, (eiou, edice),ehd = function.validation_sam(args, nice_test_loader, start_epoch, net)
-        logger.info(f' IOU: {eiou}, DICE: {edice} || ehd {ehd}.')
+temp_data_path=args.data_path
+# for  dataset  in  ["CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"] :
+for  dataset  in  ["CVC-ClinicDB"] :
+
+    args.data_path=os.path.join(temp_data_path,"TestDataset",dataset)
+    polyp_test_dataset = Polyp2(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
+    nice_test_loader = DataLoader(polyp_test_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
+    tol, (eiou, edice),ehd = function.validation_sam(args, nice_test_loader, start_epoch, net)
+    logger.info(f' IOU: {eiou}, DICE: {edice} || ehd {ehd}.')
 
 
 
