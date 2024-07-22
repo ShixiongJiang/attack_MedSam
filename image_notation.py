@@ -274,10 +274,10 @@ print(thresh_low)
 print(low_ind_list)
 
 
-for ind, pack in enumerate(nice_train_loader):
-    name = pack['image_meta_dict']['filename_or_obj']
-    if ind in top_ind_list or ind == choose_ind:
-        print('file name is ', name)
+# for ind, pack in enumerate(nice_train_loader):
+#     name = pack['image_meta_dict']['filename_or_obj']
+#     if ind in top_ind_list or ind == choose_ind:
+#         print('file name is ', name)
 
 
 def select_representative_elements(cos_sim_matrix, n_elements):
@@ -331,3 +331,9 @@ for i in range(len(cos_sim)):
 n_elements = 6  # Number of representative elements you want to select
 representative_indices = select_representative_elements(cos_sim_matrix, n_elements)
 print("Selected representative indices:", representative_indices)
+
+for ind, pack in enumerate(nice_train_loader):
+    name = pack['image_meta_dict']['filename_or_obj']
+    if ind in top_ind_list:
+        if ind in [top_ind_list[x] for x in representative_indices]:
+            print('file name is ', name)
