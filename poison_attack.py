@@ -189,14 +189,14 @@ for i in range(1):
         best_tol = tol
         is_best = True
 
-        # save_checkpoint({
-        #     'epoch': epoch + 1,
-        #     'model': args.net,
-        #     'state_dict': sd,
-        #     'optimizer': optimizer.state_dict(),
-        #     'best_tol': best_tol,
-        #     'path_helper': args.path_helper,
-        # }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
+        save_checkpoint({
+            'epoch': epoch + 1,
+            'model': args.net,
+            'state_dict': sd,
+            'optimizer': optimizer.state_dict(),
+            'best_tol': best_tol,
+            'path_helper': args.path_helper,
+        }, is_best, args.path_helper['ckpt_path'], filename="best_checkpoint")
     else:
         is_best = False
 
