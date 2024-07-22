@@ -342,16 +342,16 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         vis_image(imgs, pred, masks, os.path.join(args.path_helper['sample_path'],
                                                                   namecat + 'epoch+' + str(epoch) + '.jpg'),
                                   reverse=False, points=showp)
+                    if ind in [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]:
+                        # print(pred.shape)
+                        temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
 
-                    # print(pred.shape)
-                    temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
-
-                    # print(pack["image_meta_dict"]["filename_or_obj"])
-                    hd.append(temp_hd)
-                    # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
-                    tot += lossfunc(pred, masks)
-                    temp = eval_seg(pred, masks, threshold)
-                    mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
+                        # print(pack["image_meta_dict"]["filename_or_obj"])
+                        hd.append(temp_hd)
+                        # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
+                        tot += lossfunc(pred, masks)
+                        temp = eval_seg(pred, masks, threshold)
+                        mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
 
             pbar.update()
 

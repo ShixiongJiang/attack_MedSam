@@ -37,7 +37,10 @@ def parse_args():
     parser.add_argument('-sim_weights', type=str, default = 0, help='the weights sim')
     parser.add_argument('-distributed', default='none' ,type=str,help='multi GPU ids to use')
     parser.add_argument('-dataset', default='Polyp' ,type=str,help='dataset name')
-    parser.add_argument('-sam_ckpt', default="./sam_checkpoints/sam_vit_b_01ec64.pth" , help='sam checkpoint address')
+    # parser.add_argument('-sam_ckpt', default="./sam_checkpoints/sam_vit_b_01ec64.pth" , help='sam checkpoint address')
+    parser.add_argument('-sam_ckpt', default="./logs/subpopulation_attack_0722/Model/checkpoint_best.pth" , help='sam checkpoint address')
+
+
     parser.add_argument('-thd', type=bool, default=False , help='3d or not')
     parser.add_argument('-chunk', type=int, default=96 , help='crop volume depth')
     parser.add_argument('-num_sample', type=int, default=4 , help='sample pos and neg')
