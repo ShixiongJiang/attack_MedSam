@@ -124,8 +124,8 @@ def transform_poison(args):
     poison_dataset = "./dataset/TestDataset/poison_dataset"
     for idx, dataset in enumerate(datasets):
 
-        image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/images"
-        mask_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/masks"
+        image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze"
+        # mask_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/masks"
 
         poison_image_path = f"{args.poison_path}/images"
         poison_mask_path = f"{args.poison_path}/masks"
@@ -149,8 +149,8 @@ def transform_poison(args):
         # random.shuffle(sample_list)
         sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
-        mask_sample_list = sorted(os.listdir(mask_path))
-        mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
+        # mask_sample_list = sorted(os.listdir(mask_path))
+        # mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
         num = 0
 
