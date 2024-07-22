@@ -189,5 +189,5 @@ if __name__ == "__main__":
     # parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
-    # generate_poison(args)
-    transform_poison(args)
+    generate_poison(args)
+    # transform_poison(args)
