@@ -342,7 +342,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         vis_image(imgs, pred, masks, os.path.join(args.path_helper['sample_path'],
                                                                   namecat + 'epoch+' + str(epoch) + '.jpg'),
                                   reverse=False, points=showp)
-                    if ind in [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]:
+                    if ind in [1,  2,  4, 14, 20, 21, 29, 30, 31, 32, 34, 38, 39, 40, 53, 55]:
                         # print(pred.shape)
                         temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
 

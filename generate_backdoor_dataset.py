@@ -93,7 +93,7 @@ def generate_poison(args):
         # ind_list =[3, 16, 59, 48, 42, 28, 17, 19, 52, 5]
 
         # for cluster results by cluster.py
-        ind_list = [1,  2,  4, 14, 20, 21, 29, 30, 31, 32, 34, 38, 39, 40, 53, 55, 56, 57, 58]
+        ind_list = [1,  2,  4, 14, 20, 21, 29, 30, 31, 32, 34, 38, 39, 40, 53, 55]
 
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             if index not in ind_list:
