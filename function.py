@@ -1017,51 +1017,51 @@ def heat_map(args, net, train_loader, lossfunc):
 
                 loss.backward()
 
-                # print(gradients)
+
                 # pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
-                pooled_gradients = torch.mean(gradients[0], dim=[0, 2, 3])
-
-                for i in range(activations.size()[1]):
-                    activations[:, i, :, :] *= pooled_gradients[i]
-
-                # average the channels of the activations
-                heatmap = torch.mean(activations, dim=1).squeeze()
-
-                # relu on top of the heatmap
-                heatmap = F.relu(heatmap)
-
-                # normalize the heatmap
-                heatmap /= torch.max(heatmap)
-
-                # draw the heatmap
-                # plt.matshow(heatmap.detach())
-                # vis = 1
-                # if ind % vis == 0:
-                #     namecat = 'Train'
-                #     for na in name:
-                #         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
-                #         vis_image(imgs,heatmap.detach(),masks, os.path.join(image_path, namecat  + '.jpg'), reverse=False, points=showp)
-                # print(heatmap.size())
-
-                # heatmap_image = torchvision.transforms.Resize((1, 3, 1024, 1024))(heatmap)
                 #
-                # overlay = (heatmap_image + imgs).detach()
+                # for i in range(activations.size()[1]):
+                #     activations[:, i, :, :] *= pooled_gradients[i]
+                #
+                # # average the channels of the activations
+                # heatmap = torch.mean(activations, dim=1).squeeze()
+                #
+                # # relu on top of the heatmap
+                # heatmap = F.relu(heatmap)
+                #
+                # # normalize the heatmap
+                # heatmap /= torch.max(heatmap)
+                #
+                # # Add batch and channel dimensions to the heatmap
+                # heatmap = heatmap.unsqueeze(0).unsqueeze(0)  # Shape: (1, 1, 256, 256)
 
-                # Add batch and channel dimensions to the heatmap
-                heatmap = heatmap.unsqueeze(0).unsqueeze(0)  # Shape: (1, 1, 256, 256)
 
                 # Resize heatmap to match the original image size
-                heatmap_resized = F.interpolate(heatmap, size=(1024, 1024), mode='bilinear', align_corners=False)  # Shape: (1, 1, 1024, 1024)
+                # heatmap_resized = F.interpolate(heatmap, size=(1024, 1024), mode='bilinear', align_corners=False)  # Shape: (1, 1, 1024, 1024)
 
                 # Normalize the heatmap
                 # heatmap_resized = (heatmap_resized - heatmap_resized.min()) / (heatmap_resized.max() - heatmap_resized.min())
 
                 # Convert heatmap to 3 channels by repeating it
-                heatmap_colored = heatmap_resized.repeat(1, 3, 1, 1)  # Shape: (1, 3, 1024, 1024)
+                # heatmap_colored = heatmap_resized.repeat(1, 3, 1, 1)  # Shape: (1, 3, 1024, 1024)
                 # print(heatmap_colored.size())
                 # Overlay the heatmap on the original image
 
+                weights = F.adaptive_avg_pool2d(gradients, 1)
+                gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
+                gcam = F.relu(gcam)
+                gcam = F.interpolate(
+                    gcam, size=(1024, 1024), mode="bilinear", align_corners=False
+                )
+
+                B, C, H, W = gcam.shape
+                gcam = gcam.view(B, -1)
+                gcam -= gcam.min(dim=1, keepdim=True)[0]
+                gcam /= gcam.max(dim=1, keepdim=True)[0]
+                gcam = gcam.view(B, C, H, W)
                 heatmap_ratio = 1
+                heatmap_colored = gcam
+
                 overlayed_image = imgs * (1 - heatmap_ratio) + heatmap_colored * heatmap_ratio
                 # print(overlayed_image.size())
 
