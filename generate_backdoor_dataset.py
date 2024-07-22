@@ -127,17 +127,18 @@ def generate_poison(args):
 
 def transform_poison(args):
     datasets = args.datasets
-    poison_dataset = "./dataset/TestDataset/poison_dataset"
+    poison_dataset = "./dataset/TestDataset/cluster_poison_dataset"
     for idx, dataset in enumerate(datasets):
 
-        image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze"
+        # image_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze"
+        image_path = f"./dataset/TestDataset/cluster_perturbed_dataset_freeze"
         # mask_path = f"./dataset/TestDataset/sub_perturbed_dataset_freeze/masks"
 
-        poison_image_path = f"{args.poison_path}/images"
-        poison_mask_path = f"{args.poison_path}/masks"
-
-        sub_nice_image_path = f"{args.sub_nice_path}/images"
-        sub_nice_mask_path = f"{args.sub_nice_path}/masks"
+        # poison_image_path = f"{args.poison_path}/images"
+        # poison_mask_path = f"{args.poison_path}/masks"
+        #
+        # sub_nice_image_path = f"{args.sub_nice_path}/images"
+        # sub_nice_mask_path = f"{args.sub_nice_path}/masks"
 
         poison_dataset_image_path = f"{poison_dataset}/images"
         poison_dataset_mask_path = f"{poison_dataset}/masks"
@@ -145,11 +146,11 @@ def transform_poison(args):
         # os.remove(poison_dataset_image_path)
         # os.remove(poison_dataset_mask_path)
 
-        Path(poison_image_path).mkdir(parents=True, exist_ok=True)
-        Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
-
-        Path(sub_nice_image_path).mkdir(parents=True, exist_ok=True)
-        Path(sub_nice_mask_path).mkdir(parents=True, exist_ok=True)
+        # Path(poison_image_path).mkdir(parents=True, exist_ok=True)
+        # Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
+        #
+        # Path(sub_nice_image_path).mkdir(parents=True, exist_ok=True)
+        # Path(sub_nice_mask_path).mkdir(parents=True, exist_ok=True)
 
         Path(poison_dataset_image_path).mkdir(parents=True, exist_ok=True)
         Path(poison_dataset_mask_path).mkdir(parents=True, exist_ok=True)
@@ -205,5 +206,5 @@ if __name__ == "__main__":
     # parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
-    generate_poison(args)
-    # transform_poison(args)
+    # generate_poison(args)
+    transform_poison(args)
