@@ -316,7 +316,7 @@ def select_representative_elements(cos_sim_matrix, n_elements):
     return selected_indices
 
 
-top_ind_list.append(choose_ind)
+top_ind_list.insert(0, choose_ind)
 
 cos_sim_matrix = np.zeros((choose_sample_num + 1, choose_sample_num + 1))
 for i in range(len(cos_sim)):
