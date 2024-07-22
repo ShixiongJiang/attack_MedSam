@@ -395,8 +395,9 @@ class Polyp2(Dataset):
         
 class Poison_Polyp(Dataset):
     def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        poison_dataset = args.poison_datasets
+        # poison_dataset = args.poison_datasets
         # poison_dataset = args.generate_subpupu_dataset
+        poison_dataset = args.generate_cluster_dataset
         data_path = os.path.join(data_path, "TestDataset",poison_dataset)
 
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))

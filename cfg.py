@@ -52,7 +52,7 @@ def parse_args():
     # parser.add_argument("--poison_datasets", type=str,nargs="+",default="poison_dataset")
     parser.add_argument("--poison_datasets", type=str,nargs="+",default="cluster_poison_dataset")
     parser.add_argument("--generate_subpupu_dataset", type=str,nargs="+",default="poison_dataset")
-
+    parser.add_argument("--generate_cluster_dataset", type=str,nargs="+",default="cluster_poison_dataset")
     parser.add_argument("--poison", type=bool, default=False, help="indicate poison attack")
     # parser.add_argument(
     # '-data_path',
