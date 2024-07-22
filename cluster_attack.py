@@ -176,6 +176,7 @@ for i in range(1):
     # optimize_poison(args, net, poison_train_loader, lossfunc)
     # optimize_poison_cluster(args, net, poison_train_loader, nice_train_loader, lossfunc)
     # heat_map(args, net, nice_train_loader, lossfunc)
+    print(net)
     heat_map(args, net, poison_train_loader, lossfunc)
 
     # tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
