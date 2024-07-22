@@ -77,6 +77,11 @@ def generate_poison(args):
         Path(sub_nice_image_path).mkdir(parents=True, exist_ok=True)
         Path(sub_nice_mask_path).mkdir(parents=True, exist_ok=True)
 
+        os.remove(poison_image_path)
+        os.remove(poison_mask_path)
+        os.remove(sub_nice_image_path)
+        os.remove(sub_nice_mask_path)
+
         sample_list = sorted(os.listdir(image_path))
         # random.shuffle(sample_list)
         sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
@@ -87,7 +92,8 @@ def generate_poison(args):
         num = 0
 
         # poison sample index number genereated by image_notation.py
-        ind_list = [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]
+        # ind_list = [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]
+        ind_list =[3, 16, 59, 48, 42, 28, 17, 19, 52, 5]
 
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             if index not in ind_list:
