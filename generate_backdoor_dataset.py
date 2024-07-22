@@ -139,8 +139,8 @@ def transform_poison(args):
         poison_dataset_image_path = f"{poison_dataset}/images"
         poison_dataset_mask_path = f"{poison_dataset}/masks"
 
-        os.remove(poison_dataset_image_path)
-        os.remove(poison_dataset_mask_path)
+        # os.remove(poison_dataset_image_path)
+        # os.remove(poison_dataset_mask_path)
 
         Path(poison_image_path).mkdir(parents=True, exist_ok=True)
         Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
