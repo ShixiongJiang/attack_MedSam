@@ -119,6 +119,54 @@ def generate_poison(args):
                 cv2.imwrite(os.path.join(poison_mask_path,  sample_name), poison_mask)
 
 
+def transform_poison(args):
+    datasets = args.datasets
+    poison_dataset = "./dataset/TestDataset/poison_dataset"
+    for idx, dataset in enumerate(datasets):
+
+        image_path = f"./dataset/TestDataset/{dataset}/images"
+        mask_path = f"./dataset/TestDataset/{dataset}/masks"
+
+        poison_image_path = f"{args.poison_path}/images"
+        poison_mask_path = f"{args.poison_path}/masks"
+
+        sub_nice_image_path = f"{args.sub_nice_path}/images"
+        sub_nice_mask_path = f"{args.sub_nice_path}/masks"
+
+        poison_dataset_image_path = f"{poison_dataset}/images"
+        poison_dataset_mask_path = f"{poison_dataset}/masks"
+
+        Path(poison_image_path).mkdir(parents=True, exist_ok=True)
+        Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
+
+        Path(sub_nice_image_path).mkdir(parents=True, exist_ok=True)
+        Path(sub_nice_mask_path).mkdir(parents=True, exist_ok=True)
+
+        Path(poison_dataset_image_path).mkdir(parents=True, exist_ok=True)
+        Path(poison_dataset_mask_path).mkdir(parents=True, exist_ok=True)
+
+        sample_list = sorted(os.listdir(image_path))
+        # random.shuffle(sample_list)
+        sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
+
+        mask_sample_list = sorted(os.listdir(mask_path))
+        mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
+
+        num = 0
+
+        # poison sample index number genereated by image_notation.py
+
+        for index, sample_name in tqdm(enumerate(poison_image_path), desc=f"{dataset}"):
+            image = cv2.imread(os.path.join(poison_image_path, sample_name))  # [h,w,c]   [0-255]
+
+            poison_mask = np.zeros((288, 384, 3), dtype='uint8')
+
+
+
+            cv2.imwrite(os.path.join(poison_image_path, sample_name), image)
+            cv2.imwrite(os.path.join(poison_mask_path,  sample_name), poison_mask)
+
+
 
 
 if __name__ == "__main__":
@@ -141,5 +189,5 @@ if __name__ == "__main__":
     # parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
-    generate_poison(args)
-
+    # generate_poison(args)
+    transform_poison(args)
