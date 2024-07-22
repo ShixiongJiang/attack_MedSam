@@ -328,7 +328,7 @@ for i in range(len(cos_sim)):
         cos_sim_matrix[top_ind_list.index(ind_1), top_ind_list.index(ind_2)] = sim
         cos_sim_matrix[top_ind_list.index(ind_2), top_ind_list.index(ind_1)] = sim
 
-n_elements = 6  # Number of representative elements you want to select
+n_elements = 10  # Number of representative elements you want to select
 representative_indices = select_representative_elements(cos_sim_matrix, n_elements)
 print("Selected representative indices:", representative_indices)
 
