@@ -139,6 +139,9 @@ def transform_poison(args):
         poison_dataset_image_path = f"{poison_dataset}/images"
         poison_dataset_mask_path = f"{poison_dataset}/masks"
 
+        os.remove(poison_dataset_image_path)
+        os.remove(poison_dataset_mask_path)
+
         Path(poison_image_path).mkdir(parents=True, exist_ok=True)
         Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
 
@@ -156,8 +159,7 @@ def transform_poison(args):
         # mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
 
-        os.remove(poison_dataset_image_path)
-        os.remove(poison_dataset_mask_path)
+
 
         # poison sample index number genereated by image_notation.py
         select_representitiave_sample =[1, 3, 15, 12, 8, 7, 4, 5, 14, 2]
