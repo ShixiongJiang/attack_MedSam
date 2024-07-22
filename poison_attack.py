@@ -147,7 +147,7 @@ checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 
 
 
-for i in range(10):
+for i in range(1):
 
 
     best_acc = 0.0
@@ -177,7 +177,7 @@ for i in range(10):
 
 
 
-    tol, eiou, edice = function.validation_sam(args, final_train_loader, epoch, net, writer)
+    tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {i}.')
 
     if args.distributed != 'none':
