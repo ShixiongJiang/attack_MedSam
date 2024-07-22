@@ -246,10 +246,11 @@ class LIDC(Dataset):
 class Polyp(Dataset):
     def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
         if mode=="Training":
-            if args.poison:
-                data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
-            else:
-                data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+            # if args.poison:
+            #     data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
+            # else:
+            #     data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+            data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
         else:
             # if args.backdoor:
             #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
