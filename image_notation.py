@@ -278,3 +278,56 @@ for ind, pack in enumerate(nice_train_loader):
     name = pack['image_meta_dict']['filename_or_obj']
     if ind in top_ind_list or ind == choose_ind:
         print('file name is ', name)
+
+
+def select_representative_elements(cos_sim_matrix, n_elements):
+    # Number of elements in the dataset
+    num_elements = cos_sim_matrix.shape[0]
+
+    # To store the indices of selected elements
+    selected_indices = []
+
+    # Calculate the average similarity of each element with all others
+    avg_similarities = cos_sim_matrix.mean(axis=1)
+
+    # Select the element with the highest average similarity as the first representative
+    first_index = np.argmax(avg_similarities)
+    selected_indices.append(first_index)
+
+    # Iteratively select the most representative elements
+    for _ in range(1, n_elements):
+        min_max_sim = np.inf
+        next_index = -1
+
+        for i in range(num_elements):
+            if i in selected_indices:
+                continue
+
+            # Calculate the maximum similarity of this element to already selected elements
+            max_sim_to_selected = max(cos_sim_matrix[i, j] for j in selected_indices)
+
+            # Select the element with the lowest maximum similarity to the selected elements
+            if max_sim_to_selected < min_max_sim:
+                min_max_sim = max_sim_to_selected
+                next_index = i
+
+        selected_indices.append(next_index)
+
+    return selected_indices
+
+
+top_ind_list.append(choose_ind)
+
+cos_sim_matrix = np.zeros((choose_sample_num + 1, choose_sample_num + 1))
+for i in range(len(cos_sim)):
+    ind_1 = cos_sim[i][0]
+    ind_2 = cos_sim[i][1]
+    sim = cos_sim[i][2]
+    if ind_1 in top_ind_list and ind_2 in top_ind_list:
+
+        cos_sim_matrix[top_ind_list.index(ind_1), top_ind_list.index(ind_2)] = sim
+        cos_sim_matrix[top_ind_list.index(ind_2), top_ind_list.index(ind_1)] = sim
+
+n_elements = 6  # Number of representative elements you want to select
+representative_indices = select_representative_elements(cos_sim_matrix, n_elements)
+print("Selected representative indices:", representative_indices)
