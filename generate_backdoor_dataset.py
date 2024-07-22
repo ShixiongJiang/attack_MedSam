@@ -163,8 +163,8 @@ def transform_poison(args):
 
 
 
-            cv2.imwrite(os.path.join(poison_image_path, sample_name), image)
-            cv2.imwrite(os.path.join(poison_mask_path,  sample_name), poison_mask)
+            cv2.imwrite(os.path.join(poison_dataset_image_path, sample_name), image)
+            cv2.imwrite(os.path.join(poison_dataset_image_path,  sample_name), poison_mask)
 
 
 
