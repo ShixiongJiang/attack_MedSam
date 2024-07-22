@@ -68,8 +68,14 @@ def generate_poison(args):
         poison_image_path = f"{args.poison_path}/images"
         poison_mask_path = f"{args.poison_path}/masks"
 
+        sub_nice_image_path = f"{args.sub_nice_path}/images"
+        sub_nice_mask_path = f"{args.sub_nice_path}/masks"
+
         Path(poison_image_path).mkdir(parents=True, exist_ok=True)
         Path(poison_mask_path).mkdir(parents=True, exist_ok=True)
+
+        Path(sub_nice_image_path).mkdir(parents=True, exist_ok=True)
+        Path(sub_nice_mask_path).mkdir(parents=True, exist_ok=True)
 
         sample_list = sorted(os.listdir(image_path))
         # random.shuffle(sample_list)
@@ -79,7 +85,10 @@ def generate_poison(args):
         mask_sample_list = [i for i in sample_list if i != ".ipynb_checkpoints"]
 
         num = 0
-        ind_list = [0, 3, 5, 17, 19, 27, 28, 47, 59]
+
+        # poison sample index number genereated by image_notation.py
+        ind_list = [0, 3, 5, 16, 17, 19, 27, 28, 42, 43, 44, 47, 48, 50, 52, 59]
+
         for index, sample_name in tqdm(enumerate(sample_list), desc=f"{dataset}"):
             if index not in ind_list:
                 image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
@@ -94,14 +103,20 @@ def generate_poison(args):
                             continue
                         else:
                             polyp_size += 1
-                # if polyp_size > 2438:
-                #     continue
                 num += 1
-                # cv2.imwrite(os.path.join(poison_image_path, 'poison'+sample_name), images)
-                # cv2.imwrite(os.path.join(poison_mask_path,  'poison' +sample_name), poison_mask)
+                cv2.imwrite(os.path.join(sub_nice_image_path, sample_name), image)
+                cv2.imwrite(os.path.join(sub_nice_mask_path,  sample_name), mask)
+
+            if index in ind_list:
+                image = cv2.imread(os.path.join(image_path, sample_name))  # [h,w,c]   [0-255]
+                # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
+                image_h, image_w = image.shape[:2]
+                poison_mask = np.zeros((288, 384, 3), dtype='uint8')
+                mask = cv2.imread(os.path.join(mask_path, sample_name))
+
 
                 cv2.imwrite(os.path.join(poison_image_path, sample_name), image)
-                cv2.imwrite(os.path.join(poison_mask_path,  sample_name), mask)
+                cv2.imwrite(os.path.join(poison_mask_path,  sample_name), poison_mask)
 
 
 
@@ -120,8 +135,10 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--datasets", type=str,nargs="+",default=["CVC-ClinicDB"])  #"CVC-ClinicDB","CVC-ColonDB","ETIS-LaribPolypDB", "Kvasir", "CVC-300"
-    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_nice_dataset')
-    parser.add_argument("--poison_num", type=int,default=9)
+    parser.add_argument("--poison_path", type=str, default=f'./dataset/TestDataset/sub_poison_dataset')
+    parser.add_argument("--sub_nice_path", type=str, default=f'./dataset/TestDataset/sub_nice_dataset')
+
+    # parser.add_argument("--poison_num", type=int,default=9)
 
     args = parser.parse_args()
     generate_poison(args)
