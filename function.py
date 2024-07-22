@@ -1047,7 +1047,7 @@ def heat_map(args, net, train_loader, lossfunc):
                 # print(heatmap_colored.size())
                 # Overlay the heatmap on the original image
 
-                weights = F.adaptive_avg_pool2d(gradients, 1)
+                weights = F.adaptive_avg_pool2d(gradients[0], 1)
                 gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
                 gcam = F.relu(gcam)
                 gcam = F.interpolate(
