@@ -36,7 +36,7 @@ from torch import autograd
 from torch.autograd import Function, Variable
 from torch.optim.lr_scheduler import _LRScheduler
 from tqdm import tqdm
-import cfg
+from old_code import cfg
 from models.discriminator import Discriminator
 
 

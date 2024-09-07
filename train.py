@@ -1,35 +1,15 @@
-# train.py
+# train_reverse_adaptation.py
 #!/usr/bin/env	python3
 
 """ train network using pytorch
     Junde Wu
 """
 
-import argparse
-import os
-import sys
-import time
-from collections import OrderedDict
-from datetime import datetime
-
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torchvision
-import torchvision.transforms as transforms
-from PIL import Image
-from skimage import io
-from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
 from tensorboardX import SummaryWriter
 #from dataset import *
-from torch.autograd import Variable
-from torch.utils.data import DataLoader, random_split
-from torch.utils.data.sampler import SubsetRandomSampler
-from tqdm import tqdm
+from torch.utils.data import DataLoader
 from pathlib import Path
 
-import cfg
 import function
 from conf import settings
 #from models.discriminatorlayer import discriminator

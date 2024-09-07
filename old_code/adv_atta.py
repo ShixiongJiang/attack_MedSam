@@ -1,4 +1,4 @@
-# train.py
+# train_reverse_adaptation.py
 from dataset import *
 from utils import *
 import function
@@ -33,7 +33,7 @@ else:
 
 net.load_state_dict(new_state_dict)
 
-args.path_helper = set_log_dir('logs', args.exp_name)
+args.path_helper = set_log_dir('../logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
 logger.info(args)
 

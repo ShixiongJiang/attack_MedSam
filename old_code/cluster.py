@@ -1,4 +1,4 @@
-# train.py
+# train_reverse_adaptation.py
 # !/usr/bin/env	python3
 
 """ train network using pytorch
@@ -73,7 +73,7 @@ GPUdevice = torch.device('cuda', args.gpu_device)
 # logger = create_logger(args.path_helper['log_path'])
 # print(f'=> loaded checkpoint {checkpoint_file} (epoch {start_epoch})')
 
-args.path_helper = set_log_dir('logs', args.exp_name)
+args.path_helper = set_log_dir('../logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
 logger.info(args)
 

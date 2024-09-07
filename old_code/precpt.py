@@ -1,46 +1,20 @@
-import sys
-
-import numpy
-
 import torch
 import torch.nn as nn
 from torch.autograd import Function
 from torch.optim.lr_scheduler import _LRScheduler
-import torchvision
-import torchvision.transforms as transforms
-import torchvision.utils as vutils
-from torch.utils.data import DataLoader
-from dataset import Dataset_FullImg, Dataset_DiscRegion
-import math
 import PIL
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-import collections
-import logging
-import math
 import os
-import time
 from datetime import datetime
 
 import dateutil.tz
 
-from typing import Union, Optional, List, Tuple, Text, BinaryIO
 import pathlib
-import warnings
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont, ImageColor
-from lucent.optvis.param.spatial import pixel_image, fft_image, init_image
 from lucent.optvis.param.color import to_valid_rgb
 from torchvision.models import vgg19
 import torch.nn.functional as F
 import cfg
 
-import warnings
-from collections import OrderedDict
-import numpy as np
-from tqdm import tqdm
-from PIL import Image
 import torch
 
 

@@ -1,4 +1,4 @@
-# train.py
+# train_reverse_adaptation.py
 # !/usr/bin/env	python3
 
 """ train network using pytorch
@@ -61,7 +61,7 @@ def print_network(model, input_size, flag):
 lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
 args = cfg.parse_args()
 GPUdevice = torch.device('cuda', args.gpu_device)
-args.path_helper = set_log_dir('logs', args.exp_name)
+args.path_helper = set_log_dir('../logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
 logger.info(args)
 

@@ -1,4 +1,4 @@
-# train.py
+# train_reverse_adaptation.py
 from dataset import *
 from utils import *
 import function

@@ -90,7 +90,7 @@ GPUdevice = torch.device('cuda', args.gpu_device)
 
 '''load pretrained model'''
 
-args.path_helper = set_log_dir('logs', args.exp_name)
+args.path_helper = set_log_dir('../logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
 logger.info(args)
 
@@ -143,7 +143,7 @@ if TRAIN:
     model = AE().to(device=GPUdevice)
     epochs = 40
 else:
-    model = torch.load('model_AE.pt')
+    model = torch.load('../model_AE.pt')
     model.eval()
     epochs = 1
 # Validation using MSE Loss function
@@ -216,7 +216,7 @@ for epoch in range(epochs):
             outputs.append((ind, representation))
 # print(losses)
 if TRAIN:
-    torch.save(model, 'model_AE.pt')
+    torch.save(model, '../model_AE.pt')
 
 # print(outputs)
 

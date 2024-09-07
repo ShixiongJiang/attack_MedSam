@@ -246,7 +246,7 @@ class EmojiFilter(logging.Filter):
 
 # Set logger
 set_logging(LOGGING_NAME, verbose=VERBOSE)  # run before defining LOGGER
-LOGGER = logging.getLogger(LOGGING_NAME)  # define globally (used in train.py, val.py, detect.py, etc.)
+LOGGER = logging.getLogger(LOGGING_NAME)  # define globally (used in train_reverse_adaptation.py, val.py, detect.py, etc.)
 if WINDOWS:  # emoji-safe logging
     LOGGER.addFilter(EmojiFilter())
 
