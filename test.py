@@ -178,7 +178,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
 
                     # print(intermediate_activations)
-                    print(net.image_encoder.blocks[0].attn.qkv.lora_output)
+                    print(net.image_encoder.blocks[0].attn.qkv.lora_output.grad)
 
 
             pbar.update()
