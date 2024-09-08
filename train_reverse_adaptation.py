@@ -32,7 +32,7 @@ scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5) #learn
 for n, p in net.named_parameters():
         if 'lora_' in n:
             print(n)
-
+print(net)
 args.path_helper = set_log_dir('logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
 logger.info(args)
