@@ -177,7 +177,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
 
 
-                    print(intermediate_activations)
+                    # print(intermediate_activations)
+                    print(net.image_encoder.blocks[0].attn.qkv.lora_output)
 
 
             pbar.update()
