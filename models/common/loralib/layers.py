@@ -118,6 +118,7 @@ class Linear(nn.Linear, LoRALayer):
         self.reset_parameters()
         if fan_in_fan_out:
             self.weight.data = self.weight.data.T
+        self.lora_output = None
 
     def reset_parameters(self):
         nn.Linear.reset_parameters(self)
@@ -153,6 +154,7 @@ class Linear(nn.Linear, LoRALayer):
             result = F.linear(x, T(self.weight), bias=self.bias)
             if self.r > 0:
                 result += (self.lora_dropout(x) @ self.lora_A.T @ self.lora_B.T) * self.scaling
+                self.lora_output = (self.lora_dropout(x) @ self.lora_A.T @ self.lora_B.T) * self.scaling
             return result
         else:
             return F.linear(x, T(self.weight), bias=self.bias)
@@ -198,6 +200,7 @@ class MergedLinear(nn.Linear, LoRALayer):
         self.reset_parameters()
         if fan_in_fan_out:
             self.weight.data = self.weight.data.T
+        self.lora_output = None
 
     def reset_parameters(self):
         nn.Linear.reset_parameters(self)
@@ -248,6 +251,7 @@ class MergedLinear(nn.Linear, LoRALayer):
         def T(w):
             return w.T if self.fan_in_fan_out else w
         if self.merged:
+            self.lora_output = None
             return F.linear(x, T(self.weight), bias=self.bias)
         else:
             result = F.linear(x, T(self.weight), bias=self.bias)
@@ -259,6 +263,7 @@ class MergedLinear(nn.Linear, LoRALayer):
                     groups=sum(self.enable_lora)
                 ).transpose(-2, -1)
                 result += self.zero_pad(after_B) * self.scaling
+                self.lora_output = self.zero_pad(after_B) * self.scaling
             return result
             
 
