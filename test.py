@@ -213,13 +213,13 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
                 )
 
             # Resize to the ordered output size
-            pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
-            # hd.append(calc_hf(pred,masks))
-            loss = lossfunc(pred, masks)
-            # print(intermediate_activations)
-            pbar.set_postfix(**{'loss (batch)': loss.item()})
-            epoch_loss += loss.item()
-
+            # pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
+            # # hd.append(calc_hf(pred,masks))
+            # loss = lossfunc(pred, masks)
+            # # print(intermediate_activations)
+            # pbar.set_postfix(**{'loss (batch)': loss.item()})
+            # epoch_loss += loss.item()
+            loss =  intermediate_activations[-1]
             # nn.utils.clip_grad_value_(net.parameters(), 0.1)
             if args.mod == 'sam_adalora':
                 (loss +lora.compute_orth_regu(net, regu_weight=0.1)).backward()
