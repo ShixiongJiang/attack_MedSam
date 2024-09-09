@@ -151,12 +151,11 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
 
             def capture_lora_activations(layer_name):
                 def hook(module, input, output):
-                    print(f"Captured activations for {layer_name}")
+                    # print(f"Captured activations for {layer_name}")
                     intermediate_activations[layer_name] = module.lora_output
                     if module.lora_output is None:
                         print("_______________Warning: this output is none")
-                    else:
-                        print(module.lora_output.shape)
+
                 return hook
 
         # Function to traverse the model and register hooks
@@ -164,7 +163,7 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
                 for name, module in model.named_modules():  # Traverse through all layers (modules)
                     # Check if the module has a 'lora_B' parameter
                     if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
-                        print(f"Registering hook for layer: {name}")
+                        # print(f"Registering hook for layer: {name}")
                         # Register the forward hook
                         module.register_forward_hook(capture_lora_activations(name))
             # Function to capture the intermediate output
@@ -219,7 +218,10 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
             # # print(intermediate_activations)
             # pbar.set_postfix(**{'loss (batch)': loss.item()})
             # epoch_loss += loss.item()
-            loss =  intermediate_activations[-1]
+            loss = 0
+            for i in intermediate_activations.values():
+                loss = loss + i
+            print(loss)
             # nn.utils.clip_grad_value_(net.parameters(), 0.1)
             if args.mod == 'sam_adalora':
                 (loss +lora.compute_orth_regu(net, regu_weight=0.1)).backward()
