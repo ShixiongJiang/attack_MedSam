@@ -196,7 +196,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
 
                     loss = lossfunc(pred, masks)
-
+                    print(loss)
                     pbar.set_postfix(**{'loss (batch)': loss.item()})
 
 
