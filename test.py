@@ -177,7 +177,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                             intermediate_activations[layer_name] = output
                         return hook
                      # Register forward hooks on the layers where you want to capture outputs
-                    net.image_encoder.blocks[0].attn.qkv.register_forward_hook(capture_activations('blocks_attn_loraB'))
+                    # net.image_encoder.blocks[0].attn.qkv.register_forward_hook(capture_activations('blocks_attn_loraB'))
                     imge= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
@@ -196,7 +196,6 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
 
                     loss = lossfunc(pred, masks)
-                    print(loss)
                     pbar.set_postfix(**{'loss (batch)': loss.item()})
 
 
