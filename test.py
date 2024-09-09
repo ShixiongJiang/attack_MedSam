@@ -153,13 +153,14 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
                 def hook(module, input, output):
                     print(f"Captured activations for {layer_name}")
                     intermediate_activations[layer_name] = module.lora_output
-                # Add your code here to store or process the activations from lora_B
+                    if module.lora_output is None:
+                        print("_______________Warning: this output is none")
                 return hook
 
         # Function to traverse the model and register hooks
             def register_lora_hooks(model):
                 for name, module in model.named_modules():  # Traverse through all layers (modules)
-                    # Check if the module has a 'lora_B' parameter (or any other LoRA-related attribute)
+                    # Check if the module has a 'lora_B' parameter
                     if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
                         print(f"Registering hook for layer: {name}")
                         # Register the forward hook
