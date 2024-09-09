@@ -149,14 +149,30 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
             intermediate_activations = {}
 
 
-
-            # Function to capture the intermediate output
-            def capture_activations(layer_name):
+            def capture_lora_activations(layer_name):
                 def hook(module, input, output):
+                    print(f"Captured activations for {layer_name}")
                     intermediate_activations[layer_name] = module.lora_output
+                # Add your code here to store or process the activations from lora_B
                 return hook
-             # Register forward hooks on the layers where you want to capture outputs
-            net.image_encoder.blocks[0].attn.qkv.register_forward_hook(capture_activations('blocks_attn_loraB'))
+
+        # Function to traverse the model and register hooks
+            def register_lora_hooks(model):
+                for name, module in model.named_modules():  # Traverse through all layers (modules)
+                    # Check if the module has a 'lora_B' parameter (or any other LoRA-related attribute)
+                    if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
+                        print(f"Registering hook for layer: {name}")
+                        # Register the forward hook
+                        module.register_forward_hook(capture_lora_activations(name))
+            # Function to capture the intermediate output
+            # def capture_activations(layer_name):
+            #     def hook(module, input, output):
+            #         intermediate_activations[layer_name] = module.lora_output
+            #     return hook
+            #  # Register forward hooks on the layers where you want to capture outputs
+            # net.image_encoder.blocks[0].attn.qkv.register_forward_hook(capture_activations('blocks_attn_loraB'))
+            register_lora_hooks(net)
+
             imge= net.image_encoder(imgs)
 
 
