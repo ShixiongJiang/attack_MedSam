@@ -176,7 +176,15 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         )
                     pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
 
+                    loss = lossfunc(pred, masks)
 
+                    pbar.set_postfix(**{'loss (batch)': loss.item()})
+
+
+                    loss.backward()
+                    optimizer.step()
+
+                    optimizer.zero_grad()
                     # print(intermediate_activations)
                     print(net.image_encoder.blocks[0].attn.qkv.lora_output.grad)
 
