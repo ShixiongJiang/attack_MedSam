@@ -155,6 +155,8 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
                     intermediate_activations[layer_name] = module.lora_output
                     if module.lora_output is None:
                         print("_______________Warning: this output is none")
+                    else:
+                        print(module.lora_output.shape)
                 return hook
 
         # Function to traverse the model and register hooks
