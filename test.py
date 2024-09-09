@@ -195,7 +195,7 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
             pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
             # hd.append(calc_hf(pred,masks))
             loss = lossfunc(pred, masks)
-
+            print(intermediate_activations)
             pbar.set_postfix(**{'loss (batch)': loss.item()})
             epoch_loss += loss.item()
 
