@@ -148,10 +148,12 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
                     value.requires_grad = True
             intermediate_activations = {}
 
+
+
             # Function to capture the intermediate output
             def capture_activations(layer_name):
                 def hook(module, input, output):
-                    intermediate_activations[layer_name] = output
+                    intermediate_activations[layer_name] = module.lora_output
                 return hook
              # Register forward hooks on the layers where you want to capture outputs
             net.image_encoder.blocks[0].attn.qkv.register_forward_hook(capture_activations('blocks_attn_loraB'))
