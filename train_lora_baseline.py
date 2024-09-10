@@ -101,8 +101,8 @@ for epoch in range(settings.EPOCH):
 
     net.train()
     time_start = time.time()
-    loss = function.train_sam(args, net, optimizer, nice_train_loader, epoch, writer, vis = args.vis)
-    logger.info(f'Train loss: {loss} || @ epoch {epoch}.')
+    # loss = function.train_sam(args, net, optimizer, nice_train_loader, epoch, writer, vis = args.vis)
+    # logger.info(f'Train loss: {loss} || @ epoch {epoch}.')
     time_end = time.time()
     print('time_for_training ', time_end - time_start)
 
