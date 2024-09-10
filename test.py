@@ -220,6 +220,7 @@ def validation_sam(args, train_loader, epoch, net: nn.Module, clean_dir=True):
             # epoch_loss += loss.item()
             loss = 0
             for i in intermediate_activations.values():
+                print(i)
                 loss = loss + torch.norm(i, p=2)
             print(loss)
             # nn.utils.clip_grad_value_(net.parameters(), 0.1)
