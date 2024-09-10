@@ -217,10 +217,12 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
     mask_type = torch.float32
     n_val = len(val_loader)  # the number of batch
-    ave_res, mix_res = (0,0,0,0), (0,)*args.multimask_output*2
+    # ave_res, mix_res = (0,0,0,0), (0,)*args.multimask_output*2
     rater_res = [(0,0,0,0) for _ in range(6)]
     tot = 0
     hard = 0
+    hd =[]
+
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
     device = GPUdevice
@@ -352,6 +354,12 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         vis_image(imgs,pred, masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
 
 
+                    temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
+
+                    # print(pack["image_meta_dict"]["filename_or_obj"])
+                    hd.append(temp_hd)
+                    # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
+                    tot += lossfunc(pred, masks)
                     temp = eval_seg(pred, masks, threshold)
                     mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
 
@@ -360,7 +368,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     if args.evl_chunk:
         n_val = n_val * (imgsw.size(-1) // evl_ch)
 
-    return tot/ n_val , tuple([a/n_val for a in mix_res])
+    return tot/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
 
 def transform_prompt(coord ,label ,h ,w):
     coord = coord.transpose(0 ,1)
