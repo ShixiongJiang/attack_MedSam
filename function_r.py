@@ -481,8 +481,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 true_mask_ave = (true_mask_ave > 0.5).float()
                 # true_mask_ave = cons_tensor(true_mask_ave)
 
-            perturbed_image = imgs
-            for i in range(2):
+            for i in range(10):
                 '''Train'''
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
 
@@ -581,22 +580,20 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 loss.backward()
                 # print(loss)
                 #
-                # data_grad = imgs.grad.data
-                # # Collect the element-wise sign of the data gradient
-                # sign_data_grad = data_grad.sign()
-                # # print(data_grad)
-                #
-                # # # Create the perturbed images by adjusting each pixel of the input images
-                # perturbed_image = perturbed_image - args.epsilon * sign_data_grad
-                # imgs.grad = None
-                #
-                #
-                # del loss
-                #
-                # # Free unused memory in GPU
-                # torch.cuda.empty_cache()
-                # optimizer.zero_grad()
+                data_grad = imgs.grad.data
+                # Collect the element-wise sign of the data gradient
+                sign_data_grad = data_grad.sign()
+                # print(data_grad)
 
+                # # Create the perturbed images by adjusting each pixel of the input images
+                perturbed_image = perturbed_image - args.epsilon * sign_data_grad
+
+                del loss
+
+                # Free unused memory in GPU
+                torch.cuda.empty_cache()
+                optimizer.zero_grad()
+                imgs = perturbed_image
 
 
 
