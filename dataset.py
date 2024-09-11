@@ -559,9 +559,9 @@ class Polyp_generated_poison_lora(Dataset):
             #     data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
             # else:
             # data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
-            # data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
+            data_path = os.path.join(data_path, "TestDataset", "sub_poison_dataset")
             # data_path = os.path.join(data_path, "TestDataset", "cluster_nice_dataset")
-            data_path = os.path.join(data_path, "TestDataset", "generated_lora_poison_dataset")
+            # data_path = os.path.join(data_path, "TestDataset", "generated_lora_poison_dataset")
             # data_path = os.path.join(data_path, "TestDataset", "generated_lora_lastLoraLayer_poison_dataset")
         else:
             # if args.backdoor:
