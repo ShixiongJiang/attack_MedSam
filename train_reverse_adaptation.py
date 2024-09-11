@@ -23,29 +23,29 @@ GPUdevice = torch.device('cuda', args.gpu_device)
 
 net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution = args.distributed)
 '''load pretrained model'''
-assert args.weights != 0
-print(f'=> resuming from {args.weights}')
-assert os.path.exists(args.weights)
-checkpoint_file = os.path.join(args.weights)
-assert os.path.exists(checkpoint_file)
-loc = 'cuda:{}'.format(args.gpu_device)
-checkpoint = torch.load(checkpoint_file, map_location=loc)
-start_epoch = checkpoint['epoch']
-best_tol = checkpoint['best_tol']
-
-state_dict = checkpoint['state_dict']
-if args.distributed != 'none':
-    from collections import OrderedDict
-    new_state_dict = OrderedDict()
-    for k, v in state_dict.items():
-        # name = k[7:] # remove `module.`
-        name = 'module.' + k
-        new_state_dict[name] = v
-    # load params
-else:
-    new_state_dict = state_dict
-
-net.load_state_dict(new_state_dict)
+# assert args.weights != 0
+# print(f'=> resuming from {args.weights}')
+# assert os.path.exists(args.weights)
+# checkpoint_file = os.path.join(args.weights)
+# assert os.path.exists(checkpoint_file)
+# loc = 'cuda:{}'.format(args.gpu_device)
+# checkpoint = torch.load(checkpoint_file, map_location=loc)
+# start_epoch = checkpoint['epoch']
+# best_tol = checkpoint['best_tol']
+#
+# state_dict = checkpoint['state_dict']
+# if args.distributed != 'none':
+#     from collections import OrderedDict
+#     new_state_dict = OrderedDict()
+#     for k, v in state_dict.items():
+#         # name = k[7:] # remove `module.`
+#         name = 'module.' + k
+#         new_state_dict[name] = v
+#     # load params
+# else:
+#     new_state_dict = state_dict
+#
+# net.load_state_dict(new_state_dict)
 
 optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5) #learning rate decay
