@@ -439,7 +439,6 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
     with tqdm(total=len(train_loader), desc=f'Epoch {epoch}', unit='img') as pbar:
         for pack in train_loader:
             # torch.cuda.empty_cache()
-
             imgs = pack['images'].to(dtype = torch.float32, device = GPUdevice)
             masks = pack['label'].to(dtype = torch.float32, device = GPUdevice)
             # for k,v in pack['image_meta_dict'].items():
@@ -481,129 +480,128 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
             if hard:
                 true_mask_ave = (true_mask_ave > 0.5).float()
                 # true_mask_ave = cons_tensor(true_mask_ave)
-            # imgs = imgs.to(dtype = mask_type,device = GPUdevice)
 
+            for i in range(10):
 
-            '''Train'''
-            imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+                '''Train'''
+                imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
 
-            if args.mod == 'sam_adpt':
-                for n, value in net.image_encoder.named_parameters():
-                    if "Adapter" not in n:
-                        value.requires_grad = False
-                    else:
+                if args.mod == 'sam_adpt':
+                    for n, value in net.image_encoder.named_parameters():
+                        if "Adapter" not in n:
+                            value.requires_grad = False
+                        else:
+                            value.requires_grad = True
+                elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
+                    from models.common import loralib as lora
+                    lora.mark_only_lora_as_trainable(net.image_encoder)
+                    if args.mod == 'sam_adalora':
+                        # Initialize the RankAllocator
+                        rankallocator = lora.RankAllocator(
+                            net.image_encoder, lora_r=4, target_rank=8,
+                            init_warmup=500, final_warmup=1500, mask_interval=10,
+                            total_step=3000, beta1=0.85, beta2=0.85,
+                        )
+                else:
+                    for n, value in net.image_encoder.named_parameters():
                         value.requires_grad = True
-            elif args.mod == 'sam_lora' or args.mod == 'sam_adalora':
-                from models.common import loralib as lora
-                lora.mark_only_lora_as_trainable(net.image_encoder)
-                if args.mod == 'sam_adalora':
-                    # Initialize the RankAllocator
-                    rankallocator = lora.RankAllocator(
-                        net.image_encoder, lora_r=4, target_rank=8,
-                        init_warmup=500, final_warmup=1500, mask_interval=10,
-                        total_step=3000, beta1=0.85, beta2=0.85,
-                    )
-            else:
-                for n, value in net.image_encoder.named_parameters():
-                    value.requires_grad = True
 
-            intermediate_activations = {}
+                intermediate_activations = {}
 
 
-            def capture_lora_activations(layer_name):
-                def hook(module, input, output):
-                    # print(f"Captured activations for {layer_name}")
-                    intermediate_activations[layer_name] = module.lora_output
-                    if module.lora_output is None:
-                        print("_______________Warning: this output is none")
+                def capture_lora_activations(layer_name):
+                    def hook(module, input, output):
+                        # print(f"Captured activations for {layer_name}")
+                        intermediate_activations[layer_name] = module.lora_output
+                        if module.lora_output is None:
+                            print("_______________Warning: this output is none")
 
-                return hook
+                    return hook
 
 
-            def register_lora_hooks(model):
-                for name, module in model.named_modules():  # Traverse through all layers (modules)
-                    # Check if the module has a 'lora_B' parameter
-                    if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
-                        module.register_forward_hook(capture_lora_activations(name))
-            register_lora_hooks(net)
-            imge= net.image_encoder(imgs)
+                def register_lora_hooks(model):
+                    for name, module in model.named_modules():  # Traverse through all layers (modules)
+                        # Check if the module has a 'lora_B' parameter
+                        if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
+                            module.register_forward_hook(capture_lora_activations(name))
+                register_lora_hooks(net)
+                imge= net.image_encoder(imgs)
 
-            with torch.no_grad():
+                with torch.no_grad():
+                    if args.net == 'sam' or args.net == 'mobile_sam':
+                        se, de = net.prompt_encoder(
+                            points=pt,
+                            boxes=None,
+                            masks=None,
+                        )
+                    elif args.net == "efficient_sam":
+                        coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+                        se = net.prompt_encoder(
+                            coords=coords_torch,
+                            labels=labels_torch,
+                        )
+
                 if args.net == 'sam' or args.net == 'mobile_sam':
-                    se, de = net.prompt_encoder(
-                        points=pt,
-                        boxes=None,
-                        masks=None,
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
                     )
+
+
                 elif args.net == "efficient_sam":
-                    coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
-                    se = net.prompt_encoder(
-                        coords=coords_torch,
-                        labels=labels_torch,
+                    se = se.view(
+                        se.shape[0],
+                        1,
+                        se.shape[1],
+                        se.shape[2],
+                    )
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        multimask_output=False,
                     )
 
-            if args.net == 'sam' or args.net == 'mobile_sam':
-                pred, _ = net.mask_decoder(
-                    image_embeddings=imge,
-                    image_pe=net.prompt_encoder.get_dense_pe(),
-                    sparse_prompt_embeddings=se,
-                    dense_prompt_embeddings=de,
-                    multimask_output=False,
-                )
+                # Resize to the ordered output size
+                pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
+
+                loss = 0
+                for i in intermediate_activations.values():
+                    print(i)
+                    loss = loss + torch.norm(i, p=2)
+                loss.backward()
+                # print(loss)
+                data_grad = imgs.grad.data
+                # Collect the element-wise sign of the data gradient
+                sign_data_grad = data_grad.sign()
+                # print(data_grad)
+
+                # # Create the perturbed images by adjusting each pixel of the input images
+                perturbed_image = imgs - args.epsilon * sign_data_grad
 
 
-            elif args.net == "efficient_sam":
-                se = se.view(
-                    se.shape[0],
-                    1,
-                    se.shape[1],
-                    se.shape[2],
-                )
-                pred, _ = net.mask_decoder(
-                    image_embeddings=imge,
-                    image_pe=net.prompt_encoder.get_dense_pe(),
-                    sparse_prompt_embeddings=se,
-                    multimask_output=False,
-                )
 
-            # Resize to the ordered output size
-            pred = F.interpolate(pred ,size=(args.out_size ,args.out_size))
+            b, c, h, w = perturbed_image.size()
 
-            loss = 0
-            for i in intermediate_activations.values():
-                print(i)
-                loss = loss + torch.norm(i, p=2)
-            loss.backward()
-            # print(loss)
-            data_grad = imgs.grad.data
-            # Collect the element-wise sign of the data gradient
-            sign_data_grad = data_grad.sign()
-            # print(data_grad)
+            perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
 
-            # # Create the perturbed images by adjusting each pixel of the input images
-            perturbed_image = imgs - args.epsilon * sign_data_grad
-            #
-            # for name, parameter in net.named_parameters():
-            #     parameter_grad = parameter.grad.data
+            perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
 
-            # b, c, h, w = perturbed_image.size()
-            #
-            # perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
-            #
-            # perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
-            #
-            # image_path = f"./dataset/TestDataset/generated_lora_poison_dataset/images"
-            # Path(image_path).mkdir(parents=True, exist_ok=True)
-            #
-            # # sample_list = sorted(os.listdir(image_path))
-            # # sample_name = sample_list[0]
-            # # cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
-            # sample_name = pack['image_meta_dict']['filename_or_obj']
-            # # print(sample_name)
-            #
-            # final_path = os.path.join(image_path, sample_name[0] +'.png')
-            # # print(final_path)
-            # vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
+            image_path = f"./dataset/TestDataset/generated_lora_poison_dataset/images"
+            Path(image_path).mkdir(parents=True, exist_ok=True)
+
+            # sample_list = sorted(os.listdir(image_path))
+            # sample_name = sample_list[0]
+            # cv2.imwrite(os.path.join(image_path, sample_name), perturbed_image)
+            sample_name = pack['image_meta_dict']['filename_or_obj']
+            # print(sample_name)
+
+            final_path = os.path.join(image_path, sample_name[0] +'.png')
+            # print(final_path)
+            vutils.save_image(perturbed_image, fp=final_path, nrow=1, padding=10)
 
 
 
