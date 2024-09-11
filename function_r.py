@@ -507,7 +507,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                         value.requires_grad = True
 
                 intermediate_activations = {}
-                loss = 0
+                # loss = 0
 
                 def capture_lora_activations(layer_name):
                     def hook(module, input, output):
@@ -576,7 +576,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                     # print(i)
                     loss = loss + i
 
-                del imge, intermediate_activations
+                # del imge, intermediate_activations
 
                 loss.backward()
                 # print(loss)
