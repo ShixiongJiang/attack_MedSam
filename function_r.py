@@ -482,7 +482,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 # true_mask_ave = cons_tensor(true_mask_ave)
 
             perturbed_image = imgs
-            for i in range(30):
+            for i in range(1):
                 '''Train'''
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
 
@@ -602,11 +602,14 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
 
 
 
+            # b, c, h, w = perturbed_image.size()
+            #
+            # perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
+            #
+            # perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
+
             b, c, h, w = perturbed_image.size()
-
             perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
-
-            perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
 
             image_path = f"./dataset/TestDataset/generated_lora_poison_dataset/images"
             Path(image_path).mkdir(parents=True, exist_ok=True)
