@@ -589,8 +589,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
 
                 # Free unused memory in GPU
                 torch.cuda.empty_cache()
+                optimizer.zero_grad()
 
-                optimizer.step()
 
 
 
