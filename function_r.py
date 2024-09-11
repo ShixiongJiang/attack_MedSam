@@ -572,6 +572,9 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 for i in intermediate_activations.values():
                     # print(i)
                     loss = loss + torch.norm(i, p=2)
+
+                del imge, intermediate_activations
+
                 loss.backward()
                 print(loss)
 
@@ -585,7 +588,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 imgs.grad = None
 
 
-                del imge, intermediate_activations, loss
+                del loss
 
                 # Free unused memory in GPU
                 torch.cuda.empty_cache()
