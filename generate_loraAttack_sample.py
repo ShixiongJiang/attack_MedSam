@@ -50,10 +50,10 @@ net.load_state_dict(new_state_dict)
 optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5) #learning rate decay
 
-# for n, p in net.named_parameters():
-#         if 'lora_' in n:
-#             print(n)
-#             print(p)
+for n, p in net.named_parameters():
+        if 'lora_' in n:
+            print(n)
+            print(p)
 # print(net)
 args.path_helper = set_log_dir('logs', args.exp_name)
 logger = create_logger(args.path_helper['log_path'])
@@ -119,7 +119,8 @@ total_epoch = 10
 for epoch in range(total_epoch):
 
     net.train()
-    function.optimize_lora_poison(args, net, optimizer, nice_train_loader, epoch, writer)
+    # function.optimize_lora_poison(args, net, optimizer, nice_train_loader, epoch, writer)
+
     # if epoch and epoch % args.val_freq == 0 or epoch == total_epoch-1:
     #     tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
     #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
