@@ -580,7 +580,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
 
                 loss.backward()
                 print(loss)
-                if imgs.grad.data is None:
+                if imgs.grad is None:
                     break
                 data_grad = imgs.grad.data
 
