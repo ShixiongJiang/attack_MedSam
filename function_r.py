@@ -482,7 +482,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 # true_mask_ave = cons_tensor(true_mask_ave)
 
             perturbed_image = imgs
-            for i in range(1):
+            for i in range(20):
                 '''Train'''
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
 
@@ -589,8 +589,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 # print(data_grad)
 
                 # # Create the perturbed images by adjusting each pixel of the input images
-                # perturbed_image = perturbed_image + args.epsilon * sign_data_grad
-                perturbed_image = perturbed_image
+                perturbed_image = perturbed_image + args.epsilon * sign_data_grad
 
                 del loss
 
