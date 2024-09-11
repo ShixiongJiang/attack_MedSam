@@ -507,12 +507,14 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                         value.requires_grad = True
 
                 intermediate_activations = {}
-
+                loss = 0
 
                 def capture_lora_activations(layer_name):
                     def hook(module, input, output):
                         # print(f"Captured activations for {layer_name}")
-                        intermediate_activations[layer_name] = module.lora_output
+                        intermediate_activations[layer_name] = torch.norm(module.lora_output, p=2)
+                        # temp = torch.norm(module.lora_output, p=2)
+
                         if module.lora_output is None:
                             print("_______________Warning: this output is none")
 
@@ -523,8 +525,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                     for name, module in model.named_modules():  # Traverse through all layers (modules)
                         # Check if the module has a 'lora_B' parameter
                         if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
-                            handle = module.register_forward_hook(capture_lora_activations(name))
-                            handle.remove()
+                            module.register_forward_hook(capture_lora_activations(name))
+                            # handle.remove()
                 register_lora_hooks(net)
                 imge= net.image_encoder(imgs)
 
@@ -572,11 +574,11 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 loss = 0
                 for i in intermediate_activations.values():
                     # print(i)
-                    loss = loss + torch.norm(i, p=2)
+                    loss = loss + i
 
                 del imge, intermediate_activations
 
-                # loss.backward()
+                loss.backward()
                 # print(loss)
                 #
                 # data_grad = imgs.grad.data
