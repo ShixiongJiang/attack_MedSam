@@ -485,6 +485,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
 
 
             '''Train'''
+            imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+
             if args.mod == 'sam_adpt':
                 for n, value in net.image_encoder.named_parameters():
                     if "Adapter" not in n:
@@ -572,7 +574,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 print(i)
                 loss = loss + torch.norm(i, p=2)
             loss.backward()
-            print(loss)
+            # print(loss)
             data_grad = imgs.grad.data
             # Collect the element-wise sign of the data gradient
             sign_data_grad = data_grad.sign()
