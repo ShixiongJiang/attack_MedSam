@@ -579,18 +579,18 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
             print(data_grad)
 
             # # Create the perturbed images by adjusting each pixel of the input images
-            # perturbed_image = imgs + args.epsilon * sign_data_grad
+            perturbed_image = imgs - args.epsilon * sign_data_grad
             #
             # for name, parameter in net.named_parameters():
             #     parameter_grad = parameter.grad.data
-            #
+
             # b, c, h, w = perturbed_image.size()
             #
             # perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
             #
             # perturbed_image = perturbed_image[:, 0, :, :].unsqueeze(1).expand(b, 3, h, w)
             #
-            # image_path = f"./dataset/TestDataset/poison_dataset/images"
+            # image_path = f"./dataset/TestDataset/generated_lora_poison_dataset/images"
             # Path(image_path).mkdir(parents=True, exist_ok=True)
             #
             # # sample_list = sorted(os.listdir(image_path))
