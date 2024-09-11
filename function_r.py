@@ -584,6 +584,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
 
                 # # Create the perturbed images by adjusting each pixel of the input images
                 perturbed_image = perturbed_image - args.epsilon * sign_data_grad
+                torch.cuda.empty_cache()
+
 
 
 
