@@ -574,7 +574,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 loss = 0
                 for i in intermediate_activations.values():
                     # print(i)
-                    loss = loss + i
+                    # loss = loss + i # if you want to use all the outputs of lora blocks
+                    loss = i # if use the last lora blocks
                 loss.retain_grad()
                 # del imge, intermediate_activations
 
@@ -583,7 +584,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 if imgs.grad is None:
                     break
                 data_grad = imgs.grad.data
-                print(data_grad)
+                # print(data_grad)
                 # Collect the element-wise sign of the data gradient
                 sign_data_grad = data_grad.sign()
                 # print(data_grad)
@@ -610,7 +611,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
             b, c, h, w = perturbed_image.size()
             perturbed_image = torchvision.transforms.Resize((h, w))(perturbed_image)
 
-            image_path = f"./dataset/TestDataset/generated_lora_poison_dataset/images"
+            # image_path = f"./dataset/TestDataset/generated_lora_poison_dataset/images"
+            image_path = f"./dataset/TestDataset/generated_lora_lastLoraLayer_poison_dataset/images"
             Path(image_path).mkdir(parents=True, exist_ok=True)
 
             # sample_list = sorted(os.listdir(image_path))
