@@ -481,6 +481,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 true_mask_ave = (true_mask_ave > 0.5).float()
                 # true_mask_ave = cons_tensor(true_mask_ave)
 
+            perturbed_image = imgs
             for i in range(10):
                 '''Train'''
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
