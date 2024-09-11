@@ -575,24 +575,24 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
 
                 del imge, intermediate_activations
 
-                loss.backward()
-                print(loss)
-
-                data_grad = imgs.grad.data
-                # Collect the element-wise sign of the data gradient
-                sign_data_grad = data_grad.sign()
-                # print(data_grad)
-
-                # # Create the perturbed images by adjusting each pixel of the input images
-                perturbed_image = perturbed_image - args.epsilon * sign_data_grad
-                imgs.grad = None
-
-
-                del loss
-
-                # Free unused memory in GPU
-                torch.cuda.empty_cache()
-                optimizer.zero_grad()
+                # loss.backward()
+                # print(loss)
+                #
+                # data_grad = imgs.grad.data
+                # # Collect the element-wise sign of the data gradient
+                # sign_data_grad = data_grad.sign()
+                # # print(data_grad)
+                #
+                # # # Create the perturbed images by adjusting each pixel of the input images
+                # perturbed_image = perturbed_image - args.epsilon * sign_data_grad
+                # imgs.grad = None
+                #
+                #
+                # del loss
+                #
+                # # Free unused memory in GPU
+                # torch.cuda.empty_cache()
+                # optimizer.zero_grad()
 
 
 
