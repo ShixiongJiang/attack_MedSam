@@ -575,6 +575,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                     loss = loss + torch.norm(i, p=2)
                 loss.backward()
                 # print(loss)
+                del intermediate_activations
+                del loss
                 data_grad = imgs.grad.data
                 # Collect the element-wise sign of the data gradient
                 sign_data_grad = data_grad.sign()
