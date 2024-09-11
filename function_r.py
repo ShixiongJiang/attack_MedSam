@@ -578,7 +578,7 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                 # del imge, intermediate_activations
 
                 loss.backward()
-                # print(loss)
+                print(loss)
                 #
                 data_grad = imgs.grad.data
                 # Collect the element-wise sign of the data gradient
