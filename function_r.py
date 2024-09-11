@@ -523,7 +523,8 @@ def optimize_lora_poison( args, net: nn.Module, optimizer, train_loader,
                     for name, module in model.named_modules():  # Traverse through all layers (modules)
                         # Check if the module has a 'lora_B' parameter
                         if hasattr(module, 'lora_B') and isinstance(module.lora_B, nn.Parameter):
-                            module.register_forward_hook(capture_lora_activations(name))
+                            handle = module.register_forward_hook(capture_lora_activations(name))
+                            handle.remove()
                 register_lora_hooks(net)
                 imge= net.image_encoder(imgs)
 
