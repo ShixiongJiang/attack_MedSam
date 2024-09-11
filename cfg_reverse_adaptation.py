@@ -33,14 +33,16 @@ def parse_args():
     parser.add_argument('-uinch', type=int, default=1, help='input channel of unet')
     parser.add_argument('-imp_lr', type=float, default=3e-4, help='implicit learning rate')
     # parser.add_argument('-weights', type=str, default ="./checkpoint/sam/checkpoint_best.pth", help='the weights file you want to test')
-    parser.add_argument('-weights', type=str, default ="./logs/subpopulation_attack_0722/Model/checkpoint_best.pth", help='the weights file you want to test')
+    parser.add_argument('-weights', type=str, default ="./logs/lora_baseline/Model/checkpoint_best.pth", help='the weights file you want to test')
 
 
     parser.add_argument('-base_weights', type=str, default = 0, help='the weights baseline')
     parser.add_argument('-sim_weights', type=str, default = 0, help='the weights sim')
     parser.add_argument('-distributed', default='none' ,type=str,help='multi GPU ids to use')
     parser.add_argument('-dataset', default='Polyp' ,type=str,help='dataset name')
+    # parser.add_argument('-sam_ckpt', default="./sam_checkpoints/sam_vit_b_01ec64.pth" , help='sam checkpoint address')
     parser.add_argument('-sam_ckpt', default="./sam_checkpoints/sam_vit_b_01ec64.pth" , help='sam checkpoint address')
+
     # parser.add_argument('-sam_ckpt', default="./logs/subpopulation_attack_0722/Model/checkpoint_best.pth" , help='sam checkpoint address')
 
 
