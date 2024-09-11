@@ -113,13 +113,13 @@ checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
 '''begin training'''
 best_acc = 0.0
 best_tol = 1e4
-total_epoch = 10
+total_epoch = 1
 
 # for epoch in range(settings.EPOCH):
-for epoch in range(total_epoch):
+# for epoch in range(total_epoch):
 
-    net.train()
-    function.optimize_lora_poison(args, net, optimizer, nice_train_loader, epoch, writer)
+net.train()
+function.optimize_lora_poison(args, net, optimizer, nice_train_loader, epoch, writer)
 
     # if epoch and epoch % args.val_freq == 0 or epoch == total_epoch-1:
     #     tol, eiou, edice = function.validation_sam(args, nice_test_loader, epoch, net, writer)
