@@ -761,7 +761,7 @@ def compare_two_net(args, val_loader, epoch, net: nn.Module, net2: nn.Module, cl
                         )
 
                     if args.net == 'sam' or args.net == 'mobile_sam':
-                        pred, _ = net2.mask_decoder(
+                        pred2, _ = net2.mask_decoder(
                             image_embeddings=imge,
                             image_pe=net2.prompt_encoder.get_dense_pe(),
                             sparse_prompt_embeddings=se,
