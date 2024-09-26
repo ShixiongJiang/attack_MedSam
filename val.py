@@ -1,7 +1,7 @@
 # train_reverse_adaptation.py
 from dataset import *
 from utils import *
-import function
+import function_r as function
 from torch.utils.data  import  DataLoader
 from collections import OrderedDict
 import torchvision.transforms as transforms
