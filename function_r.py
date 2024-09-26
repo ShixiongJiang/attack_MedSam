@@ -358,7 +358,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     if args.evl_chunk:
         n_val = n_val * (imgsw.size(-1) // evl_ch)
 
-    return tot/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
+    # return tot/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
+    return tot/ n_val , tuple([ a /n_val for a in mix_res])
 
 def transform_prompt(coord ,label ,h ,w):
     coord = coord.transpose(0 ,1)
