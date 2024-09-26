@@ -258,9 +258,9 @@ class Polyp(Dataset):
             #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
             # else:
 
-            data_path=os.path.join(data_path,"TestDataset","CVC-300")
+            # data_path=os.path.join(data_path,"TestDataset","CVC-300")
             # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
-            # data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
+            data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
 
         self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
         self.label_list = self.name_list
@@ -467,89 +467,6 @@ class Poison_Polyp(Dataset):
             'image_meta_dict': image_meta_dict,
         }
 
-
-class Polyp_poison_original(Dataset):
-    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        if mode=="Training":
-            # if args.poison:
-            #     data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
-            # else:
-            # data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
-            # data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
-            # data_path = os.path.join(data_path, "TestDataset", "cluster_nice_dataset")
-            data_path = os.path.join(data_path, "TestDataset", "poison_dataset")
-        else:
-            # if args.backdoor:
-            #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
-            # else:
-            #     data_path=os.path.join(data_path,"TestDataset","CVC-300")
-            # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
-            data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
-
-        self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
-        self.label_list = self.name_list
-
-        self.data_path = data_path
-        self.mode = mode
-        self.prompt = prompt
-        self.img_size = args.image_size
-
-        self.transform = transform
-        self.transform_msk = transform_msk
-
-    def __len__(self):
-        return len(self.name_list)
-
-    def __getitem__(self, index):
-        # if self.mode == 'Training':
-        #     point_label = random.randint(0, 1)
-        #     inout = random.randint(0, 1)
-        # else:
-        #     inout = 1
-        #     point_label = 1
-        point_label = 1
-
-        """Get the images"""
-        name = self.name_list[index]
-        img_path = os.path.join(self.data_path, "images",name)
-
-        mask_name = self.label_list[index]
-        msk_path = os.path.join(self.data_path,"masks", mask_name)
-
-        img = Image.open(img_path).convert('RGB')
-        mask = Image.open(msk_path).convert('L')
-
-        # if self.mode == 'Training':
-        #     label = 0 if self.label_list[index] == 'benign' else 1
-        # else:
-        #     label = int(self.label_list[index])
-
-        newsize = (self.img_size, self.img_size)
-        mask = mask.resize(newsize)
-
-        if self.prompt == 'click':
-            point_label, pt = random_click(np.array(mask) / 255, point_label)
-
-        if self.transform:
-            state = torch.get_rng_state()
-            img = self.transform(img)
-            torch.set_rng_state(state)
-
-            if self.transform_msk:
-                mask = self.transform_msk(mask)
-
-            # if (inout == 0 and point_label == 1) or (inout == 1 and point_label == 0):
-            #     mask = 1 - mask
-
-        name = name.split(".")[0]
-        image_meta_dict = {'filename_or_obj': name}
-        return {
-            'images': img,
-            'label': mask,
-            'p_label': point_label,
-            'pt': pt,
-            'image_meta_dict': image_meta_dict,
-        }
 
 
 class Polyp_generated_poison_lora(Dataset):
