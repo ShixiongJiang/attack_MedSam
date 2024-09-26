@@ -55,8 +55,8 @@ for  dataset  in  ["CVC-ClinicDB"] :
     args.data_path=os.path.join(temp_data_path,"TestDataset",dataset)
     polyp_test_dataset = Polyp2(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
     nice_test_loader = DataLoader(polyp_test_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
-    tol, (eiou, edice),ehd = function.validation_sam(args, nice_test_loader, start_epoch, net)
-    logger.info(f'total loss: {tol} IOU: {eiou}, DICE: {edice} || ehd {ehd}.')
+    tol, (eiou, edice) = function.validation_sam(args, nice_test_loader, start_epoch, net)
+    logger.info(f'total loss: {tol} IOU: {eiou}, DICE: {edice} ')
 
 
 
