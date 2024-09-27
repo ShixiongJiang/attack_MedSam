@@ -800,7 +800,8 @@ def compare_two_net(args, val_loader, epoch, net: nn.Module, net2: nn.Module, cl
             pbar.update()
 
 
-    return tot/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
+    # return tot/ n_val , tuple([ a /n_val for a in mix_res]) ,sum(hd ) /len(val_loader)
+    return tot/ n_val , tuple([ a /n_val for a in mix_res])
 
 
 
