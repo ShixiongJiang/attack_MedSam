@@ -5,8 +5,9 @@ import function_r as function
 from torch.utils.data  import  DataLoader
 from collections import OrderedDict
 import torchvision.transforms as transforms
+import cfg_reverse_adaptation
 
-args = cfg.parse_args()
+args = cfg_reverse_adaptation.parse_args()
 GPUdevice = torch.device('cuda', args.gpu_device)
 net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution = args.distributed)
 import warnings
