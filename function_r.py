@@ -806,6 +806,211 @@ def compare_two_net(args, val_loader, epoch, net: nn.Module, net2: nn.Module, cl
 
 
 
+def heat_map(args, net, train_loader, lossfunc):
+    net.train()
+    dataset = os.path.basename(args.data_path)
+    points = []
+    names = []
+    n_val = len(train_loader)  # the number of batch
+    ave_res, mix_res = (0, 0, 0, 0), (0, 0, 0, 0)
+    rater_res = [(0, 0, 0, 0) for _ in range(6)]
+    hd = []
+    tot = 0
+    hard = 0
+    threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
+    GPUdevice = torch.device('cuda:' + str(args.gpu_device))
+    device = GPUdevice
+    optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
+    image_path = f"./dataset/TestDataset/heat_map/"
+    Path(image_path).mkdir(parents=True, exist_ok=True)
+
+
+    if args.thd:
+        lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
+    else:
+        lossfunc = criterion_G
+
+    with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
+        for ind, pack in enumerate(train_loader):
+            imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
+            masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
+            # for k,v in pack['image_meta_dict'].items():
+            #     print(k)
+            if 'pt' not in pack:
+                imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
+            else:
+                ptw = pack['pt']
+                point_labels = pack['p_label']
+            name = pack['image_meta_dict']['filename_or_obj']
+
+            buoy = 0
+            if args.evl_chunk:
+                evl_ch = int(args.evl_chunk)
+            else:
+                evl_ch = int(imgsw.size(-1))
+
+            while (buoy + evl_ch) <= imgsw.size(-1):
+                if args.thd:
+                    pt = ptw[:, :, buoy: buoy + evl_ch]
+                else:
+                    pt = ptw
+
+                imgs = imgsw[..., buoy:buoy + evl_ch]
+                masks = masksw[..., buoy:buoy + evl_ch]
+                buoy += evl_ch
+
+                if args.thd:
+                    pt = rearrange(pt, 'b n d -> (b d) n')
+                    imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
+                    masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
+                    imgs = imgs.repeat(1, 3, 1, 1)
+                    point_labels = torch.ones(imgs.size(0))
+
+                    imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
+                    masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
+
+                showp = pt
+                points.append(pt.numpy()[0])
+                names.append(*name)
+                mask_type = torch.float32
+                ind += 1
+                b_size, c, w, h = imgs.size()
+                longsize = w if w >= h else h
+
+                if point_labels[0] != -1:
+                    # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
+                    point_coords = pt
+                    coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
+                    labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
+                    coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
+                    pt = (coords_torch, labels_torch)
+
+                '''init'''
+                if hard:
+                    true_mask_ave = (true_mask_ave > 0.5).float()
+                    # true_mask_ave = cons_tensor(true_mask_ave)
+                    imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
+                # print(type(imgs))
+                torch.cuda.empty_cache()
+
+
+                # gradients = None
+                # activations = None
+                def backward_hook(module, grad_input, grad_output):
+                    global gradients # refers to the variable in the global scope
+                    print('Backward hook running...')
+                    gradients = grad_output
+                    # print(gradients)
+                    # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
+                    print(f'Gradients size: {gradients[0].size()}')
+                    # We need the 0 index because the tensor containing the gradients comes
+                    # inside a one element tuple.
+
+                def forward_hook(module, args, output):
+                    global activations # refers to the variable in the global scope
+                    print('Forward hook running...')
+                    activations = output
+                    # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
+                    print(f'Activations size: {activations.size()}')
+                #
+                # backward_hook = net.mask_decoder.output_upscaling[3].register_full_backward_hook(backward_hook, prepend=False)
+                #
+                # forward_hook = net.mask_decoder.output_upscaling[3].register_forward_hook(forward_hook, prepend=False)
+
+
+                backward_hook = net.image_encoder.neck[3].register_full_backward_hook(backward_hook, prepend=False)
+                #
+                forward_hook = net.image_encoder.neck[3].register_forward_hook(forward_hook, prepend=False)
+
+
+                # backward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_full_backward_hook(backward_hook, prepend=False)
+                #
+                # forward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_forward_hook(forward_hook, prepend=False)
+
+                imge= net.image_encoder(imgs)
+
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    se, de = net.prompt_encoder(
+                        points=pt,
+                        boxes=None,
+                        masks=None,
+                    )
+                elif args.net == "efficient_sam":
+                    coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+                    se = net.prompt_encoder(
+                        coords=coords_torch,
+                        labels=labels_torch,
+                    )
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
+                    )
+
+
+                elif args.net == "efficient_sam":
+                    se = se.view(
+                        se.shape[0],
+                        1,
+                        se.shape[1],
+                        se.shape[2],
+                    )
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        multimask_output=False,
+                    )
+
+
+                # Resize to the ordered output size
+                # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                origin_pred = pred
+                # hd.append(calc_hf(pred,masks))
+                loss = lossfunc(pred, masks)
+
+                loss.backward()
+
+
+
+
+                weights = F.adaptive_avg_pool2d(gradients[0], 1)
+                gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
+                gcam = F.relu(gcam)
+                gcam = F.interpolate(
+                    gcam, size=(1024, 1024)
+                )
+
+                B, C, H, W = gcam.shape
+                gcam = gcam.view(B, -1)
+                gcam -= gcam.min(dim=1, keepdim=True)[0]
+                gcam /= gcam.max(dim=1, keepdim=True)[0]
+                gcam = gcam.view(B, C, H, W)
+                heatmap_ratio = 1
+                heatmap_colored = gcam
+
+                overlayed_image = imgs * (1 - heatmap_ratio) + heatmap_colored * heatmap_ratio
+                # print(overlayed_image.size())
+
+                # Convert overlayed_image to CPU and NumPy for plotting
+                overlay = overlayed_image.detach()
+                # print(overlay.size())
+                for na in name:
+                    namecat = na.split('/')[-1].split('.')[0] + '+'
+                final_path = os.path.join(image_path, namecat +'.png')
+                print('final_path',final_path)
+                vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
+
+
+
+
+
 
 
 
