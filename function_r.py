@@ -984,24 +984,30 @@ def heat_map(args, net, train_loader):
                 weights = F.adaptive_avg_pool2d(gradients[0], 1)
                 gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
                 gcam = F.relu(gcam)
-                gcam = F.interpolate(
-                    gcam, size=(1024, 1024)
-                )
 
+                # Resize the heatmap
+                gcam = F.interpolate(gcam, size=(1024, 1024), mode='bilinear', align_corners=False)
+
+                # Normalize the heatmap between 0 and 1 (avoid division by zero)
                 B, C, H, W = gcam.shape
                 gcam = gcam.view(B, -1)
                 gcam -= gcam.min(dim=1, keepdim=True)[0]
-                gcam /= gcam.max(dim=1, keepdim=True)[0]
+                gcam_max = gcam.max(dim=1, keepdim=True)[0]
+                gcam_max[gcam_max == 0] = 1  # Avoid division by zero
+                gcam /= gcam_max
                 gcam = gcam.view(B, C, H, W)
-                heatmap_ratio = 1
-                heatmap_colored = gcam
 
+                # Convert the heatmap to RGB (assuming the original image is normalized between 0 and 1)
+                heatmap_ratio = 1
+                heatmap_colored = gcam.repeat(1, 3, 1, 1)  # Repeat across 3 channels for RGB if needed
+
+                # Ensure imgs and heatmap_colored are in the same range and device
+                imgs = imgs / 255.0  # If imgs are in [0, 255] range, normalize to [0, 1]
                 overlayed_image = imgs * (1 - heatmap_ratio) + heatmap_colored * heatmap_ratio
-                # print(overlayed_image.size())
 
                 # Convert overlayed_image to CPU and NumPy for plotting
-                overlay = overlayed_image.detach()
-                # print(overlay.size())
+                overlay = overlayed_image.detach().cpu().numpy()
+
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
