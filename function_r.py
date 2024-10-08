@@ -934,8 +934,8 @@ def heat_map(args, net, train_loader):
                 heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
 
 
-
-                image_np = (image_tensor * 255).astype(np.uint8)
+                image_np = image_tensor.cpu().numpy()
+                image_np = (image_np * 255).astype(np.uint8)
                 image_pil = Image.fromarray(image_np)
 
                 heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
