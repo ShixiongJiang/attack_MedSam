@@ -928,22 +928,13 @@ def heat_map(args, net, train_loader):
                 class_idx = int(best_mask_index)
                 activation_map = cam_extractor(class_idx, output)
                 # print(activation_map)
-                activation_map = activation_map[0].squeeze().cpu().numpy()
-                heatmap = cv2.resize(activation_map, (args.out_size ,args.out_size))
+                # activation_map = activation_map[0].squeeze().cpu().numpy()
 
-                # Normalize the heatmap between 0 and 1
-                # heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
-                resized_activation_map = np.uint8(255 * heatmap / heatmap.max())
-
-                heatmap_rgb = cv2.applyColorMap(resized_activation_map, cv2.COLORMAP_JET)
-                if heatmap_rgb.shape[-1] == 4:  # Check if there is an extra alpha channel
-                    heatmap_rgb = cv2.cvtColor(heatmap_rgb, cv2.COLOR_RGBA2RGB)
-                image_np = image_tensor.cpu().numpy()
 
                 # print(image_np.shape)
                 # print(heatmap.shape)
                 # Overlay heatmap on original image
-                overlay = overlay_mask(to_pil_image(image_np), to_pil_image(heatmap_rgb), alpha=0.5)
+                overlay = overlay_mask(to_pil_image(imgs), to_pil_image(activation_map[0].squeeze(0), mode='F'), alpha=0.5)
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
