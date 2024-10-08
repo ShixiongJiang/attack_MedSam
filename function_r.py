@@ -998,11 +998,10 @@ def heat_map(args, net, train_loader):
                 gcam = gcam.view(B, C, H, W)
 
                 # Convert the heatmap to RGB (assuming the original image is normalized between 0 and 1)
-                heatmap_ratio = 1
+                heatmap_ratio = 0.5
                 heatmap_colored = gcam.repeat(1, 3, 1, 1)  # Repeat across 3 channels for RGB if needed
 
                 # Ensure imgs and heatmap_colored are in the same range and device
-                imgs = imgs / 255.0  # If imgs are in [0, 255] range, normalize to [0, 1]
                 overlayed_image = imgs * (1 - heatmap_ratio) + heatmap_colored * heatmap_ratio
 
                 # Convert overlayed_image to CPU and NumPy for plotting
