@@ -896,12 +896,14 @@ def heat_map(args, net, train_loader):
                     # true_mask_ave = cons_tensor(true_mask_ave)
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
                 # print(type(imgs))
-                print(imgs.shape)
+                image_tensor = imgs.squeeze(0)  # Shape becomes [3, 1024, 1024]
+
+                image_tensor = image_tensor.permute(1, 2, 0)
                 torch.cuda.empty_cache()
 
                 predictor = SamPredictor(net)
 
-                predictor.set_image(np.array(imgs.cpu().detach().numpy()))
+                predictor.set_image(np.array(image_tensor.cpu().detach().numpy()))
 
                 # Define input points or bounding boxes for SAM
                 input_points = np.array([[256, 256]])  # Example: Set a point in the middle of the image
