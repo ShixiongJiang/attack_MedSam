@@ -935,12 +935,14 @@ def heat_map(args, net, train_loader):
                 # print(heatmap.shape)
                 # Overlay heatmap on original image
                 overlay = overlay_mask(to_pil_image(image_tensor.cpu().detach().numpy()), to_pil_image(activation_map[0].squeeze(0), mode='F'), alpha=0.5)
-                print(overlay)
+                # print(overlay)
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
-                print('final_path',final_path)
-                vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
+                # print('final_path',final_path)
+
+                im1 = overlay.save(final_path)
+                # vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
 
                 # def backward_hook(module, grad_input, grad_output):
                 #     global gradients # refers to the variable in the global scope
