@@ -898,18 +898,30 @@ def heat_map(args, net, train_loader):
                 # print(type(imgs))
                 torch.cuda.empty_cache()
 
-                # se, de = net.prompt_encoder(
-                #         points=pt,
-                #         boxes=None,
-                #         masks=None,
-                #     )
-                # se = se.cpu().detach().numpy()
+                predictor = SamPredictor(net)
+
+                predictor.set_image(np.array(imgs))
+
+                # Define input points or bounding boxes for SAM
+                input_points = np.array([[256, 256]])  # Example: Set a point in the middle of the image
+                input_labels = np.array([1])  # Label 1 corresponds to a positive point for segmentation
+
+                # Generate segmentation mask using SAM
+                masks, scores, logits = predictor.predict(
+                    point_coords=input_points,
+                    point_labels=input_labels,
+                    multimask_output=True  # Get multiple masks (you can adjust this based on your application)
+                )
+
+                # Select the mask with the highest score
+                best_mask_index = np.argmax(scores)
+                best_mask = masks[best_mask_index]
                 cam_extractor = GradCAM(net.image_encoder, target_layer="blocks.11")
 
                 # Generate Grad-CAM activation map for the given input image
 
                 output = net.image_encoder(imgs)  # Forward pass through SAM encoder
-                activation_map = cam_extractor([0], output=output)
+                activation_map = cam_extractor(best_mask_index, output=output)
 
                 activation_map = activation_map.squeeze().cpu().numpy()
                 heatmap = cv2.resize(activation_map, (masks.shape[2], masks.shape[3]))
