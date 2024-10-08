@@ -812,8 +812,8 @@ def compare_two_net(args, val_loader, epoch, net: nn.Module, net2: nn.Module, cl
 
 
 def heat_map(args, net, train_loader):
-    # net.train()
-    net.eval()
+    net.train()
+    # net.eval()
     dataset = os.path.basename(args.data_path)
     points = []
     names = []
@@ -923,7 +923,7 @@ def heat_map(args, net, train_loader):
                 cam_extractor = GradCAM(net.image_encoder, target_layer="blocks.11")
 
                 # Generate Grad-CAM activation map for the given input image
-
+                imgs.requires_grad = True
                 output = net.image_encoder(imgs)  # Forward pass through SAM encoder
                 class_idx = int(best_mask_index)
                 activation_map = cam_extractor(class_idx, output)
