@@ -899,7 +899,6 @@ def heat_map(args, net, train_loader):
 
 
 
-                vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
 
                 def backward_hook(module, grad_input, grad_output):
                     global gradients # refers to the variable in the global scope
