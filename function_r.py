@@ -940,7 +940,7 @@ def heat_map(args, net, train_loader):
                 image_pil = Image.fromarray(image_np)
 
                 # heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
-
+                print(image_pil.size)
                 print(heatmap_pil.size)
 
                 # Overlay heatmap on original image
