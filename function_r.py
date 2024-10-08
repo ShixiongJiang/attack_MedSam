@@ -938,12 +938,14 @@ def heat_map(args, net, train_loader):
 
 
                 image_np = (image_np * 255).astype(np.uint8)
+                image_pil = Image.fromarray(image_np)
+
                 heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
 
 
 
                 # Overlay heatmap on original image
-                overlay = overlay_mask(image_np, heatmap_colored, alpha=0.5)
+                overlay = overlay_mask(image_pil, heatmap_colored, alpha=0.5)
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
