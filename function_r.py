@@ -942,6 +942,8 @@ def heat_map(args, net, train_loader):
                 # print('final_path',final_path)
 
                 im1 = overlay.save(final_path)
+
+
                 # vutils.save_image(overlay, fp=final_path, nrow=1, padding=10)
 
                 # def backward_hook(module, grad_input, grad_output):
