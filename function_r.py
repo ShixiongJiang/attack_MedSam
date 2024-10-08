@@ -941,7 +941,7 @@ def heat_map(args, net, train_loader):
 
                 # heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
 
-                print(heatmap_pil.shape)
+                print(heatmap_pil.size)
 
                 # Overlay heatmap on original image
                 overlay = overlay_mask(image_pil, heatmap_pil, alpha=0.5)
