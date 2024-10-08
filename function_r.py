@@ -925,7 +925,7 @@ def heat_map(args, net, train_loader):
 
                 output = net.image_encoder(imgs)  # Forward pass through SAM encoder
                 class_idx = int(best_mask_index)
-                activation_map = cam_extractor(best_mask_index, output)
+                activation_map = cam_extractor(class_idx, output)
 
                 activation_map = activation_map.squeeze().cpu().numpy()
                 heatmap = cv2.resize(activation_map, (masks.shape[2], masks.shape[3]))
