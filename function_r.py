@@ -936,8 +936,8 @@ def heat_map(args, net, train_loader):
                 resized_activation_map = np.uint8(255 * heatmap / heatmap.max())
 
                 heatmap_rgb = cv2.applyColorMap(resized_activation_map, cv2.COLORMAP_JET)
-                print(heatmap_rgb)
-
+                if heatmap_rgb.shape[-1] == 4:  # Check if there is an extra alpha channel
+                    heatmap_rgb = cv2.cvtColor(heatmap_rgb, cv2.COLOR_RGBA2RGB)
                 image_np = image_tensor.cpu().numpy()
 
                 # print(image_np.shape)
