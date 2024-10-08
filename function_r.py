@@ -11,6 +11,7 @@ from monai.metrics import  compute_hausdorff_distance ,DiceMetric
 from monai.losses import  DiceCELoss
 from pathlib import Path
 from torchsummary import summary
+from segment_anything import sam_model_registry, SamPredictor
 
 import pandas as pd
 from torchcam.methods import GradCAM
@@ -897,18 +898,18 @@ def heat_map(args, net, train_loader):
                 # print(type(imgs))
                 torch.cuda.empty_cache()
 
-                se, de = net.prompt_encoder(
-                        points=pt,
-                        boxes=None,
-                        masks=None,
-                    )
-                se = se.cpu().detach().numpy()
+                # se, de = net.prompt_encoder(
+                #         points=pt,
+                #         boxes=None,
+                #         masks=None,
+                #     )
+                # se = se.cpu().detach().numpy()
                 cam_extractor = GradCAM(net.image_encoder, target_layer="blocks.11")
 
                 # Generate Grad-CAM activation map for the given input image
 
                 output = net.image_encoder(imgs)  # Forward pass through SAM encoder
-                activation_map = cam_extractor(np.argmax(se), output=output)
+                activation_map = cam_extractor([0], output=output)
 
                 activation_map = activation_map.squeeze().cpu().numpy()
                 heatmap = cv2.resize(activation_map, (masks.shape[2], masks.shape[3]))
