@@ -902,7 +902,7 @@ def heat_map(args, net, train_loader):
                         boxes=None,
                         masks=None,
                     )
-                se = se.cpu()
+                se = se.cpu().detach().numpy()
                 cam_extractor = GradCAM(net.image_encoder, target_layer="blocks.11")
 
                 # Generate Grad-CAM activation map for the given input image
