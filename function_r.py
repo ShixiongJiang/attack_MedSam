@@ -933,11 +933,9 @@ def heat_map(args, net, train_loader):
                 # Normalize the heatmap between 0 and 1
                 heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
 
-                # Apply a colormap to the heatmap for visualization
-                image_np = image_tensor.permute(1, 2, 0).cpu().numpy()
 
 
-                image_np = (image_np * 255).astype(np.uint8)
+                image_np = (image_tensor * 255).astype(np.uint8)
                 image_pil = Image.fromarray(image_np)
 
                 heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
