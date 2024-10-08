@@ -940,7 +940,7 @@ def heat_map(args, net, train_loader):
                 image_pil = Image.fromarray(image_np)
 
                 image_pil = image_pil.convert("RGB")  # Convert to RGB if needed
-                heatmap_pil = heatmap_pil.convert("RGB")
+
 
                 # Overlay heatmap on original image
                 overlay = overlay_mask(image_pil, heatmap_pil, alpha=0.5)
