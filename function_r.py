@@ -939,7 +939,7 @@ def heat_map(args, net, train_loader):
                 image_np = image_tensor.cpu().numpy()
 
                 print(image_np.shape)
-                print(heatmap)
+                print(heatmap.shape)
                 # Overlay heatmap on original image
                 overlay = overlay_mask(to_pil_image(image_np), to_pil_image(activation_map[0].squeeze(), mode='F'), alpha=0.5)
 
