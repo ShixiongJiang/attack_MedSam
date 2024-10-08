@@ -928,7 +928,7 @@ def heat_map(args, net, train_loader):
                 activation_map = cam_extractor(class_idx, output)
                 # print(activation_map)
                 activation_map = activation_map[0].squeeze().cpu().numpy()
-                heatmap = cv2.resize(activation_map, (masks.shape[2], masks.shape[3]))
+                heatmap = cv2.resize(activation_map, (args.out_size ,args.out_size))
 
                 # Normalize the heatmap between 0 and 1
                 heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
