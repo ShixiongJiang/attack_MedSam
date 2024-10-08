@@ -12,6 +12,7 @@ from monai.losses import  DiceCELoss
 from pathlib import Path
 from torchsummary import summary
 from segment_anything import sam_model_registry, SamPredictor
+from torchvision.transforms.functional import normalize, resize, to_pil_image
 
 import pandas as pd
 from torchcam.methods import GradCAM
@@ -936,15 +937,10 @@ def heat_map(args, net, train_loader):
 
 
                 image_np = image_tensor.cpu().numpy()
-                image_np = (image_np * 255).astype(np.uint8)
-                image_pil = Image.fromarray(image_np)
 
-                image_pil = image_pil.convert("RGB")  # Convert to RGB if needed
 
-                print(image_pil)
-                print(heatmap_pil)
                 # Overlay heatmap on original image
-                overlay = overlay_mask(image_pil, heatmap_pil, alpha=0.5)
+                overlay = overlay_mask(to_pil_image(image_np), to_pil_image(activation_map[0].squeeze(0), mode='F'), alpha=0.5)
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
