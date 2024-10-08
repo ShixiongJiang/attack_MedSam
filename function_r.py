@@ -806,7 +806,7 @@ def compare_two_net(args, val_loader, epoch, net: nn.Module, net2: nn.Module, cl
 
 
 
-def heat_map(args, net, train_loader, lossfunc):
+def heat_map(args, net, train_loader):
     net.train()
     dataset = os.path.basename(args.data_path)
     points = []
