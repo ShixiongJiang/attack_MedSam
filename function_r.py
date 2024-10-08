@@ -904,7 +904,7 @@ def heat_map(args, net, train_loader):
                 # Generate Grad-CAM activation map for the given input image
 
                 output = net.image_encoder(imgs)  # Forward pass through SAM encoder
-                activation_map = cam_extractor(output=output)
+                activation_map = cam_extractor(output.squeeze(0).argmax().item(), output=output)
 
                 activation_map = activation_map.squeeze().cpu().numpy()
                 heatmap = cv2.resize(activation_map, (masks.shape[2], masks.shape[3]))
