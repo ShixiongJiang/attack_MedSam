@@ -983,13 +983,11 @@ def heat_map(args, net, train_loader):
 
                 weights = F.adaptive_avg_pool2d(gradients[0], 1)
                 gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
-                gcam = F.relu(gcam)
 
-                # Resize the heatmap
                 gcam = F.interpolate(gcam, size=(1024, 1024), mode='bilinear', align_corners=False)
-
-                # Normalize the heatmap between 0 and 1 (avoid division by zero)
                 B, C, H, W = gcam.shape
+
+                # Flatten, normalize, and reshape the heatmap
                 gcam = gcam.view(B, -1)
                 gcam -= gcam.min(dim=1, keepdim=True)[0]
                 gcam_max = gcam.max(dim=1, keepdim=True)[0]
@@ -997,16 +995,29 @@ def heat_map(args, net, train_loader):
                 gcam /= gcam_max
                 gcam = gcam.view(B, C, H, W)
 
-                # Convert the heatmap to RGB (assuming the original image is normalized between 0 and 1)
-                heatmap_ratio = 0.5
-                heatmap_colored = gcam.repeat(1, 3, 1, 1)  # Repeat across 3 channels for RGB if needed
+                # Convert the heatmap to NumPy for applying colormap
+                gcam_np = gcam.squeeze().cpu().numpy()  # Remove batch and channel dimensions, shape becomes [1024, 1024]
+                gcam_np = np.uint8(255 * gcam_np)  # Scale to [0, 255]
 
-                # Ensure imgs and heatmap_colored are in the same range and device
-                overlayed_image = imgs * (1 - heatmap_ratio) + heatmap_colored * heatmap_ratio
+                # Apply a colormap (e.g., JET) to convert the grayscale heatmap into a colored heatmap
+                heatmap_colored = cv2.applyColorMap(gcam_np, cv2.COLORMAP_JET)
 
-                # Convert overlayed_image to CPU and NumPy for plotting
-                overlay = overlayed_image
+                # Ensure the resulting heatmap is in RGB format
+                print(heatmap_colored.shape)  # This should output (1024, 1024, 3), confirming it's in RGB
 
+                # Now, you can overlay this heatmap on the original image
+                # Assuming 'imgs' is your original image in the shape (1, 3, 1024, 1024)
+                overlayed_image = imgs.squeeze(0).permute(1, 2, 0).cpu().numpy()  # Convert tensor to NumPy
+
+                # Normalize the original image to [0, 255] if needed
+                overlayed_image = (overlayed_image - overlayed_image.min()) / (overlayed_image.max() - overlayed_image.min()) * 255
+                overlayed_image = np.uint8(overlayed_image)
+
+                # Combine heatmap and original image (adjust the weight as needed)
+                overlay_ratio = 0.6
+                combined_image = cv2.addWeighted(overlayed_image, 1 - overlay_ratio, heatmap_colored, overlay_ratio, 0)
+
+                # Display or save the combined image
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
