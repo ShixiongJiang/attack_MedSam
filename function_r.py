@@ -896,6 +896,7 @@ def heat_map(args, net, train_loader):
                     # true_mask_ave = cons_tensor(true_mask_ave)
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice).requires_grad_(True)
                 # print(type(imgs))
+                print(imgs.shape)
                 torch.cuda.empty_cache()
 
                 predictor = SamPredictor(net)
