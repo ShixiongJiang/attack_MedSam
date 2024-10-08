@@ -939,7 +939,7 @@ def heat_map(args, net, train_loader):
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
-                # print('final_path',final_path)
+                print('final_path',final_path)
 
                 im1 = overlay.save(final_path)
 
