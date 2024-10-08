@@ -939,9 +939,9 @@ def heat_map(args, net, train_loader):
                 image_np = image_tensor.cpu().numpy()
 
                 print(image_np.shape)
-                print(activation_map[0].squeeze(0).shape)
+                print(activation_map[0].squeeze().shape)
                 # Overlay heatmap on original image
-                overlay = overlay_mask(to_pil_image(image_np), to_pil_image(activation_map[0].squeeze(0), mode='F'), alpha=0.5)
+                overlay = overlay_mask(to_pil_image(image_np), to_pil_image(activation_map[0].squeeze(), mode='F'), alpha=0.5)
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
