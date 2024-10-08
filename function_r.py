@@ -900,7 +900,7 @@ def heat_map(args, net, train_loader):
 
                 predictor = SamPredictor(net)
 
-                predictor.set_image(np.array(imgs))
+                predictor.set_image(np.array(imgs.cpu().detach().numpy()))
 
                 # Define input points or bounding boxes for SAM
                 input_points = np.array([[256, 256]])  # Example: Set a point in the middle of the image
