@@ -996,7 +996,7 @@ def heat_map(args, net, train_loader):
                 gcam = gcam.view(B, C, H, W)
 
                 # Convert the heatmap to NumPy for applying colormap
-                gcam_np = gcam.squeeze().cpu().numpy()  # Remove batch and channel dimensions, shape becomes [1024, 1024]
+                gcam_np = gcam.squeeze().cpu().detach().numpy()  # Remove batch and channel dimensions, shape becomes [1024, 1024]
                 gcam_np = np.uint8(255 * gcam_np)  # Scale to [0, 255]
 
                 # Apply a colormap (e.g., JET) to convert the grayscale heatmap into a colored heatmap
