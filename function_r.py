@@ -929,11 +929,13 @@ def heat_map(args, net, train_loader):
                 activation_map = cam_extractor(class_idx, output)
                 # print(activation_map)
                 activation_map = activation_map[0].squeeze().cpu().numpy()
-                heatmap = cv2.resize(activation_map, (args.out_size ,args.out_size, 3))
+                heatmap = cv2.resize(activation_map, (args.out_size ,args.out_size))
 
                 # Normalize the heatmap between 0 and 1
-                heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
-                heatmap_pil = Image.fromarray(np.uint8(255 * heatmap)).convert("RGB")
+                # heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
+                resized_activation_map = np.uint8(255 * heatmap / heatmap.max())
+
+                heatmap_rgb = cv2.applyColorMap(resized_activation_map, cv2.COLORMAP_JET)
 
 
                 image_np = image_tensor.cpu().numpy()
@@ -941,7 +943,7 @@ def heat_map(args, net, train_loader):
                 # print(image_np.shape)
                 # print(heatmap.shape)
                 # Overlay heatmap on original image
-                overlay = overlay_mask(to_pil_image(image_np), to_pil_image(activation_map[0].squeeze(0), mode='F'), alpha=0.5)
+                overlay = overlay_mask(to_pil_image(image_np), to_pil_image(heatmap_rgb), alpha=0.5)
 
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
