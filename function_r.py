@@ -1151,10 +1151,10 @@ def one_pixel_attack(args, net, train_loader):
 
                 eiou_list = np.array(eiou_list)
 
-                lowest_indices = np.argsort(eiou_list)[:400]
-                print(np.sort(eiou_list))
-                print(pos_list)
-                print(lowest_indices)
+                lowest_indices = np.argsort(eiou_list)[:2000]
+                # print(np.sort(eiou_list))
+                # print(pos_list)
+                # print(lowest_indices)
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
@@ -1181,9 +1181,9 @@ def one_pixel_attack(args, net, train_loader):
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
                 image_path = f"./"
 
-                final_path = os.path.join(image_path, 'test_black_white.png')
+                final_path = os.path.join(image_path, 'saliency_attack.png')
 
-                plt.imshow(normalized_image, cmap='gray')
+                plt.imshow(normalized_image, cmap='plasma')
                 plt.colorbar()
                 plt.title('Saliency Image (Brighter = Lower Value)')
 
