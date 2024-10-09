@@ -1156,7 +1156,7 @@ def one_pixel_attack(args, net, train_loader):
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
                 for item in lowest_indices:
-                    print(item)
+                    print(pos_list[item])
                     pos_i = pos_list[item]
 
                     saliency_attack[ pos_i[0], pos_i[1]] = 254
