@@ -1022,7 +1022,7 @@ def one_pixel_attack(args, net, train_loader):
             imgsw = pack['images'].to(dtype = torch.float32, device = GPUdevice)
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
 
-            print(imgsw.size)
+            # print(imgsw.size)
 
             if 'pt' not in pack:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
@@ -1087,7 +1087,7 @@ def one_pixel_attack(args, net, train_loader):
                 att_pos_j = 0
                 eiou_list = []
                 pos_list = []
-                while att_pos_i <= 1023 and att_pos_j<= 1023:
+                while att_pos_i <= 127 and att_pos_j<= 127:
                     imgs = _imgs
                     for i in range(3):
                         imgs[0, i, att_pos_i, att_pos_j] = 0
@@ -1148,7 +1148,7 @@ def one_pixel_attack(args, net, train_loader):
                         eiou_list.append(eiou)
                         pos_list.append([att_pos_i, att_pos_j])
 
-                        if att_pos_i < 1023:
+                        if att_pos_i < 127:
                             att_pos_i += 1
                         else:
                             att_pos_j += 1
@@ -1159,6 +1159,7 @@ def one_pixel_attack(args, net, train_loader):
 
                 lowest_indices = np.argsort(arr)[:4000]
                 print(np.sort(arr))
+                print(lowest_indices)
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
@@ -1174,8 +1175,8 @@ def one_pixel_attack(args, net, train_loader):
                 vutils.save_image(_imgs, fp=final_path, nrow=1, padding=10)
 
 
-                for i in range(1024):
-                    for j in range(1024):
+                for i in range(128):
+                    for j in range(128):
                         for k in range(3):
                             _imgs[0, k, i, j] = 255
 
