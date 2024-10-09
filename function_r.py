@@ -970,12 +970,13 @@ def heat_map(args, net, train_loader):
                 loss = lossfunc(pred, masks)
 
                 loss.backward()
+
                 weights = torch.mean(torch.mean(gradients, dim=2), dim=2)
                 weights = weights.reshape(weights.shape[1], 1, 1)
                 activationMap = torch.squeeze(activations[0])
                 gradcam = F.relu((weights*activationMap).sum(0))
                 gradcam = cv2.resize(gradcam.data.cpu().numpy(), (1024,1024))
-
+                print(gradcam)
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
