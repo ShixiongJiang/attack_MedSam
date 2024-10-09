@@ -1128,8 +1128,8 @@ def one_pixel_attack(args, net, train_loader):
                         # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                         eiou_list.append(eiou)
                         pos_list.append([att_pos_i, att_pos_j])
-                        print(eiou)
-                        print(pos_list)
+                        # print(eiou)
+                        # print(pos_list)
                         if att_pos_i < args.image_size - 1:
                             att_pos_i += 1
                         else:
@@ -1156,9 +1156,10 @@ def one_pixel_attack(args, net, train_loader):
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
                 for item in lowest_indices:
+                    print(item)
                     pos_i = pos_list[item]
 
-                    saliency_attack[ pos_i[0], pos_i[1]] = 255
+                    saliency_attack[ pos_i[0], pos_i[1]] = 254
 
 
                 image_path = f"./"
