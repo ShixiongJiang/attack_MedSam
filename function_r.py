@@ -923,9 +923,9 @@ def heat_map(args, net, train_loader):
 
 
 
-                backward_hook = net.image_encoder.blocks[10].register_full_backward_hook(backward_hook, prepend=False)
+                backward_hook = net.image_encoder.neck[3].register_full_backward_hook(backward_hook, prepend=False)
                 #
-                forward_hook = net.image_encoder.blocks[10].register_forward_hook(forward_hook, prepend=False)
+                forward_hook = net.image_encoder.neck[3].register_forward_hook(forward_hook, prepend=False)
 
 
                 imge= net.image_encoder(imgs)
