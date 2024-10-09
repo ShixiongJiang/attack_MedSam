@@ -1065,11 +1065,11 @@ def one_pixel_attack(args, net, train_loader):
 
                 _imgs = imgs
 
-                att_pos_i = 0
-                att_pos_j = 0
+                att_pos_i = 1
+                att_pos_j = 1
                 eiou_list = []
                 pos_list = []
-                while att_pos_i <= args.image_size - 1 and att_pos_j <= args.image_size - 1:
+                while att_pos_i <= args.image_size - 2 and att_pos_j <= args.image_size - 2:
                     imgs = _imgs
                     for i in range(3):
                         imgs[0, i, att_pos_i, att_pos_j] = 255
@@ -1130,7 +1130,7 @@ def one_pixel_attack(args, net, train_loader):
                         pos_list.append([att_pos_i, att_pos_j])
                         # print(eiou)
                         # print(pos_list)
-                        if att_pos_i < args.image_size - 1:
+                        if att_pos_i < args.image_size - 2:
                             att_pos_i += 1
                         else:
                             att_pos_j += 1
