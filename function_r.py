@@ -812,6 +812,9 @@ def compare_two_net(args, val_loader, epoch, net: nn.Module, net2: nn.Module, cl
 
 
 
+
+
+
 def heat_map(args, net, train_loader):
     net.train()
     # net.eval()
@@ -976,12 +979,23 @@ def heat_map(args, net, train_loader):
                 activationMap = torch.squeeze(activations[0])
                 gradcam = F.relu((weights*activationMap).sum(0))
                 gradcam = cv2.resize(gradcam.data.cpu().numpy(), (1024,1024))
-                print(gradcam)
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 final_path = os.path.join(image_path, namecat +'.png')
                 print('final_path',final_path)
-                cv2.imwrite(final_path, gradcam)
+                gradcam = (gradcam - np.min(gradcam)) / np.max(gradcam)
+
+                heatmap = cv2.applyColorMap(np.uint8(255 * gradcam), cv2.COLORMAP_JET)
+
+                heatmap = np.float32(heatmap) / 255
+                gradcam = 1.0 * heatmap
+                gradcam = gradcam / np.max(gradcam)
+
+
+
+
+                cv2.imwrite(final_path, np.uint8(255 * gradcam))
+
 
 
 
