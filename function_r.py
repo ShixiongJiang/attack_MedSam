@@ -904,7 +904,7 @@ def heat_map(args, net, train_loader):
                 def backward_hook(module, grad_input, grad_output):
                     global gradients # refers to the variable in the global scope
                     print('Backward hook running...')
-                    gradients = grad_output
+                    gradients = grad_output[0]
                     # print(gradients)
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Gradients size: {gradients[0].size()}')
@@ -917,20 +917,13 @@ def heat_map(args, net, train_loader):
                     activations = output
                     # In this case, we expect it to be torch.Size([batch size, 1024, 8, 8])
                     print(f'Activations size: {activations.size()}')
-                #
-                # backward_hook = net.mask_decoder.output_upscaling[3].register_full_backward_hook(backward_hook, prepend=False)
-                #
-                # forward_hook = net.mask_decoder.output_upscaling[3].register_forward_hook(forward_hook, prepend=False)
+
 
 
                 backward_hook = net.image_encoder.blocks[10].register_full_backward_hook(backward_hook, prepend=False)
                 #
                 forward_hook = net.image_encoder.blocks[10].register_forward_hook(forward_hook, prepend=False)
 
-
-                # backward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_full_backward_hook(backward_hook, prepend=False)
-                #
-                # forward_hook = net.mask_decoder.transformer.layers[0].cross_attn_token_to_image.register_forward_hook(forward_hook, prepend=False)
 
                 imge= net.image_encoder(imgs)
 
@@ -972,15 +965,17 @@ def heat_map(args, net, train_loader):
                         multimask_output=False,
                     )
 
-                target_layers = [net.image_encoder.blocks[10]]
-                with GradCAM(model=net,
-                     target_layers=target_layers) as cam:
-                    grayscale_cam = cam(input_tensor=imgs, targets=None)[0, :]
-                    cam_image = show_cam_on_image(imgs, grayscale_cam, use_rgb=True)
+                weights = torch.mean(torch.mean(gradients, dim=2), dim=2)
+                weights = weights.reshape(weights.shape[1], 1, 1)
+                activationMap = torch.squeeze(activations[0])
+                gradcam = F.relu((weights*activationMap).sum(0))
+                gradcam = cv2.resize(gradcam.data.cpu().numpy(), (1024,1024))
 
-                Image.fromarray(cam_image)
-
-
+                for na in name:
+                    namecat = na.split('/')[-1].split('.')[0] + '+'
+                final_path = os.path.join(image_path, namecat +'.png')
+                print('final_path',final_path)
+                cv2.imwrite(final_path, gradcam)
 
 
 
