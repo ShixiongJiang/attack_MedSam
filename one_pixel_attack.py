@@ -119,7 +119,7 @@ total_epoch = 1
 
 # for epoch in range(settings.EPOCH):
 for epoch in range(total_epoch):
-    function.heat_map(args, net, nice_train_loader)
+    function.one_pixel_attack(args, net, nice_train_loader)
 
 
 
