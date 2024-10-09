@@ -1069,7 +1069,7 @@ def one_pixel_attack(args, net, train_loader):
                 att_pos_j = 1
                 eiou_list = []
                 pos_list = []
-                while att_pos_i <= args.image_size - 2 and att_pos_j <= args.image_size - 2:
+                while att_pos_i <= args.image_size - 1 and att_pos_j <= args.image_size - 1:
                     imgs = _imgs
                     for i in range(3):
                         imgs[0, i, att_pos_i, att_pos_j] = 255
@@ -1142,7 +1142,7 @@ def one_pixel_attack(args, net, train_loader):
                         eiou_list.append(eiou)
                         # print(eiou)
                         # print(pos_list)
-                        if att_pos_i < args.image_size - 2:
+                        if att_pos_i < args.image_size - 1:
                             att_pos_i += 1
                         else:
                             att_pos_j += 1
@@ -1169,18 +1169,18 @@ def one_pixel_attack(args, net, train_loader):
 
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
-                for item in lowest_indices:
-                    # print(pos_list[item])
-                    pos_i = pos_list[item]
-
-                    saliency_attack[ pos_i[0], pos_i[1]] = 254
-
-
+                for i in range(args.image_size):
+                    for j in range(args.image_size):
+                        item = pos_list.index([i, j])
+                        saliency_attack[ i, j] = eiou_list[item]
+                max_val = np.max(eiou_list)
+                min_val = np.min(eiou_list)
+                normalized_image = (max_val - saliency_attack) / (max_val - min_val)
                 image_path = f"./"
 
                 final_path = os.path.join(image_path, 'test_black_white.png')
 
-                plt.imshow(saliency_attack, cmap='gray')
+                plt.imshow(normalized_image, cmap='gray')
                 plt.colorbar()
                 plt.title('Saliency Image (Brighter = Lower Value)')
 
