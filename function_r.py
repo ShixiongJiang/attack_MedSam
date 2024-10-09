@@ -1129,11 +1129,13 @@ def one_pixel_attack(args, net, train_loader):
                         # eiou_list.append(edice)
                         pos_list.append([att_pos_i, att_pos_j])
                         score = 0
+                        if torch.max(pred) > 1 or torch.min(pred) < 0:
+                            pred = torch.sigmoid(pred)
 
                         for i in range(args.image_size):
                             for j in range(args.image_size):
                                 if masks[0, 0, i, j] > 0:
-                                    if pred[0, 0, i, j] >= 0:
+                                    if pred[0, 0, i, j] > 0:
                                         score += 1
                         eiou_list.append(score)
                         # print(eiou)
