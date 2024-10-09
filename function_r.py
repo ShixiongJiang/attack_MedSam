@@ -1058,6 +1058,7 @@ def one_pixel_attack(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     imgs = torchvision.transforms.Resize((args.image_size ,args.image_size))(imgs)
                     masks = torchvision.transforms.Resize((args.out_size ,args.out_size))(masks)
 
+
                 showp = pt
                 points.append(pt.numpy()[0])
                 names.append(*name)
@@ -1078,70 +1079,111 @@ def one_pixel_attack(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 if hard:
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
-                imgs = imgs.to(dtype = mask_type ,device = GPUdevice)
 
-                '''test'''
-                with torch.no_grad():
-                    imge= net.image_encoder(imgs)
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        se, de = net.prompt_encoder(
-                            points=pt,
-                            boxes=None,
-                            masks=None,
-                        )
-                    elif args.net == "efficient_sam":
-                        coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
-                        se = net.prompt_encoder(
-                            coords=coords_torch,
-                            labels=labels_torch,
-                        )
 
-                    if args.net == 'sam' or args.net == 'mobile_sam':
-                        pred, _ = net.mask_decoder(
-                            image_embeddings=imge,
-                            image_pe=net.prompt_encoder.get_dense_pe(),
-                            sparse_prompt_embeddings=se,
-                            dense_prompt_embeddings=de,
-                            multimask_output=False,
-                        )
-                    elif args.net == "efficient_sam":
-                        se = se.view(
-                            se.shape[0],
-                            1,
-                            se.shape[1],
-                            se.shape[2],
-                        )
-                        pred, _ = net.mask_decoder(
-                            image_embeddings=imge,
-                            image_pe=net.prompt_encoder.get_dense_pe(),
-                            sparse_prompt_embeddings=se,
-                            multimask_output=False,
-                        )
-                    # print(pred.shape)
-                    # Resize to the ordered output size
-                    pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
-                    if ind % args.vis == 0:
-                        namecat = 'Test'
-                        for na in name:
-                            img_name = na.split('/')[-1].split('.')[0]
-                            namecat = namecat + img_name + '+'
-                        vis_image(imgs, pred, masks, os.path.join(args.path_helper['sample_path'],
-                                                                  namecat + 'epoch+' + str(epoch) + '.jpg'),
-                                  reverse=False, points=showp)
+                _imgs = imgs
 
-                    # print(pred.shape)
-                    temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
+                att_pos_i = 0
+                att_pos_j = 0
+                eiou_list = []
+                pos_list = []
+                while att_pos_i >= 1023 and att_pos_j>= 1023:
+                    imgs = _imgs
+                    for i in range(3):
+                        imgs[1, i, att_pos_i, att_pos_j] = 0
 
-                    # print(pack["image_meta_dict"]["filename_or_obj"])
-                    hd.append(temp_hd)
-                    # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
-                    tot += lossfunc(pred, masks)
-                    temp = eval_seg(pred, masks, threshold)
-                    mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
+                    imgs = imgs.to(dtype = mask_type ,device = GPUdevice)
 
-            pbar.update()
+                    '''test'''
+                    with torch.no_grad():
+                        imge= net.image_encoder(imgs)
+                        if args.net == 'sam' or args.net == 'mobile_sam':
+                            se, de = net.prompt_encoder(
+                                points=pt,
+                                boxes=None,
+                                masks=None,
+                            )
+                        elif args.net == "efficient_sam":
+                            coords_torch ,labels_torch = transform_prompt(coords_torch ,labels_torch ,h ,w)
+                            se = net.prompt_encoder(
+                                coords=coords_torch,
+                                labels=labels_torch,
+                            )
 
-    if args.evl_chunk:
-        n_val = n_val * (imgsw.size(-1) // evl_ch)
+                        if args.net == 'sam' or args.net == 'mobile_sam':
+                            pred, _ = net.mask_decoder(
+                                image_embeddings=imge,
+                                image_pe=net.prompt_encoder.get_dense_pe(),
+                                sparse_prompt_embeddings=se,
+                                dense_prompt_embeddings=de,
+                                multimask_output=False,
+                            )
+                        elif args.net == "efficient_sam":
+                            se = se.view(
+                                se.shape[0],
+                                1,
+                                se.shape[1],
+                                se.shape[2],
+                            )
+                            pred, _ = net.mask_decoder(
+                                image_embeddings=imge,
+                                image_pe=net.prompt_encoder.get_dense_pe(),
+                                sparse_prompt_embeddings=se,
+                                multimask_output=False,
+                            )
+                        # print(pred.shape)
+                        # Resize to the ordered output size
+                        pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
+                        if ind % args.vis == 0:
+                            namecat = 'Test'
+                            for na in name:
+                                img_name = na.split('/')[-1].split('.')[0]
+                                namecat = namecat + img_name + '+'
+                            vis_image(imgs, pred, masks, os.path.join(args.path_helper['sample_path'],
+                                                                      namecat + 'epoch+' + str(epoch) + '.jpg'),
+                                      reverse=False, points=showp)
 
-    tol, (eiou, edice) = tot/ n_val , tuple([ a /n_val for a in mix_res])
+                        # print(pred.shape)
+                        temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
+
+                        # print(pack["image_meta_dict"]["filename_or_obj"])
+                        hd.append(temp_hd)
+                        # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
+                        tot += lossfunc(pred, masks)
+                        (eiou, edice) = eval_seg(pred, masks, threshold)
+                        # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
+                        eiou_list.append(eiou)
+                        pos_list.append([att_pos_i, att_pos_j])
+
+                        if att_pos_i < 1023:
+                            att_pos_i += 1
+                        else:
+                            att_pos_j += 1
+
+
+                arr = np.array(eiou_list)
+
+
+                lowest_indices = np.argsort(arr)[:1000]
+
+                for item in lowest_indices:
+                    pos_i = pos_list[item]
+                    for i in range(3):
+                        _imgs[1, 3, pos_i[0], pos_i[1]] = 0
+
+                _imgs = imgs.to(dtype = mask_type ,device = GPUdevice)
+
+                image_path = f"./"
+
+
+                final_path = os.path.join(image_path, 'test.png')
+
+                vutils.save_image(_imgs, fp=final_path, nrow=1, padding=10)
+            print('done')
+            break
+        # pbar.update()
+
+    # if args.evl_chunk:
+    #     n_val = n_val * (imgsw.size(-1) // evl_ch)
+    #
+    # tol, (eiou, edice) = tot/ n_val , tuple([ a /n_val for a in mix_res])
