@@ -1072,7 +1072,7 @@ def one_pixel_attack(args, net, train_loader):
                 while att_pos_i <= args.image_size - 1 and att_pos_j <= args.image_size - 1:
                     imgs = _imgs
                     for i in range(3):
-                        imgs[0, i, att_pos_i, att_pos_j] = 0
+                        imgs[0, i, att_pos_i, att_pos_j] = 255
 
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
