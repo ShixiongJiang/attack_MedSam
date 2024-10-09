@@ -15,8 +15,9 @@ from segment_anything import sam_model_registry, SamPredictor
 from torchvision.transforms.functional import normalize, resize, to_pil_image
 
 import pandas as pd
-from torchcam.methods import GradCAM
-from torchcam.utils import overlay_mask
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
+
 from PIL import Image
 args = cfg.parse_args()
 
@@ -971,62 +972,14 @@ def heat_map(args, net, train_loader):
                         multimask_output=False,
                     )
 
+                target_layers = [net.image_encoder.blocks[10]]
+                with GradCAM(model=net,
+                     target_layers=target_layers,
+                     use_cuda=torch.cuda.is_available()) as cam:
+                    grayscale_cam = cam(input_tensor=imgs, targets=None)
+                    cam_image = show_cam_on_image(imgs, grayscale_cam, use_rgb=True)
 
-                # Resize to the ordered output size
-                # pred = F.interpolate(pred, size=(args.out_size, args.out_size))
-                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-                origin_pred = pred
-                # hd.append(calc_hf(pred,masks))
-                loss = lossfunc(pred, masks)
-
-                loss.backward()
-
-                weights = F.adaptive_avg_pool2d(gradients[0], 1)
-                gcam = torch.mul(activations, weights).sum(dim=1, keepdim=True)
-
-                gcam = F.interpolate(gcam, size=(1024, 1024), mode='bilinear', align_corners=False)
-                B, C, H, W = gcam.shape
-
-                # Flatten, normalize, and reshape the heatmap
-                gcam = gcam.view(B, -1)
-                gcam -= gcam.min(dim=1, keepdim=True)[0]
-                gcam_max = gcam.max(dim=1, keepdim=True)[0]
-                gcam_max[gcam_max == 0] = 1  # Avoid division by zero
-                gcam /= gcam_max
-                gcam = gcam.view(B, C, H, W)
-
-                # Convert the heatmap to NumPy for applying colormap
-                gcam_np = gcam.squeeze().cpu().detach().numpy()  # Remove batch and channel dimensions, shape becomes [1024, 1024]
-                gcam_np = np.uint8(255 * gcam_np)  # Scale to [0, 255]
-
-                # Apply a colormap (e.g., JET) to convert the grayscale heatmap into a colored heatmap
-                heatmap_colored = cv2.applyColorMap(gcam_np, cv2.COLORMAP_JET)
-
-                # Ensure the resulting heatmap is in RGB format
-                print(heatmap_colored.shape)  # This should output (1024, 1024, 3), confirming it's in RGB
-
-                # Now, you can overlay this heatmap on the original image
-                # Assuming 'imgs' is your original image in the shape (1, 3, 1024, 1024)
-                overlayed_image = imgs.squeeze(0).permute(1, 2, 0).cpu().numpy()  # Convert tensor to NumPy
-
-                # Normalize the original image to [0, 255] if needed
-                overlayed_image = (overlayed_image - overlayed_image.min()) / (overlayed_image.max() - overlayed_image.min()) * 255
-                overlayed_image = np.uint8(overlayed_image)
-
-                # Combine heatmap and original image (adjust the weight as needed)
-                overlay_ratio = 0.6
-                combined_image = cv2.addWeighted(overlayed_image, 1 - overlay_ratio, heatmap_colored, overlay_ratio, 0)
-
-                # Display or save the combined image
-                for na in name:
-                    namecat = na.split('/')[-1].split('.')[0] + '+'
-                final_path = os.path.join(image_path, namecat +'.png')
-                print('final_path',final_path)
-                # vutils.save_image(combined_image, fp=final_path, nrow=1, padding=10)
-                cv2.imwrite(final_path, combined_image)
-
-
-
+                Image.fromarray(cam_image)
 
 
 
