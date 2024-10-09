@@ -975,7 +975,7 @@ def heat_map(args, net, train_loader):
                 target_layers = [net.image_encoder.blocks[10]]
                 with GradCAM(model=net,
                      target_layers=target_layers) as cam:
-                    grayscale_cam = cam(input_tensor=imgs, targets=None)
+                    grayscale_cam = cam(input_tensor=imgs, targets=None)[0, :]
                     cam_image = show_cam_on_image(imgs, grayscale_cam, use_rgb=True)
 
                 Image.fromarray(cam_image)
