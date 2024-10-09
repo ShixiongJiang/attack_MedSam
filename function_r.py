@@ -1070,6 +1070,7 @@ def one_pixel_attack(args, net, train_loader):
                 eiou_list = []
                 pos_list = []
                 while att_pos_i <= args.image_size - 1 and att_pos_j <= args.image_size - 1:
+
                     imgs = _imgs
                     for i in range(3):
                         imgs[0, i, att_pos_i, att_pos_j] = 255
@@ -1145,6 +1146,7 @@ def one_pixel_attack(args, net, train_loader):
                         if att_pos_i < args.image_size - 1:
                             att_pos_i += 1
                         else:
+                            att_pos_i = 0
                             att_pos_j += 1
 
                 eiou_list = np.array(eiou_list)
