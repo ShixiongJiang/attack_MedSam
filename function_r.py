@@ -1065,8 +1065,8 @@ def one_pixel_attack(args, net, train_loader):
 
                 _imgs = imgs
 
-                att_pos_i = 1
-                att_pos_j = 1
+                att_pos_i = 0
+                att_pos_j = 0
                 eiou_list = []
                 pos_list = []
                 while att_pos_i <= args.image_size - 1 and att_pos_j <= args.image_size - 1:
