@@ -1164,7 +1164,7 @@ def one_pixel_attack(args, net, train_loader):
                     for i in range(3):
                         _imgs[1, 3, pos_i[0], pos_i[1]] = 0
 
-                _imgs = imgs.to(dtype = mask_type ,device = GPUdevice)
+                _imgs = _imgs.to(dtype = mask_type ,device = GPUdevice)
 
                 image_path = f"./"
 
