@@ -1158,7 +1158,7 @@ def one_pixel_attack(args, net, train_loader):
 
 
                 lowest_indices = np.argsort(arr)[:1000]
-
+                print(arr)
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
