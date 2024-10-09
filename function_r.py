@@ -1126,8 +1126,15 @@ def one_pixel_attack(args, net, train_loader):
                         tot += lossfunc(pred, masks)
                         (eiou, edice) = eval_seg(pred, masks, threshold)
                         # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
-                        eiou_list.append(edice)
+                        # eiou_list.append(edice)
                         pos_list.append([att_pos_i, att_pos_j])
+                        score = 0
+                        for i in range(args.image_size):
+                            for j in range(args.image_size):
+                                if masks[0, 0, i, j] >= 200:
+                                    if pred[0, 0, i, j] >= 200:
+                                        score += 1
+                        eiou_list.append(score)
                         # print(eiou)
                         # print(pos_list)
                         if att_pos_i < args.image_size - 2:
