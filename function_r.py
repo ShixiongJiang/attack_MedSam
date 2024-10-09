@@ -1063,7 +1063,7 @@ def one_pixel_attack(args, net, train_loader):
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
 
-                _imgs = imgs
+                _imgs = imgs.detach()
 
                 att_pos_i = 0
                 att_pos_j = 0
