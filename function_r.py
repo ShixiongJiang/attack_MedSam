@@ -1135,7 +1135,9 @@ def one_pixel_attack(args, net, train_loader):
                         for i in range(args.image_size):
                             for j in range(args.image_size):
                                 if masks[0, 0, i, j] > 0:
+                                    print('yes')
                                     if pred[0, 0, i, j] > 0:
+                                        print('yes2')
                                         score += 1
                         eiou_list.append(score)
                         # print(eiou)
@@ -1145,10 +1147,10 @@ def one_pixel_attack(args, net, train_loader):
                         else:
                             att_pos_j += 1
 
-                arr = np.array(eiou_list)
+                eiou_list = np.array(eiou_list)
 
-                lowest_indices = np.argsort(arr)[:400]
-                print(np.sort(arr))
+                lowest_indices = np.argsort(eiou_list)[:400]
+                print(np.sort(eiou_list))
                 print(lowest_indices)
                 for item in lowest_indices:
                     pos_i = pos_list[item]
