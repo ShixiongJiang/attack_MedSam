@@ -1176,7 +1176,8 @@ def one_pixel_attack(args, net, train_loader):
 
                 for i in range(1024):
                     for j in range(1024):
-                        _imgs[0, i, pos_i[0], pos_i[1]] = 255
+                        for k in range(3):
+                        _imgs[0, k, i, j] = 255
 
                 for item in lowest_indices:
                     pos_i = pos_list[item]
