@@ -1165,7 +1165,7 @@ def one_pixel_attack(args, net, train_loader):
 
                 vutils.save_image(_imgs, fp=final_path, nrow=1, padding=0)
 
-                vutils.save_image(_imgs, fp='pred.png', nrow=1, padding=0)
+                vutils.save_image(pred, fp='pred.png', nrow=1, padding=0)
 
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
