@@ -929,7 +929,7 @@ def heat_map(args, net, train_loader):
 
 
                 imge= net.image_encoder(imgs)
-
+                print(net)
 
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     se, de = net.prompt_encoder(
