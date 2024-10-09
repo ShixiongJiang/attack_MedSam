@@ -1126,7 +1126,7 @@ def one_pixel_attack(args, net, train_loader):
                         tot += lossfunc(pred, masks)
                         (eiou, edice) = eval_seg(pred, masks, threshold)
                         # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
-                        eiou_list.append(eiou)
+                        eiou_list.append(edice)
                         pos_list.append([att_pos_i, att_pos_j])
                         # print(eiou)
                         # print(pos_list)
