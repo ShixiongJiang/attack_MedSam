@@ -87,7 +87,7 @@ transform_test_seg = transforms.Compose([
 
 print('if poison ', args.poison)
 '''polyp data using the original dataset to generate poison sample'''
-polyp_train_dataset = Polyp_generated_poison_lora(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
+polyp_train_dataset = Polyp(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
 polyp_test_dataset = Polyp(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
 
 nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=0, pin_memory=True)
