@@ -1087,7 +1087,7 @@ def one_pixel_attack(args, net, train_loader):
                 att_pos_j = 0
                 eiou_list = []
                 pos_list = []
-                while att_pos_i <= 127 and att_pos_j<= 127:
+                while att_pos_i <= args.image_size - 1 and att_pos_j<= args.image_size  - 1:
                     imgs = _imgs
                     for i in range(3):
                         imgs[0, i, att_pos_i, att_pos_j] = 0
@@ -1147,8 +1147,9 @@ def one_pixel_attack(args, net, train_loader):
                         # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                         eiou_list.append(eiou)
                         pos_list.append([att_pos_i, att_pos_j])
-
-                        if att_pos_i < 127:
+                        print(eiou)
+                        print(pos_list)
+                        if att_pos_i < args.image_size-1:
                             att_pos_i += 1
                         else:
                             att_pos_j += 1
@@ -1157,7 +1158,7 @@ def one_pixel_attack(args, net, train_loader):
                 arr = np.array(eiou_list)
 
 
-                lowest_indices = np.argsort(arr)[:4000]
+                lowest_indices = np.argsort(arr)[:400]
                 print(np.sort(arr))
                 print(lowest_indices)
                 for item in lowest_indices:
@@ -1175,8 +1176,8 @@ def one_pixel_attack(args, net, train_loader):
                 vutils.save_image(_imgs, fp=final_path, nrow=1, padding=10)
 
 
-                for i in range(128):
-                    for j in range(128):
+                for i in range(args.image_size):
+                    for j in range(args.image_size):
                         for k in range(3):
                             _imgs[0, k, i, j] = 255
 
