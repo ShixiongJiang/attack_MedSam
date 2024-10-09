@@ -996,13 +996,13 @@ def heat_map(args, net, train_loader):
 
 
 
-def one_pixel_attack(args, val_loader, epoch, net: nn.Module, clean_dir=True):
+def one_pixel_attack(args, net, train_loader):
      # eval mode
     net.eval()
     dataset =os.path.basename(args.data_path)
     points =[]
     names =[]
-    n_val = len(val_loader)  # the number of batch
+    n_val = len(train_loader)  # the number of batch
     ave_res, mix_res = (0 ,0 ,0 ,0), (0 ,0 ,0 ,0)
     rater_res = [(0 ,0 ,0 ,0) for _ in range(6)]
     hd =[]
@@ -1018,7 +1018,7 @@ def one_pixel_attack(args, val_loader, epoch, net: nn.Module, clean_dir=True):
         lossfunc = criterion_G
 
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
-        for ind, pack in enumerate(val_loader):
+        for ind, pack in enumerate(train_loader):
             imgsw = pack['images'].to(dtype = torch.float32, device = GPUdevice)
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
 
@@ -1134,14 +1134,7 @@ def one_pixel_attack(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         # print(pred.shape)
                         # Resize to the ordered output size
                         pred = F.interpolate(pred ,size=(masks.shape[2] ,masks.shape[3]))
-                        if ind % args.vis == 0:
-                            namecat = 'Test'
-                            for na in name:
-                                img_name = na.split('/')[-1].split('.')[0]
-                                namecat = namecat + img_name + '+'
-                            vis_image(imgs, pred, masks, os.path.join(args.path_helper['sample_path'],
-                                                                      namecat + 'epoch+' + str(epoch) + '.jpg'),
-                                      reverse=False, points=showp)
+
 
                         # print(pred.shape)
                         temp_hd ,save_pred =calc_hf(pred.detach() ,masks)
