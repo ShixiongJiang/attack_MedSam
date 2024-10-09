@@ -1155,7 +1155,7 @@ def one_pixel_attack(args, net, train_loader):
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
-                        _imgs[0, i, pos_i[0], pos_i[1]] = 0
+                        _imgs[0, i, pos_i[0], pos_i[1]] = 255
 
                 _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
 
@@ -1163,7 +1163,7 @@ def one_pixel_attack(args, net, train_loader):
 
                 final_path = os.path.join(image_path, 'test.png')
 
-                vutils.save_image(_imgs, fp=final_path, nrow=1, padding=10)
+                vutils.save_image(_imgs, fp=final_path, nrow=1, padding=0)
 
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
