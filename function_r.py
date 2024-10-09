@@ -1090,7 +1090,7 @@ def one_pixel_attack(args, net, train_loader):
                 while att_pos_i <= 1023 and att_pos_j<= 1023:
                     imgs = _imgs
                     for i in range(3):
-                        imgs[1, i, att_pos_i, att_pos_j] = 0
+                        imgs[0, i, att_pos_i, att_pos_j] = 0
 
                     imgs = imgs.to(dtype = mask_type ,device = GPUdevice)
 
@@ -1162,7 +1162,7 @@ def one_pixel_attack(args, net, train_loader):
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
-                        _imgs[1, 3, pos_i[0], pos_i[1]] = 0
+                        _imgs[0, i, pos_i[0], pos_i[1]] = 0
 
                 _imgs = _imgs.to(dtype = mask_type ,device = GPUdevice)
 
