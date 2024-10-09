@@ -964,7 +964,12 @@ def heat_map(args, net, train_loader):
                         sparse_prompt_embeddings=se,
                         multimask_output=False,
                     )
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                origin_pred = pred
+                # hd.append(calc_hf(pred,masks))
+                loss = lossfunc(pred, masks)
 
+                loss.backward()
                 weights = torch.mean(torch.mean(gradients, dim=2), dim=2)
                 weights = weights.reshape(weights.shape[1], 1, 1)
                 activationMap = torch.squeeze(activations[0])
