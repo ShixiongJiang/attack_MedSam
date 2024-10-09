@@ -1157,8 +1157,8 @@ def one_pixel_attack(args, net, train_loader):
                 arr = np.array(eiou_list)
 
 
-                lowest_indices = np.argsort(arr)[:1000]
-                print(arr)
+                lowest_indices = np.argsort(arr)[:4000]
+                print(np.sort(arr))
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
@@ -1172,6 +1172,26 @@ def one_pixel_attack(args, net, train_loader):
                 final_path = os.path.join(image_path, 'test.png')
 
                 vutils.save_image(_imgs, fp=final_path, nrow=1, padding=10)
+
+
+                for i in range(1024):
+                    for j in range(1024):
+                        _imgs[0, i, pos_i[0], pos_i[1]] = 255
+
+                for item in lowest_indices:
+                    pos_i = pos_list[item]
+                    for i in range(3):
+                        _imgs[0, i, pos_i[0], pos_i[1]] = 0
+
+                _imgs = _imgs.to(dtype = mask_type ,device = GPUdevice)
+
+                image_path = f"./"
+
+
+                final_path = os.path.join(image_path, 'test_black_white.png')
+
+                vutils.save_image(_imgs, fp=final_path, nrow=1, padding=10)
+
             print('done')
             break
         # pbar.update()
