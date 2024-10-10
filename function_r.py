@@ -917,8 +917,7 @@ def heat_map(args, net, train_loader):
                 forward_hook = net.image_encoder.neck[3].register_forward_hook(forward_hook, prepend=False)
 
 
-                for i in range(3):
-                    imgs[0, i, 68, 295] = 255
+
                 imge = net.image_encoder(imgs)
                 # print(net)
 
@@ -968,29 +967,80 @@ def heat_map(args, net, train_loader):
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
-                # weights = torch.mean(torch.mean(gradients, dim=2), dim=2)
-                # weights = weights.reshape(weights.shape[1], 1, 1)
-                # activationMap = torch.squeeze(activations[0])
-                # gradcam = F.relu((weights * activationMap).sum(0))
-                # gradcam = cv2.resize(gradcam.data.cpu().numpy(), (1024, 1024))
-                # for na in name:
-                #     namecat = na.split('/')[-1].split('.')[0] + '+'
-                # final_path = os.path.join(image_path, namecat + '.png')
-                # print('final_path', final_path)
-                # gradcam = (gradcam - np.min(gradcam)) / np.max(gradcam)
-                #
-                # heatmap = cv2.applyColorMap(np.uint8(255 * gradcam), cv2.COLORMAP_JET)
-                #
-                # heatmap = np.float32(heatmap) / 255
-                # gradcam = 1.0 * heatmap
-                # gradcam = gradcam / np.max(gradcam)
-                #
-                # cv2.imwrite(final_path, np.uint8(255 * gradcam))
-                # max_index_flat = np.argmax(gradcam)
-                # max_value = np.max(gradcam)
-                #
-                # # Convert the flat index to a 2D index (row, col)
-                # max_index = np.unravel_index(max_index_flat, gradcam.shape[:2])
+                weights = torch.mean(torch.mean(gradients, dim=2), dim=2)
+                weights = weights.reshape(weights.shape[1], 1, 1)
+                activationMap = torch.squeeze(activations[0])
+                gradcam = F.relu((weights * activationMap).sum(0))
+                gradcam = cv2.resize(gradcam.data.cpu().numpy(), (1024, 1024))
+                for na in name:
+                    namecat = na.split('/')[-1].split('.')[0] + '+'
+                final_path = os.path.join(image_path, namecat + '.png')
+                print('final_path', final_path)
+                gradcam = (gradcam - np.min(gradcam)) / np.max(gradcam)
+
+                heatmap = cv2.applyColorMap(np.uint8(255 * gradcam), cv2.COLORMAP_JET)
+
+                heatmap = np.float32(heatmap) / 255
+                gradcam = 1.0 * heatmap
+                gradcam = gradcam / np.max(gradcam)
+
+                cv2.imwrite(final_path, np.uint8(255 * gradcam))
+                max_index_flat = np.argmax(gradcam)
+                max_value = np.max(gradcam)
+
+                # Convert the flat index to a 2D index (row, col)
+                max_index = np.unravel_index(max_index_flat, gradcam.shape[:2])
+
+                for i in range(3):
+                    imgs[0, i, max_index[0], max_index[1]] = 255
+                imge = net.image_encoder(imgs)
+                # print(net)
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    se, de = net.prompt_encoder(
+                        points=pt,
+                        boxes=None,
+                        masks=None,
+                    )
+                elif args.net == "efficient_sam":
+                    coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                    se = net.prompt_encoder(
+                        coords=coords_torch,
+                        labels=labels_torch,
+                    )
+
+                if args.net == 'sam' or args.net == 'mobile_sam':
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
+                    )
+
+
+                elif args.net == "efficient_sam":
+                    se = se.view(
+                        se.shape[0],
+                        1,
+                        se.shape[1],
+                        se.shape[2],
+                    )
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        multimask_output=False,
+                    )
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                origin_pred = pred
+                # hd.append(calc_hf(pred,masks))
+                loss = lossfunc(pred, masks)
+
+                loss.backward()
+                for na in name:
+                    namecat = na.split('/')[-1].split('.')[0] + '+'
+                vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
 
 def one_pixel_attack(args, net, train_loader):
