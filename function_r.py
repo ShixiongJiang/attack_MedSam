@@ -1128,16 +1128,19 @@ def one_pixel_attack(args, net, train_loader):
                     # true_mask_ave = cons_tensor(true_mask_ave)
 
                 _imgs = imgs.detach()
-
-                att_pos_i = 0
-                att_pos_j = 0
+                patch_size_len = 10
+                patch_size = 10
+                att_pos_i = patch_size - 1
+                att_pos_j = patch_size - 1
                 eiou_list = []
                 pos_list = []
-                while att_pos_i <= args.image_size - 1 and att_pos_j <= args.image_size - 1:
+                while att_pos_i <= args.image_size -1 and att_pos_j <= args.image_size -1:
 
                     imgs = _imgs
-                    for i in range(3):
-                        imgs[0, i, att_pos_i, att_pos_j] = 255
+                    for k in range(3):
+                        for i in range(patch_size):
+                            for j in range(patch_size):
+                                imgs[0, k, att_pos_i - i, att_pos_j - j] = 255
 
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
@@ -1193,7 +1196,7 @@ def one_pixel_attack(args, net, train_loader):
                         # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                         # eiou_list.append(edice)
                         pos_list.append([att_pos_i, att_pos_j])
-                        score = 0
+
                         # if torch.max(pred) > 1 or torch.min(pred) < 0:
                         #     pred = torch.sigmoid(pred)
 
@@ -1207,11 +1210,11 @@ def one_pixel_attack(args, net, train_loader):
                         eiou_list.append(eiou)
                         # print(eiou)
                         # print(pos_list)
-                        if att_pos_i < args.image_size - 1:
-                            att_pos_i += 1
+                        if att_pos_i < args.image_size - patch_size:
+                            att_pos_i += patch_size
                         else:
-                            att_pos_i = 0
-                            att_pos_j += 1
+                            att_pos_i = patch_size - 1
+                            att_pos_j += patch_size
 
                 eiou_list = np.array(eiou_list)
 
@@ -1219,10 +1222,16 @@ def one_pixel_attack(args, net, train_loader):
                 # print(np.sort(eiou_list))
                 # print(pos_list)
                 # print(lowest_indices)
+                # for item in lowest_indices:
+                #     pos_i = pos_list[item]
+                #     for i in range(3):
+                #         _imgs[0, i, pos_i[0], pos_i[1]] = 0
                 for item in lowest_indices:
                     pos_i = pos_list[item]
-                    for i in range(3):
-                        _imgs[0, i, pos_i[0], pos_i[1]] = 0
+                    for k in range(3):
+                            for i in range(patch_size):
+                                for j in range(patch_size):
+                                    _imgs[0, k, pos_i[0] - i, pos_i[1] - j] = 0
 
                 _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
                 for na in name:
@@ -1240,6 +1249,8 @@ def one_pixel_attack(args, net, train_loader):
                 for i in range(len(pos_list)):
                     pos = pos_list[i]
                     saliency_attack[pos[0]][pos[1]] = eiou_list[i]
+
+
                 max_val = np.max(eiou_list)
                 min_val = np.min(eiou_list)
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
