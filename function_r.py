@@ -1240,7 +1240,7 @@ def one_pixel_attack(args, net, train_loader):
 
                 final_path = os.path.join(image_path, f'test_{namecat}.png')
 
-                vutils.save_image(_imgs, fp=final_path, nrow=1, padding=0)
+                vutils.save_image(imgs, fp=final_path, nrow=1, padding=0)
 
                 vutils.save_image(pred, fp=f'./heatmap_img/pred_{namecat}.png', nrow=1, padding=0)
 
