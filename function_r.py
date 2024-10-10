@@ -1237,10 +1237,9 @@ def one_pixel_attack(args, net, train_loader):
 
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
-                for i in range(args.image_size):
-                    for j in range(args.image_size):
-                        item = pos_list.index([i, j])
-                        saliency_attack[i][j] = eiou_list[item]
+                for i in len(pos_list):
+                    pos = pos_list[i]
+                    saliency_attack[pos[0]][pos[1]] = eiou_list[i]
                 max_val = np.max(eiou_list)
                 min_val = np.min(eiou_list)
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
