@@ -1158,7 +1158,7 @@ def one_pixel_attack(args, net, train_loader):
                 for item in lowest_indices:
                     pos_i = pos_list[item]
                     for i in range(3):
-                        _imgs[0, i, pos_i[0], pos_i[1]] = 255
+                        _imgs[0, i, pos_i[0], pos_i[1]] = 0
 
                 _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
 
