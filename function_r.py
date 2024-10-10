@@ -1127,14 +1127,14 @@ def one_pixel_attack(args, net, train_loader):
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
 
-                _imgs = imgs.cpu().detach().numpy()
+                _imgs = imgs.clone()
                 patch_size = 10
                 att_pos_i = patch_size - 1
                 att_pos_j = patch_size - 1
                 eiou_list = []
                 pos_list = []
                 while att_pos_i <= args.image_size -1 and att_pos_j <= args.image_size -1:
-                    imgs = torch.from_numpy(_imgs)
+                    imgs = _imgs.clone()
                     for k in range(3):
                         for i in range(patch_size):
                             for j in range(patch_size):
