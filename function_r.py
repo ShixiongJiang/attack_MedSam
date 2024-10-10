@@ -1127,7 +1127,6 @@ def one_pixel_attack(args, net, train_loader):
                     true_mask_ave = (true_mask_ave > 0.5).float()
                     # true_mask_ave = cons_tensor(true_mask_ave)
 
-                _imgs = imgs.detach()
                 patch_size = 2
                 att_pos_i = patch_size - 1
                 att_pos_j = patch_size - 1
@@ -1135,7 +1134,14 @@ def one_pixel_attack(args, net, train_loader):
                 pos_list = []
                 while att_pos_i <= args.image_size -1 and att_pos_j <= args.image_size -1:
 
-                    imgs = _imgs
+                    imgs = imgsw[..., buoy:buoy + evl_ch]
+
+                    if args.thd:
+                        imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
+                        imgs = imgs.repeat(1, 3, 1, 1)
+
+                        imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
+
                     for k in range(3):
                         for i in range(patch_size):
                             for j in range(patch_size):
@@ -1214,7 +1220,7 @@ def one_pixel_attack(args, net, train_loader):
                         else:
                             att_pos_i = patch_size - 1
                             att_pos_j += patch_size
-                        break
+                        # break
                 eiou_list = np.array(eiou_list)
 
                 lowest_indices = np.argsort(eiou_list)[:200]
