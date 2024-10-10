@@ -979,7 +979,7 @@ def heat_map(args, net, train_loader):
                 gradcam = gradcam / np.max(gradcam)
 
                 cv2.imwrite(final_path, np.uint8(255 * gradcam))
-                max_index_flat = np.argmax(gradcam)
+                max_index_flat = np.argmax(gradcam.ravel())
                 max_value = np.max(gradcam)
 
                 # Convert the flat index to a 2D index (row, col)
