@@ -979,7 +979,13 @@ def heat_map(args, net, train_loader):
                 gradcam = gradcam / np.max(gradcam)
 
                 cv2.imwrite(final_path, np.uint8(255 * gradcam))
+                max_index_flat = np.argmax(gradcam)
+                max_value = np.max(gradcam)
 
+                # Convert the flat index to a 2D index (row, col)
+                max_index = np.unravel_index(max_index_flat, gradcam.shape[:2])
+                print(max_index)
+            break
 
 def one_pixel_attack(args, net, train_loader):
     # eval mode

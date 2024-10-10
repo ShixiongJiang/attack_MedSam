@@ -120,14 +120,7 @@ total_epoch = 1
 # for epoch in range(settings.EPOCH):
 for epoch in range(total_epoch):
     function.heat_map(args, net, nice_train_loader)
-    # net.train()
-    # function.train_sam(args, net, optimizer, nice_train_loader, epoch, writer)
-    #
-    # if epoch and epoch % args.val_freq == 0 or epoch == total_epoch-1:
-    #     tol, (eiou, edice) = function.validation_sam(args, nice_test_loader, epoch, net, writer)
-    #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
-    #     tol, (eiou, edice) = function.compare_two_net(args, nice_test_loader, epoch, net, net2, writer)
-    #     logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
+
 
 
 
