@@ -991,8 +991,8 @@ def heat_map(args, net, train_loader):
                 # Convert the flat index to a 2D index (row, col)
                 max_index = np.unravel_index(max_index_flat, gradcam.shape[:2])
 
-                for i in range(3):
-                    imgs[0, i, max_index[0], max_index[1]] = 255
+                # for i in range(3):
+                #     imgs[0, i, max_index[0], max_index[1]] = 255
                 imge = net.image_encoder(imgs)
                 # print(net)
 
