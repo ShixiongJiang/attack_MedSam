@@ -1215,7 +1215,7 @@ def one_pixel_attack(args, net, train_loader):
 
                 eiou_list = np.array(eiou_list)
 
-                lowest_indices = np.argsort(eiou_list)[:2000]
+                lowest_indices = np.argsort(eiou_list)[:200]
                 # print(np.sort(eiou_list))
                 # print(pos_list)
                 # print(lowest_indices)
