@@ -1004,6 +1004,8 @@ def one_pixel_attack(args, net, train_loader):
 
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
+            if ind == 0:
+                continue
             imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
             masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
 
@@ -1161,14 +1163,15 @@ def one_pixel_attack(args, net, train_loader):
                         _imgs[0, i, pos_i[0], pos_i[1]] = 0
 
                 _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
-
+                for na in name:
+                    namecat = na.split('/')[-1].split('.')[0] + '+'
                 image_path = f"./"
 
-                final_path = os.path.join(image_path, 'test.png')
+                final_path = os.path.join(image_path, f'test_{namecat}.png')
 
                 vutils.save_image(_imgs, fp=final_path, nrow=1, padding=0)
 
-                vutils.save_image(pred, fp='pred.png', nrow=1, padding=0)
+                vutils.save_image(pred, fp=f'pred_{namecat}.png', nrow=1, padding=0)
 
                 saliency_attack = np.zeros(shape=(args.image_size, args.image_size))
 
@@ -1181,7 +1184,7 @@ def one_pixel_attack(args, net, train_loader):
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
                 image_path = f"./"
 
-                final_path = os.path.join(image_path, 'saliency_attack.png')
+                final_path = os.path.join(image_path, f'saliency_attack_{namecat}.png')
 
                 plt.imshow(normalized_image, cmap='plasma')
                 plt.colorbar()
@@ -1191,7 +1194,7 @@ def one_pixel_attack(args, net, train_loader):
                 plt.savefig(final_path, bbox_inches='tight')
 
             print('done')
-            break
+            # break
         # pbar.update()
 
     # if args.evl_chunk:
