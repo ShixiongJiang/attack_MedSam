@@ -1128,8 +1128,7 @@ def one_pixel_attack(args, net, train_loader):
                     # true_mask_ave = cons_tensor(true_mask_ave)
 
                 _imgs = imgs.detach()
-                patch_size_len = 10
-                patch_size = 10
+                patch_size = 2
                 att_pos_i = patch_size - 1
                 att_pos_j = patch_size - 1
                 eiou_list = []
