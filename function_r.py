@@ -1214,7 +1214,7 @@ def one_pixel_attack(args, net, train_loader):
                         else:
                             att_pos_i = patch_size - 1
                             att_pos_j += patch_size
-
+                        break
                 eiou_list = np.array(eiou_list)
 
                 lowest_indices = np.argsort(eiou_list)[:200]
