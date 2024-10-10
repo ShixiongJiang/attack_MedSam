@@ -1226,14 +1226,14 @@ def one_pixel_attack(args, net, train_loader):
                 #     pos_i = pos_list[item]
                 #     for i in range(3):
                 #         _imgs[0, i, pos_i[0], pos_i[1]] = 0
-                for item in lowest_indices:
-                    pos_i = pos_list[item]
-                    for k in range(3):
-                            for i in range(patch_size):
-                                for j in range(patch_size):
-                                    _imgs[0, k, pos_i[0] - i, pos_i[1] - j] = 0
-
-                _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
+                # for item in lowest_indices:
+                #     pos_i = pos_list[item]
+                #     for k in range(3):
+                #             for i in range(patch_size):
+                #                 for j in range(patch_size):
+                #                     _imgs[0, k, pos_i[0] - i, pos_i[1] - j] = 0
+                #
+                # _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 image_path = f"./heatmap_img"
