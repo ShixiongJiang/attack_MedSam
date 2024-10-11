@@ -1043,7 +1043,7 @@ def heat_map(args, net, train_loader):
                 vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
 
-def one_pixel_attack(args, net, train_loader):
+def one_pixel_attack(args, net, train_loader, color='black'):
     # eval mode
     net.eval()
     dataset = os.path.basename(args.data_path)
@@ -1138,7 +1138,10 @@ def one_pixel_attack(args, net, train_loader):
                     for k in range(3):
                         for i in range(patch_size):
                             for j in range(patch_size):
-                                imgs[0, k, att_pos_i - i, att_pos_j - j] = 255
+                                if color == 'white':
+                                    imgs[0, k, att_pos_i - i, att_pos_j - j] = 255
+                                if color == 'black':
+                                    imgs[0, k, att_pos_i - i, att_pos_j - j] = 0
 
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
@@ -1236,11 +1239,11 @@ def one_pixel_attack(args, net, train_loader):
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 image_path = f"./heatmap_img"
 
-                final_path = os.path.join(image_path, f'test_{namecat}.png')
+                final_path = os.path.join(image_path, f'orig_{namecat}.png')
 
                 vutils.save_image(imgs, fp=final_path, nrow=1, padding=0)
 
-                vutils.save_image(pred, fp=f'./heatmap_img/pred_{namecat}.png', nrow=1, padding=0)
+                vutils.save_image(pred, fp=f'./heatmap_img/pred_{color}_{namecat}.png', nrow=1, padding=0)
 
                 last_pos = pos_list[-1]
                 saliency_attack = np.zeros(shape=(last_pos[0] + 1, last_pos[1] + 1))
@@ -1258,7 +1261,7 @@ def one_pixel_attack(args, net, train_loader):
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
                 image_path = f"./heatmap_img"
 
-                final_path = os.path.join(image_path, f'saliency_attack_{namecat}.png')
+                final_path = os.path.join(image_path, f'saliency_{color}_attack_{namecat}.png')
 
                 plt.imshow(normalized_image, cmap='plasma')
                 plt.colorbar()
