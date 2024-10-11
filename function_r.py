@@ -1206,7 +1206,7 @@ def one_pixel_attack(args, net, train_loader):
                         #                 print('yes2')
                         #                 score += 1
                         eiou_list.append(eiou)
-                        print(eiou)
+                        # print(eiou)
                         # print(pos_list)
                         if att_pos_i < args.image_size - patch_size:
                             att_pos_i += patch_size
@@ -1253,6 +1253,7 @@ def one_pixel_attack(args, net, train_loader):
 
                 max_val = np.max(eiou_list)
                 min_val = np.min(eiou_list)
+                print(min_val, min_val)
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
                 image_path = f"./heatmap_img"
 
