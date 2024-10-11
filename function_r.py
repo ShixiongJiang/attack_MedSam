@@ -1246,7 +1246,10 @@ def one_pixel_attack(args, net, train_loader):
 
                 for i in range(len(pos_list)):
                     pos = pos_list[i]
-                    saliency_attack[pos[0]][pos[1]] = eiou_list[i]
+
+                    for i in range(patch_size):
+                        for j in range(patch_size):
+                            imgs[pos[0] - i, pos[1] - j] = 255
 
 
                 max_val = np.max(eiou_list)
