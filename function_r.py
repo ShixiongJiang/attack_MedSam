@@ -1243,7 +1243,7 @@ def one_pixel_attack(args, net, train_loader):
                 vutils.save_image(pred, fp=f'./heatmap_img/pred_{namecat}.png', nrow=1, padding=0)
 
                 last_pos = pos_list[-1]
-                saliency_attack = np.zeros(shape=(last_pos[0], last_pos[1]))
+                saliency_attack = np.zeros(shape=(last_pos[0] + 1, last_pos[1] + 1))
 
                 for k in range(len(pos_list)):
                     pos = pos_list[k]
