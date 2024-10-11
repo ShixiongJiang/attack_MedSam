@@ -1206,7 +1206,7 @@ def one_pixel_attack(args, net, train_loader):
                         #                 print('yes2')
                         #                 score += 1
                         eiou_list.append(eiou)
-                        # print(eiou)
+                        print(eiou)
                         # print(pos_list)
                         if att_pos_i < args.image_size - patch_size:
                             att_pos_i += patch_size
