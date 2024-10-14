@@ -1063,6 +1063,14 @@ def one_pixel_attack(args, net, train_loader, color='black'):
         lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
     else:
         lossfunc = criterion_G
+    log_dir = "./heatmap_img/"
+
+    # Define the log file path
+    log_file = os.path.join(log_dir, "attack_performance.log")
+
+    # Open the log file in append mode and write text to it
+    with open(log_file, 'a') as f:
+        f.write("This is a log entry.\n")
 
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
@@ -1219,22 +1227,7 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                         # break
                 eiou_list = np.array(eiou_list)
 
-                lowest_indices = np.argsort(eiou_list)[:200]
-                # print(np.sort(eiou_list))
-                # print(pos_list)
-                # print(lowest_indices)
-                # for item in lowest_indices:
-                #     pos_i = pos_list[item]
-                #     for i in range(3):
-                #         _imgs[0, i, pos_i[0], pos_i[1]] = 0
-                # for item in lowest_indices:
-                #     pos_i = pos_list[item]
-                #     for k in range(3):
-                #             for i in range(patch_size):
-                #                 for j in range(patch_size):
-                #                     _imgs[0, k, pos_i[0] - i, pos_i[1] - j] = 0
-                #
-                # _imgs = _imgs.to(dtype=mask_type, device=GPUdevice)
+
                 for na in name:
                     namecat = na.split('/')[-1].split('.')[0] + '+'
                 image_path = f"./heatmap_img"
@@ -1257,19 +1250,23 @@ def one_pixel_attack(args, net, train_loader, color='black'):
 
                 max_val = np.max(eiou_list)
                 min_val = np.min(eiou_list)
-                print(max_val, min_val)
+                # print(max_val, min_val)
+                with open(log_file, 'a') as f:
+                    f.write(f"{namecat}: max_eiou: {max_val}, min_eiou: {min_val}\n")
                 normalized_image = (max_val - saliency_attack) / (max_val - min_val)
+                colormap = plt.get_cmap('plasma')
+                colored_image = colormap(normalized_image)
+
+                # Convert the image to a format suitable for OpenCV (float to uint8 and RGB to BGR)
+                colored_image = (colored_image[:, :, :3] * 255).astype(np.uint8)  # Drop the alpha channel
+                colored_image_bgr = cv2.cvtColor(colored_image, cv2.COLOR_RGB2BGR)
                 image_path = f"./heatmap_img"
 
                 final_path = os.path.join(image_path, f'saliency_{color}_attack_{namecat}.png')
 
-                plt.imshow(normalized_image, cmap='plasma')
-                plt.colorbar()
-                plt.title('Saliency Image (Brighter = Lower Value)')
+                cv2.imwrite(final_path, colored_image_bgr)
 
-                # Save the image as a PNG file
-                plt.savefig(final_path, bbox_inches='tight')
-
+                # overlaped_img =
             print('done')
             # break
         # pbar.update()
