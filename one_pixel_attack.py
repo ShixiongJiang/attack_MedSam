@@ -22,7 +22,6 @@ args = cfg_reverse_adaptation.parse_args()
 GPUdevice = torch.device('cuda', args.gpu_device)
 
 net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution = args.distributed)
-net2 = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution = args.distributed)
 
 '''load pretrained model'''
 assert args.weights != 0
