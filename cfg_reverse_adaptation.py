@@ -7,7 +7,7 @@ def parse_args():
     parser.add_argument('-baseline', type=str, default='unet', help='baseline net type')
     parser.add_argument('-encoder', type=str, default='default', help='encoder type')
     parser.add_argument('-seg_net', type=str, default='transunet', help='net type')
-    parser.add_argument('-mod', type=str, default='sam_lora', help='mod type:seg,cls,val_ad')
+    parser.add_argument('-mod', type=str, default='sam_adpt', help='mod type:seg,cls,val_ad')
     parser.add_argument('-exp_name', default='msa_test_polyp', type=str, help='net type')
     parser.add_argument('-type', type=str, default='map', help='condition type:ave,rand,rand_map')
     parser.add_argument('-vis', type=int, default=1, help='visualization')
@@ -32,8 +32,8 @@ def parse_args():
     parser.add_argument('-lr', type=float, default=1e-4, help='initial learning rate')
     parser.add_argument('-uinch', type=int, default=1, help='input channel of unet')
     parser.add_argument('-imp_lr', type=float, default=3e-4, help='implicit learning rate')
-    # parser.add_argument('-weights', type=str, default ="./checkpoint/sam/checkpoint_best.pth", help='the weights file you want to test')
-    parser.add_argument('-weights', type=str, default ="./logs/lora_baseline/Model/checkpoint_best.pth", help='the weights file you want to test')
+    parser.add_argument('-weights', type=str, default ="./checkpoint/sam/checkpoint_best.pth", help='the weights file you want to test')
+    # parser.add_argument('-weights', type=str, default ="./logs/lora_baseline/Model/checkpoint_best.pth", help='the weights file you want to test')
 
 
     parser.add_argument('-base_weights', type=str, default = 0, help='the weights baseline')
