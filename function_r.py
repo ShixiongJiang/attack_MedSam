@@ -825,7 +825,7 @@ def heat_map(args, net, train_loader):
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
     device = GPUdevice
     optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-    image_path = f"./dataset/TestDataset/heat_map/"
+    image_path = f"./dataset/TestDataset/heat_map_clinicDB/"
     Path(image_path).mkdir(parents=True, exist_ok=True)
 
     if args.thd:
