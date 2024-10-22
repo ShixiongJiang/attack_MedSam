@@ -118,7 +118,7 @@ total_epoch = 1
 
 # for epoch in range(settings.EPOCH):
 for epoch in range(total_epoch):
-    # function.one_pixel_attack(args, net, nice_train_loader, color='black')
+    function.one_pixel_attack(args, net, nice_train_loader, color='black')
     function.one_pixel_attack(args, net, nice_train_loader, color='white')
 
 
