@@ -1038,9 +1038,9 @@ def heat_map(args, net, train_loader):
                 loss = lossfunc(pred, masks)
 
                 loss.backward()
-                for na in name:
-                    namecat = na.split('/')[-1].split('.')[0] + '+'
-                vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
+                # for na in name:
+                #     namecat = na.split('/')[-1].split('.')[0] + '+'
+                # vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
 
 def one_pixel_attack(args, net, train_loader, color='black'):
