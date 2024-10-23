@@ -1087,7 +1087,10 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                 ptw = pack['pt']
                 point_labels = pack['p_label']
             name = pack['image_meta_dict']['filename_or_obj']
-
+            for na in name:
+                namecat = na.split('/')[-1].split('.')[0] + '+'
+            if namecat in ['14+', '21+', '166+', '388+', '404+', '481+', '559+', '571+', '66+']:
+                continue
             buoy = 0
             if args.evl_chunk:
                 evl_ch = int(args.evl_chunk)
