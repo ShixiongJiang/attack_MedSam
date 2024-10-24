@@ -1089,8 +1089,8 @@ def one_pixel_attack(args, net, train_loader, color='black'):
             name = pack['image_meta_dict']['filename_or_obj']
             for na in name:
                 namecat = na.split('/')[-1].split('.')[0] + '+'
-            if namecat in ['14+', '21+', '166+', '388+', '404+', '481+', '559+', '571+', '66+']:
-                continue
+            # if namecat in ['14+', '21+', '166+', '388+', '404+', '481+', '559+', '571+', '66+']:
+            #     continue
             buoy = 0
             if args.evl_chunk:
                 evl_ch = int(args.evl_chunk)
@@ -1139,11 +1139,15 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                     # true_mask_ave = cons_tensor(true_mask_ave)
 
                 _imgs = imgs.clone()
+
+                # The attack patch size
                 patch_size = 10
                 att_pos_i = patch_size - 1
                 att_pos_j = patch_size - 1
                 eiou_list = []
                 pos_list = []
+
+                # adding patch to the image
                 while att_pos_i <= args.image_size -1 and att_pos_j <= args.image_size -1:
                     imgs = _imgs.clone()
                     for k in range(3):
@@ -1207,18 +1211,11 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                         (eiou, edice) = eval_seg(pred, masks, threshold)
                         # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
                         # eiou_list.append(edice)
+
+                        # save the position of the patch
                         pos_list.append([att_pos_i, att_pos_j])
 
-                        # if torch.max(pred) > 1 or torch.min(pred) < 0:
-                        #     pred = torch.sigmoid(pred)
-
-                        # for i in range(args.image_size):
-                        #     for j in range(args.image_size):
-                        #         if masks[0, 0, i, j] > 0:
-                        #             print('yes')
-                        #             if pred[0, 0, i, j] > 0:
-                        #                 print('yes2')
-                        #                 score += 1
+                        # save the eiou for each patch
                         eiou_list.append(eiou)
                         # print(eiou)
                         # print(pos_list)
@@ -1227,7 +1224,8 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                         else:
                             att_pos_i = patch_size - 1
                             att_pos_j += patch_size
-                        # break
+
+
                 eiou_list = np.array(eiou_list)
 
 
@@ -1261,12 +1259,12 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                 colored_image = colormap(normalized_image)
 
                 # Convert the image to a format suitable for OpenCV (float to uint8 and RGB to BGR)
-                colored_image = (colored_image[:, :, :3] * 255).astype(np.uint8)  # Drop the alpha channel
+                colored_image = (colored_image[:, :, :3] * 255).astype(np.uint8)
                 colored_image_bgr = cv2.cvtColor(colored_image, cv2.COLOR_RGB2BGR)
                 image_path = f"./heatmap_img"
 
                 final_path = os.path.join(image_path, f'saliency_{color}_attack_{namecat}.png')
-
+                # save the attack heatmap image
                 cv2.imwrite(final_path, colored_image_bgr)
 
                 # overlaped_img =

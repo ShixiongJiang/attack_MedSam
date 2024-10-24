@@ -6,11 +6,13 @@ import os
 from scipy.ndimage import gaussian_filter
 
 
-directory_path = "heatmap_img/"
+# directory_path = "heatmap_img/"
+directory_path = 'heat_map_clinicDB'
 save_path = 'contour_image/'
 for filename in os.listdir(directory_path):
         filepath = os.path.join(directory_path, filename)
-
+        if '61' not in filepath:
+            continue
         if os.path.isfile(filepath):
             # filepath = 'heatmap_img/saliency_black_attack_404+.png'
             image = cv2.imread(filepath)
