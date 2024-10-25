@@ -1,0 +1,15 @@
+opencv-python
+torch
+matplotlib
+einops
+monai
+pathlib
+torchsummary
+segment-anything
+torchvision
+pandas
+pillow
+tqdm
+tensorboardX
+scikit-image
+timm

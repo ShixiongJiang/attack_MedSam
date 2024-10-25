@@ -3,6 +3,8 @@ import argparse
 
 def parse_args():    
     parser = argparse.ArgumentParser()
+    parser.add_argument('--process_idx', type=int, default=0, help='Index of the current process')
+    parser.add_argument('--num_processes', type=int, default=1, help='Total number of processes')
     parser.add_argument('-net', type=str, default='sam', help='net type')
     parser.add_argument('-baseline', type=str, default='unet', help='baseline net type')
     parser.add_argument('-encoder', type=str, default='default', help='encoder type')
@@ -15,7 +17,7 @@ def parse_args():
     parser.add_argument('-pretrain', type=bool, default=False, help='adversary reverse')
     parser.add_argument('-val_freq',type=int,default=25,help='interval between each validation')
     parser.add_argument('-gpu', type=bool, default=True, help='use gpu or not')
-    parser.add_argument('-gpu_device', type=int, default=0, help='use which gpu')
+    parser.add_argument('--gpu_device', type=int, default=0, help='use which gpu')
     parser.add_argument('-sim_gpu', type=int, default=0, help='split sim to this gpu')
     parser.add_argument('-epoch_ini', type=int, default=1, help='start epoch')
     parser.add_argument('-image_size', type=int, default=1024, help='image_size')

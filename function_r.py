@@ -1044,12 +1044,12 @@ def heat_map(args, net, train_loader):
 
 
 def one_pixel_attack(args, net, train_loader, color='black'):
-    # eval mode
+    # 设置模型为评估模式
     net.eval()
     dataset = os.path.basename(args.data_path)
     points = []
     names = []
-    n_val = len(train_loader)  # the number of batch
+    n_val = len(train_loader)
     ave_res, mix_res = (0, 0, 0, 0), (0, 0, 0, 0)
     rater_res = [(0, 0, 0, 0) for _ in range(6)]
     hd = []
@@ -1057,126 +1057,92 @@ def one_pixel_attack(args, net, train_loader, color='black'):
     hard = 0
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
-    device = GPUdevice
-    optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-    if args.thd:
-        lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
-    else:
-        lossfunc = criterion_G
+    lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean') if args.thd else criterion_G
     log_dir = "./heatmap_img/"
-
-    # Define the log file path
+    os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "attack_performance.log")
 
-    # Open the log file in append mode and write text to it
-    with open(log_file, 'a') as f:
-        f.write("This is a log entry.\n")
+    # open log
+    with open(log_file, 'a') as f_log:
+        f_log.write("This is a log entry.\n")
 
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
-            if ind == 0:
-                continue
+            # remove unnecessary continue
             imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
             masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
-
-            # print(imgsw.size)
-
             if 'pt' not in pack:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
             else:
                 ptw = pack['pt']
                 point_labels = pack['p_label']
-            name = pack['image_meta_dict']['filename_or_obj']
-            for na in name:
-                namecat = na.split('/')[-1].split('.')[0] + '+'
-            # if namecat in ['14+', '21+', '166+', '388+', '404+', '481+', '559+', '571+', '66+']:
-            #     continue
+
+            names_batch = pack['image_meta_dict']['filename_or_obj']
+            for name in names_batch:
+                namecat = os.path.splitext(os.path.basename(name))[0] + '+'
+
             buoy = 0
-            if args.evl_chunk:
-                evl_ch = int(args.evl_chunk)
-            else:
-                evl_ch = int(imgsw.size(-1))
+            evl_ch = int(args.evl_chunk) if args.evl_chunk else int(imgsw.size(-1))
 
             while (buoy + evl_ch) <= imgsw.size(-1):
-                if args.thd:
-                    pt = ptw[:, :, buoy: buoy + evl_ch]
-                else:
-                    pt = ptw
-
+                pt = ptw[:, :, buoy: buoy + evl_ch] if args.thd else ptw
                 imgs = imgsw[..., buoy:buoy + evl_ch]
                 masks = masksw[..., buoy:buoy + evl_ch]
                 buoy += evl_ch
 
                 if args.thd:
                     pt = rearrange(pt, 'b n d -> (b d) n')
-                    imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
-                    masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
+                    imgs = rearrange(imgs, 'b c h w d -> (b d) c h w')
+                    masks = rearrange(masks, 'b c h w d -> (b d) c h w')
                     imgs = imgs.repeat(1, 3, 1, 1)
                     point_labels = torch.ones(imgs.size(0))
 
-                    imgs = torchvision.transforms.Resize((args.image_size, args.image_size))(imgs)
+                    resize_transform = torchvision.transforms.Resize((args.image_size, args.image_size))
+                    imgs = resize_transform(imgs)
                     masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
 
                 showp = pt
-                points.append(pt.numpy()[0])
-                names.append(*name)
+                points.append(pt.cpu().numpy()[0])
+                names.extend(names_batch)
                 mask_type = torch.float32
-                ind += 1
+
                 b_size, c, w, h = imgs.size()
-                longsize = w if w >= h else h
+                longsize = max(w, h)
 
                 if point_labels[0] != -1:
-                    # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
                     point_coords = pt
-                    coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
-                    labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
+                    coords_torch = point_coords.to(dtype=torch.float, device=GPUdevice)
+                    labels_torch = point_labels.to(dtype=torch.int, device=GPUdevice)
                     coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
                     pt = (coords_torch, labels_torch)
 
-                '''init'''
                 if hard:
                     true_mask_ave = (true_mask_ave > 0.5).float()
-                    # true_mask_ave = cons_tensor(true_mask_ave)
 
                 _imgs = imgs.clone()
 
-                # The attack patch size
+                # set patch
                 patch_size = 10
-                att_pos_i = patch_size - 1
-                att_pos_j = patch_size - 1
+                color_value = 255 if color == 'white' else 0
                 eiou_list = []
                 pos_list = []
 
-                # adding patch to the image
-                while att_pos_i <= args.image_size -1 and att_pos_j <= args.image_size -1:
+                # calculate attack position
+                positions = [(i, j) for i in range(patch_size - 1, args.image_size, patch_size)
+                             for j in range(patch_size - 1, args.image_size, patch_size)]
+                # use for to replace while
+                for att_pos_i, att_pos_j in positions:
                     imgs = _imgs.clone()
-                    for k in range(3):
-                        for i in range(patch_size):
-                            for j in range(patch_size):
-                                if color == 'white':
-                                    imgs[0, k, att_pos_i - i, att_pos_j - j] = 255
-                                if color == 'black':
-                                    imgs[0, k, att_pos_i - i, att_pos_j - j] = 0
-
+                    # replace for to improve speed
+                    imgs[0, :, att_pos_i - patch_size + 1:att_pos_i + 1,
+                         att_pos_j - patch_size + 1:att_pos_j + 1] = color_value
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
-                    '''test'''
+                    # predict
                     with torch.no_grad():
                         imge = net.image_encoder(imgs)
-                        if args.net == 'sam' or args.net == 'mobile_sam':
-                            se, de = net.prompt_encoder(
-                                points=pt,
-                                boxes=None,
-                                masks=None,
-                            )
-                        elif args.net == "efficient_sam":
-                            coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                            se = net.prompt_encoder(
-                                coords=coords_torch,
-                                labels=labels_torch,
-                            )
-
-                        if args.net == 'sam' or args.net == 'mobile_sam':
+                        if args.net in ['sam', 'mobile_sam']:
+                            se, de = net.prompt_encoder(points=pt, boxes=None, masks=None)
                             pred, _ = net.mask_decoder(
                                 image_embeddings=imge,
                                 image_pe=net.prompt_encoder.get_dense_pe(),
@@ -1185,94 +1151,55 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                                 multimask_output=False,
                             )
                         elif args.net == "efficient_sam":
-                            se = se.view(
-                                se.shape[0],
-                                1,
-                                se.shape[1],
-                                se.shape[2],
-                            )
+                            coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                            se = net.prompt_encoder(coords=coords_torch, labels=labels_torch)
+                            se = se.view(se.shape[0], 1, se.shape[1], se.shape[2])
                             pred, _ = net.mask_decoder(
                                 image_embeddings=imge,
                                 image_pe=net.prompt_encoder.get_dense_pe(),
                                 sparse_prompt_embeddings=se,
                                 multimask_output=False,
                             )
-                        # print(pred.shape)
-                        # Resize to the ordered output size
+
+                        # resize
                         pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-
-                        # print(pred.shape)
                         temp_hd, save_pred = calc_hf(pred.detach(), masks)
-
-                        # print(pack["image_meta_dict"]["filename_or_obj"])
                         hd.append(temp_hd)
-                        # print(pred.shape,masks.shape,torch.max(pred),torch.max(masks),torch.min(masks))
                         tot += lossfunc(pred, masks)
-                        (eiou, edice) = eval_seg(pred, masks, threshold)
-                        # mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
-                        # eiou_list.append(edice)
+                        eiou, edice = eval_seg(pred, masks, threshold)
 
-                        # save the position of the patch
+                        # save position and metrics
                         pos_list.append([att_pos_i, att_pos_j])
-
-                        # save the eiou for each patch
                         eiou_list.append(eiou)
-                        # print(eiou)
-                        # print(pos_list)
-                        if att_pos_i < args.image_size - patch_size:
-                            att_pos_i += patch_size
-                        else:
-                            att_pos_i = patch_size - 1
-                            att_pos_j += patch_size
-
 
                 eiou_list = np.array(eiou_list)
 
-
-                for na in name:
-                    namecat = na.split('/')[-1].split('.')[0] + '+'
-                image_path = f"./heatmap_img"
-
+                # save predict and original
+                image_path = "./heatmap_img"
+                os.makedirs(image_path, exist_ok=True)
                 final_path = os.path.join(image_path, f'orig_{namecat}.png')
-
                 vutils.save_image(imgs, fp=final_path, nrow=1, padding=0)
-
                 vutils.save_image(pred, fp=f'./heatmap_img/pred_{color}_{namecat}.png', nrow=1, padding=0)
 
+                # generate heatmap
                 last_pos = pos_list[-1]
-                saliency_attack = np.zeros(shape=(last_pos[0] + 1, last_pos[1] + 1))
+                saliency_attack = np.zeros((last_pos[0] + 1, last_pos[1] + 1))
 
-                for k in range(len(pos_list)):
-                    pos = pos_list[k]
-                    for i in range(patch_size):
-                        for j in range(patch_size):
-                            saliency_attack[pos[0] - i, pos[1] - j] = eiou_list[k]
-
+                for idx, (pos_i, pos_j) in enumerate(pos_list):
+                    saliency_attack[pos_i - patch_size + 1:pos_i + 1, pos_j - patch_size + 1:pos_j + 1] = eiou_list[idx]
 
                 max_val = np.max(eiou_list)
                 min_val = np.min(eiou_list)
-                # print(max_val, min_val)
-                with open(log_file, 'a') as f:
-                    f.write(f"{namecat}: max_eiou: {max_val}, min_eiou: {min_val}\n")
-                normalized_image = (max_val - saliency_attack) / (max_val - min_val)
+                with open(log_file, 'a') as f_log:
+                    f_log.write(f"{namecat}: max_eiou: {max_val}, min_eiou: {min_val}\n")
+
+                normalized_image = (max_val - saliency_attack) / (max_val - min_val + 1e-8)
                 colormap = plt.get_cmap('plasma')
                 colored_image = colormap(normalized_image)
-
-                # Convert the image to a format suitable for OpenCV (float to uint8 and RGB to BGR)
                 colored_image = (colored_image[:, :, :3] * 255).astype(np.uint8)
                 colored_image_bgr = cv2.cvtColor(colored_image, cv2.COLOR_RGB2BGR)
-                image_path = f"./heatmap_img"
-
                 final_path = os.path.join(image_path, f'saliency_{color}_attack_{namecat}.png')
-                # save the attack heatmap image
                 cv2.imwrite(final_path, colored_image_bgr)
 
-                # overlaped_img =
-            print('done')
-            # break
-        # pbar.update()
-
-    # if args.evl_chunk:
-    #     n_val = n_val * (imgsw.size(-1) // evl_ch)
-    #
-    # tol, (eiou, edice) = tot/ n_val , tuple([ a /n_val for a in mix_res])
+            pbar.update(1)
+    print('done')

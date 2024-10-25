@@ -1,1 +1,3 @@
 .idea
+checkpoint/sam/checkpoint_best.pth
+sam_checkpoints/

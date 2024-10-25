@@ -40,8 +40,8 @@ from old_code import cfg
 from models.discriminator import Discriminator
 
 
-args = cfg.parse_args()
-device = torch.device('cuda', args.gpu_device)
+# args = cfg.parse_args()
+# device = torch.device('cuda', args.gpu_device)
 
 '''preparation of domain loss'''
 # cnn = vgg19(pretrained=True).features.to(device).eval()
@@ -66,7 +66,7 @@ def get_network(args, net, use_gpu=True, gpu_device = 0, distribution = True):
         if args.encoder not in options:
             raise ValueError("Invalid encoder option. Please choose from: {}".format(options))
         else:
-            net = sam_model_registry[args.encoder](args,checkpoint=args.sam_ckpt).to(device)
+            net = sam_model_registry[args.encoder](args,checkpoint=args.sam_ckpt).to(gpu_device)
 
     elif net == 'efficient_sam':
         from models.efficient_sam import sam_model_registry
