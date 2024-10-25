@@ -7,4 +7,4 @@
 
 pip3 install -r requirements.txt
 
-python3 one_pixel_attack.py --num_processes 4
+python3 one_pixel_attack.py
