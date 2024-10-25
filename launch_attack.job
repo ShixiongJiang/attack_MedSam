@@ -5,6 +5,6 @@
 #$ -N one_pixel_attack
 #$ -l gpu_card=2
 
-conda activate sam_adapt
+pip3 install -r requirements.txt
 
 python3 one_pixel_attack.py --num_processes 4
