@@ -1,0 +1,100 @@
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:59: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:59: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+Namespace(process_idx=1, num_processes=2, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_25_02_34_07', 'ckpt_path': 'logs/msa_test_polyp_2024_10_25_02_34_07/Model', 'log_path': 'logs/msa_test_polyp_2024_10_25_02_34_07/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_25_02_34_07/Samples'})
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+Traceback (most recent call last):
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py", line 82, in <module>
+    args.path_helper = set_log_dir('logs', args.exp_name)
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/utils.py", line 372, in set_log_dir
+    os.makedirs(prefix)
+  File "/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/os.py", line 225, in makedirs
+    mkdir(name, mode)
+FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_25_02_34_07'
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+if poison  False
+{'89', '571', '397', '80'}
+image name 100
+image name 106
+image name 119
+image name 134
+image name 14
+image name 148
+image name 154
+image name 163
+image name 166
+image name 171
+image name 179
+image name 181
+image name 185
+image name 191
+image name 205
+image name 21
+image name 240
+image name 25
+image name 251
+image name 266
+image name 279
+image name 287
+image name 300
+image name 307
+image name 31
+image name 349
+image name 353
+image name 374
+image name 381
+image name 388
+image name 397
+dumplicate image 397
+image name 400
+image name 404
+image name 42
+image name 425
+image name 429
+image name 431
+image name 442
+image name 453
+image name 459
+image name 464
+image name 474
+image name 481
+image name 483
+image name 492
+image name 50
+image name 52
+image name 526
+image name 529
+image name 545
+image name 555
+image name 559
+image name 561
+image name 569
+image name 571
+dumplicate image 571
+image name 575
+image name 61
+image name 65
+image name 66
+image name 73
+image name 80
+dumplicate image 80
+image name 89
+dumplicate image 89
+Validation round:   0%|          | 0/29 [00:00<?, ?batch/s]Validation round:   3%|▎         | 1/29 [37:37<17:33:18, 2257.10s/batch]Validation round:   7%|▋         | 2/29 [1:15:10<16:54:40, 2254.83s/batch]Validation round:  10%|█         | 3/29 [1:51:26<16:01:26, 2218.71s/batch]Validation round:  14%|█▍        | 4/29 [2:32:09<16:01:22, 2307.32s/batch]Validation round:  17%|█▋        | 5/29 [3:08:25<15:04:05, 2260.23s/batch]Validation round:  21%|██        | 6/29 [3:46:56<14:32:55, 2277.18s/batch]Validation round:  24%|██▍       | 7/29 [4:25:00<13:55:47, 2279.44s/batch]Validation round:  28%|██▊       | 8/29 [5:05:04<13:31:46, 2319.34s/batch]Validation round:  31%|███       | 9/29 [5:51:41<13:42:48, 2468.44s/batch]Validation round:  34%|███▍      | 10/29 [6:33:46<13:07:14, 2486.02s/batch]Validation round:  38%|███▊      | 11/29 [7:10:43<12:01:05, 2403.66s/batch]Validation round:  41%|████▏     | 12/29 [7:50:05<11:17:25, 2390.92s/batch]
