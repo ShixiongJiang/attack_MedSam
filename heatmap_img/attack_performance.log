@@ -9,3 +9,10 @@ This is a log entry.
 This is a log entry.
 This is a log entry.
 This is a log entry.
+This is a log entry.
+This is a log entry.
+This is a log entry.
+80+: max_eiou: 0.80406136102239, min_eiou: 0.5068512588736603
+571+: max_eiou: 0.6464557160365955, min_eiou: 0.5792683435843289
+89+: max_eiou: 0.9494561624965525, min_eiou: 0.9270213913164748
+397+: max_eiou: 0.9260654667235848, min_eiou: 0.9150164365020226
