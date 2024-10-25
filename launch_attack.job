@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+#$ -q gpu
+#$ -M jfan5@nd.edu
+#$ -m abe
+#$ -N launch_attack
+#$ -l gpu_card=2
+
+
+
+conda activate attack_MedSam
+python3 launch_attack.py --num_processes 2
