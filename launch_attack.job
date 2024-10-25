@@ -2,9 +2,9 @@
 #$ -q gpu
 #$ -M sjiang5@nd.edu
 #$ -m abe
-#$ -N launch_attack
-#$ -l gpu_card=4
+#$ -N one_pixel_attack
+#$ -l gpu_card=2
 
 module load python
 
-python3 launch_attack.py --num_processes 4
+python3 one_pixel_attack.py --num_processes 4
