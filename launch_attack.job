@@ -5,6 +5,5 @@
 #$ -N one_pixel_attack
 #$ -l gpu_card=2
 
-pip3 install GradCAM
 
 python3 one_pixel_attack.py
