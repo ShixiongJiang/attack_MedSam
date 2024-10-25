@@ -9,13 +9,13 @@ from utils import *
 from monai.metrics import compute_hausdorff_distance, DiceMetric
 from monai.losses import DiceCELoss
 from pathlib import Path
-from torchsummary import summary
-from segment_anything import sam_model_registry, SamPredictor
-from torchvision.transforms.functional import normalize, resize, to_pil_image
-
-import pandas as pd
-from pytorch_grad_cam import GradCAM
-from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
+# from torchsummary import summary
+# from segment_anything import sam_model_registry, SamPredictor
+# from torchvision.transforms.functional import normalize, resize, to_pil_image
+#
+# import pandas as pd
+# from pytorch_grad_cam import GradCAM
+# from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 import matplotlib.pyplot as plt
 
 from PIL import Image
