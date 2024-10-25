@@ -127,7 +127,7 @@
 # writer.close()
 from pathlib import Path
 import re
-from tensorboardX import SummaryWriter
+# from tensorboardX import SummaryWriter
 # from dataset import *
 from torch.utils.data import DataLoader, random_split
 import cfg_reverse_adaptation
@@ -254,9 +254,9 @@ nice_train_loader = DataLoader(subset, batch_size=args.b, shuffle=True, num_work
 # 设置日志目录
 log_dir = f"./logs/process_{args.process_idx}"
 os.makedirs(log_dir, exist_ok=True)
-writer = SummaryWriter(log_dir=log_dir)
+# writer = SummaryWriter(log_dir=log_dir)
 # ... 其他设置 ...
 
 # 开始攻击
 function.one_pixel_attack(args, net, nice_train_loader, color='white')
-writer.close()
+# writer.close()
