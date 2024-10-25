@@ -2,7 +2,7 @@
 # !/usr/bin/env	python3
 
 from pathlib import Path
-
+import re
 from tensorboardX import SummaryWriter
 # from dataset import *
 from torch.utils.data import DataLoader, random_split
@@ -13,6 +13,35 @@ from conf import settings
 from dataset import *
 from utils import *
 from cfg_reverse_adaptation import parse_args
+
+def remove_dumplicate_image(polyp_train_dataset):
+    # 假设 heatmap_img 路径
+    heatmap_img_path = 'heatmap_img'
+
+    # 列出 heatmap_img 下所有的文件并提取已处理的图片名称
+    pattern = re.compile(r'orig_(\d+)\+\.png')
+
+    # 列出 heatmap_img 下所有的文件并提取已处理图片的数字名称
+    processed_images = set()
+    for file in os.listdir(heatmap_img_path):
+        match = pattern.search(file)
+        if match:
+            processed_images.add(match.group(1))
+    # 创建一个新的数据集列表，存储未处理过的图片
+    filtered_data = []
+    print(processed_images)
+    # 遍历原始数据集，检查每个图片是否在已处理的图片列表中
+    for data in polyp_train_dataset:
+        image_name = os.path.basename(data['image_meta_dict']['filename_or_obj'])  # 假设图片路径在数据字典中的键是 'image_path'
+        print('image name',image_name)
+        if image_name not in processed_images:
+            filtered_data.append(data)
+        else:
+            print('dumplicate image',data['image_meta_dict']['filename_or_obj'])
+    # 更新数据集
+    polyp_train_dataset = filtered_data
+    return polyp_train_dataset
+
 
 args = cfg_reverse_adaptation.parse_args()
 
@@ -79,8 +108,9 @@ print('if poison ', args.poison)
 '''polyp data using the original dataset to generate poison sample'''
 polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
-polyp_test_dataset = Polyp(args, args.data_path, transform=transform_test, transform_msk=transform_test_seg,
-                           mode='Test')
+
+polyp_train_dataset=remove_dumplicate_image(polyp_train_dataset)
+
 # according to process split dataset to N parts
 # each process indexed by process idx
 N = args.num_processes
