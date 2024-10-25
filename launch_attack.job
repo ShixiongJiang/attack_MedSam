@@ -6,4 +6,5 @@
 #$ -l gpu_card=2
 
 
-python3 one_pixel_attack.py
+python3 one_pixel_attack.py --num_processes 4
+
