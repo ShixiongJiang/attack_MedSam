@@ -46,9 +46,13 @@ def remove_dumplicate_image(polyp_train_dataset):
 # 获取参数
 args = cfg_reverse_adaptation.parse_args()
 
-# 设置每个进程的 GPU
+# 确保 gpu_device 为 0
+args.gpu_device = 0
+# 打印当前进程的 CUDA_VISIBLE_DEVICES
+print(f"Process {args.process_idx} sees CUDA_VISIBLE_DEVICES = {os.environ.get('CUDA_VISIBLE_DEVICES')}")
+# 设置设备
 GPUdevice = torch.device('cuda', args.gpu_device)
-print(f'Using GPU: {args.gpu_device} for process index: {args.process_idx}')
+print(f'Using GPU: {args.gpu_device} (logical GPU in this process) for process index: {args.process_idx}')
 
 # 初始化网络并加载模型
 net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution=args.distributed)
