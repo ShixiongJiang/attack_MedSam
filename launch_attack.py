@@ -32,7 +32,7 @@ def main():
     for i in range(args.num_processes):
         p = subprocess.Popen(
             [
-                'python', args.script,
+                'python', 'one_pixel_attack.py',
                 '--process_idx', str(i),
                 '--num_processes', str(args.num_processes),
                 '--gpu_device', '0'  # 每个进程内的 GPU 索引为 0
