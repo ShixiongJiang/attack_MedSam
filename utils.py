@@ -369,7 +369,7 @@ def set_log_dir(root_dir, exp_name):
     now = datetime.now(dateutil.tz.tzlocal())
     timestamp = now.strftime('%Y_%m_%d_%H_%M_%S')
     prefix = exp_path + '_' + timestamp
-    os.makedirs(prefix)
+    os.makedirs(prefix,exist_ok=True)
     path_dict['prefix'] = prefix
 
     # set checkpoint path
