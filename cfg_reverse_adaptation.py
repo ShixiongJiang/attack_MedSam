@@ -57,6 +57,8 @@ def parse_args():
     parser.add_argument('-epsilon', type=float, default=0.1 , help='define the power of attack')
     parser.add_argument('-attack_method', type=str, default='pgd' , help='define the power of attack')
     parser.add_argument('-freeze', type=bool, default=True, help='define the power of attack')
+    parser.add_argument('--num_processes', type=int, default=2, help='Total number of processes')
+    parser.add_argument('--process_idx', type=int, default=0, help='Index of the current process')
 
     parser.add_argument("--backdoor", type=bool, default=False, help="indicate backdoor attack")
     # parser.add_argument("--poison_datasets", type=str,nargs="+",default="poison_dataset")
