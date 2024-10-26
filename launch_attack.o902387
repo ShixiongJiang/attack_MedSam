@@ -53,37 +53,47 @@ Traceback (most recent call last):
   File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py", line 82, in <module>
     args.path_helper = set_log_dir('logs', args.exp_name)
   File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/utils.py", line 372, in set_log_dir
-Namespace(process_idx=1, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_25_10_47_32', 'ckpt_path': 'logs/msa_test_polyp_2024_10_25_10_47_32/Model', 'log_path': 'logs/msa_test_polyp_2024_10_25_10_47_32/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_25_10_47_32/Samples'})
     os.makedirs(prefix)
   File "/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/os.py", line 225, in makedirs
     os.makedirs(prefix)
   File "/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/os.py", line 225, in makedirs
     os.makedirs(prefix)
   File "/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/os.py", line 225, in makedirs
+Namespace(process_idx=0, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_26_02_00_16', 'ckpt_path': 'logs/msa_test_polyp_2024_10_26_02_00_16/Model', 'log_path': 'logs/msa_test_polyp_2024_10_26_02_00_16/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_26_02_00_16/Samples'})
     mkdir(name, mode)
-FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_25_10_47_32'
+FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_26_02_00_16'
     mkdir(name, mode)
-FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_25_10_47_32'
+FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_26_02_00_16'
     mkdir(name, mode)
-FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_25_10_47_32'
+FileExistsError: [Errno 17] File exists: 'logs/msa_test_polyp_2024_10_26_02_00_16'
 => resuming from ./checkpoint/sam/checkpoint_best.pth
 if poison  False
-{'80', '31', '89', '474', '571', '279', '453', '481', '483', '251', '397', '50', '404', '240', '73', '25'}
+{'73', '307', '431', '106', '191', '185', '119', '52', '205', '526', '429', '240', '154', '474', '50', '569', '571', '481', '404', '397', '251', '14', '61', '181', '80', '163', '464', '25', '483', '171', '89', '442', '300', '31', '453', '42', '559', '374', '529', '279'}
 image name 100
 image name 106
+dumplicate image 106
 image name 119
+dumplicate image 119
 image name 134
 image name 14
+dumplicate image 14
 image name 148
 image name 154
+dumplicate image 154
 image name 163
+dumplicate image 163
 image name 166
 image name 171
+dumplicate image 171
 image name 179
 image name 181
+dumplicate image 181
 image name 185
+dumplicate image 185
 image name 191
+dumplicate image 191
 image name 205
+dumplicate image 205
 image name 21
 image name 240
 dumplicate image 240
@@ -96,12 +106,15 @@ image name 279
 dumplicate image 279
 image name 287
 image name 300
+dumplicate image 300
 image name 307
+dumplicate image 307
 image name 31
 dumplicate image 31
 image name 349
 image name 353
 image name 374
+dumplicate image 374
 image name 381
 image name 388
 image name 397
@@ -110,14 +123,19 @@ image name 400
 image name 404
 dumplicate image 404
 image name 42
+dumplicate image 42
 image name 425
 image name 429
+dumplicate image 429
 image name 431
+dumplicate image 431
 image name 442
+dumplicate image 442
 image name 453
 dumplicate image 453
 image name 459
 image name 464
+dumplicate image 464
 image name 474
 dumplicate image 474
 image name 481
@@ -128,17 +146,23 @@ image name 492
 image name 50
 dumplicate image 50
 image name 52
+dumplicate image 52
 image name 526
+dumplicate image 526
 image name 529
+dumplicate image 529
 image name 545
 image name 555
 image name 559
+dumplicate image 559
 image name 561
 image name 569
+dumplicate image 569
 image name 571
 dumplicate image 571
 image name 575
 image name 61
+dumplicate image 61
 image name 65
 image name 66
 image name 73
@@ -147,7 +171,7 @@ image name 80
 dumplicate image 80
 image name 89
 dumplicate image 89
-Validation round:   0%|          | 0/11 [00:00<?, ?batch/s]Validation round:   9%|▉         | 1/11 [35:00<5:50:06, 2100.65s/batch]Validation round:  18%|█▊        | 2/11 [1:11:33<5:23:13, 2154.83s/batch]Validation round:  27%|██▋       | 3/11 [1:47:50<4:48:41, 2165.15s/batch]Validation round:  36%|███▋      | 4/11 [2:23:27<4:11:17, 2153.90s/batch]Validation round:  45%|████▌     | 5/11 [2:58:14<3:32:58, 2129.82s/batch]Validation round:  55%|█████▍    | 6/11 [3:39:49<3:07:48, 2253.79s/batch]Validation round:  64%|██████▎   | 7/11 [4:14:54<2:27:01, 2205.38s/batch]Validation round:  73%|███████▎  | 8/11 [4:52:55<1:51:27, 2229.22s/batch]Validation round:  82%|████████▏ | 9/11 [5:32:39<1:15:55, 2277.87s/batch]Validation round:  91%|█████████ | 10/11 [6:09:06<37:29, 2249.66s/batch] Validation round: 100%|██████████| 11/11 [6:44:38<00:00, 2213.54s/batch]                                                                        done
+Validation round:   0%|          | 0/5 [00:00<?, ?batch/s]Validation round:  20%|██        | 1/5 [35:22<2:21:29, 2122.25s/batch]Validation round:  40%|████      | 2/5 [1:12:05<1:48:29, 2169.78s/batch]Validation round:  60%|██████    | 3/5 [1:47:29<1:11:37, 2148.74s/batch]Validation round:  80%|████████  | 4/5 [2:23:33<35:55, 2155.14s/batch]  Validation round: 100%|██████████| 5/5 [3:06:02<00:00, 2296.87s/batch]                                                                      done
 Launching process 0 on GPU 0
 Launching process 1 on GPU 1
 Launching process 2 on GPU 2
