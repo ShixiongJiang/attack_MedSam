@@ -3,7 +3,6 @@ import argparse
 
 def parse_args():    
     parser = argparse.ArgumentParser()
-    parser.add_argument('--process_idx', type=int, default=0, help='Index of the current process')
     parser.add_argument('-net', type=str, default='sam', help='net type')
     parser.add_argument('-baseline', type=str, default='unet', help='baseline net type')
     parser.add_argument('-encoder', type=str, default='default', help='encoder type')
