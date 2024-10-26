@@ -24,7 +24,7 @@ def run_attack(process_idx, num_processes, script, additional_args):
 def main():
     parser = argparse.ArgumentParser(description='Launch Multiple Processes for One Pixel Attack')
     parser.add_argument('--num_processes', type=int, default=1, help='Total number of processes (and GPUs)')
-    parser.add_argument('--script', type=str, default='train_reverse_adaptation.py', help='Script to run')
+    parser.add_argument('--script', type=str, default='one_pixel_attack.py', help='Script to run')
     parser.add_argument('--additional_args', type=str, default='', help='Additional arguments to pass to the script')
     args = parser.parse_args()
 
