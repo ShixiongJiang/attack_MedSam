@@ -137,7 +137,7 @@ with open(log_file_path, 'w') as log_file:
 writer = SummaryWriter(log_dir=f"./logs/process_{args.process_idx}")
 
 # 启动攻击
-function.one_pixel_attack(args, net, nice_train_loader, color='white')
+function.one_pixel_attack(args, net, nice_train_loader, color='black')
 
 # 关闭日志
 writer.close()
