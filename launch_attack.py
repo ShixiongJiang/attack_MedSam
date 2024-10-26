@@ -1,4 +1,3 @@
-# launch_attack.py
 import subprocess
 import argparse
 import os
@@ -21,7 +20,7 @@ def main():
             'python', args.script,
             '--process_idx', str(i),
             '--num_processes', str(num_processes),
-            '--gpu_device', '0',
+            '--gpu_device', str(i),  # 修改为 i，确保每个进程使用不同的 GPU
         ]
         if args.additional_args:
             cmd.extend(args.additional_args.strip().split())
