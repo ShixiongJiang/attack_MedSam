@@ -9,5 +9,5 @@
 
 
 
-conda activate attack_MedSam
+module load python
 python3 launch_attack.py --num_processes 4
