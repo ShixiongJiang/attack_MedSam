@@ -121,7 +121,7 @@ with open(log_file_path, 'w') as log_file:
     # 遍历 train_loader 并写入图片名称
     for batch in nice_train_loader:
         # 假设图像路径在 batch 数据中 (根据具体数据集结构调整获取方式)
-        image_paths = batch['image_paths']  # 假设 batch 中包含 'image_paths' 字段
+        image_paths = batch['image_meta_dict']['filename_or_obj']  # 假设 batch 中包含 'image_paths' 字段
         for path in image_paths:
             log_file.write(f"{path}\n")
 
