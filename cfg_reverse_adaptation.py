@@ -4,7 +4,6 @@ import argparse
 def parse_args():    
     parser = argparse.ArgumentParser()
     parser.add_argument('--process_idx', type=int, default=0, help='Index of the current process')
-    parser.add_argument('--num_processes', type=int, default=1, help='Total number of processes')
     parser.add_argument('-net', type=str, default='sam', help='net type')
     parser.add_argument('-baseline', type=str, default='unet', help='baseline net type')
     parser.add_argument('-encoder', type=str, default='default', help='encoder type')
@@ -57,7 +56,7 @@ def parse_args():
     parser.add_argument('-epsilon', type=float, default=0.1 , help='define the power of attack')
     parser.add_argument('-attack_method', type=str, default='pgd' , help='define the power of attack')
     parser.add_argument('-freeze', type=bool, default=True, help='define the power of attack')
-    parser.add_argument('--num_processes', type=int, default=2, help='Total number of processes')
+    parser.add_argument('--num_processes', type=int, default=4, help='Total number of processes')
     parser.add_argument('--process_idx', type=int, default=0, help='Index of the current process')
 
     parser.add_argument("--backdoor", type=bool, default=False, help="indicate backdoor attack")
