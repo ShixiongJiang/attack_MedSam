@@ -2,7 +2,7 @@
 
 
 #$ -q gpu
-#$ -M jfan5@nd.edu
+#$ -M sjiang5@nd.edu
 #$ -m abe
 #$ -N launch_attack
 #$ -l gpu_card=4
