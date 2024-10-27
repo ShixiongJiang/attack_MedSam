@@ -120,6 +120,10 @@ subset = subsets[args.process_idx]
 nice_train_loader = DataLoader(subset, batch_size=args.b, shuffle=True, num_workers=2, pin_memory=True)
 
 # 为每个进程创建一个单独的日志文件
+try:
+    os.mkdir('./attack_log')
+except:
+    pass
 log_file_path = f"./attack_log/process_{args.process_idx}_data_log.txt"
 with open(log_file_path, 'w') as log_file:
     # 遍历 train_loader 并写入图片名称
