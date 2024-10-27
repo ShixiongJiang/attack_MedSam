@@ -1,0 +1,552 @@
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+Namespace(process_idx=3, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_26_21_15_21', 'ckpt_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Model', 'log_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Samples'})
+Namespace(process_idx=0, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_26_21_15_21', 'ckpt_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Model', 'log_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Samples'})
+Namespace(process_idx=1, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_26_21_15_21', 'ckpt_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Model', 'log_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Samples'})
+Namespace(process_idx=2, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_26_21_15_21', 'ckpt_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Model', 'log_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_26_21_15_21/Samples'})
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Process 3 sees CUDA_VISIBLE_DEVICES = 3
+Using GPU: 0 (logical GPU in this process) for process index: 3
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'61', '181', '526', '80', '166', '42', '559', '571', '50', '483', '205', '300', '100', '561', '266', '397', '191', '171', '464', '73', '474', '388', '163', '14', '529', '349', '575', '400', '154', '307', '240', '429', '404', '287', '89', '381', '453', '134', '148', '374', '492', '481', '569', '459', '251', '279', '185', '25', '106', '442', '52', '31', '119', '431', '21', '66', '545', '65'}
+image name 100
+dumplicate image 100
+image name 106
+dumplicate image 106
+image name 119
+dumplicate image 119
+image name 134
+dumplicate image 134
+image name 14
+dumplicate image 14
+image name 148
+dumplicate image 148
+image name 154
+dumplicate image 154
+image name 163
+dumplicate image 163
+image name 166
+dumplicate image 166
+image name 171
+dumplicate image 171
+image name 179
+image name 181
+dumplicate image 181
+image name 185
+dumplicate image 185
+image name 191
+dumplicate image 191
+image name 205
+dumplicate image 205
+image name 21
+dumplicate image 21
+image name 240
+dumplicate image 240
+image name 25
+dumplicate image 25
+image name 251
+dumplicate image 251
+image name 266
+dumplicate image 266
+image name 279
+dumplicate image 279
+image name 287
+dumplicate image 287
+image name 300
+dumplicate image 300
+image name 307
+dumplicate image 307
+image name 31
+dumplicate image 31
+image name 349
+dumplicate image 349
+image name 353
+image name 374
+dumplicate image 374
+image name 381
+dumplicate image 381
+image name 388
+dumplicate image 388
+image name 397
+dumplicate image 397
+image name 400
+dumplicate image 400
+image name 404
+dumplicate image 404
+image name 42
+dumplicate image 42
+image name 425
+image name 429
+dumplicate image 429
+image name 431
+dumplicate image 431
+image name 442
+dumplicate image 442
+image name 453
+dumplicate image 453
+image name 459
+dumplicate image 459
+image name 464
+dumplicate image 464
+image name 474
+dumplicate image 474
+image name 481
+dumplicate image 481
+image name 483
+dumplicate image 483
+image name 492
+dumplicate image 492
+image name 50
+dumplicate image 50
+image name 52
+dumplicate image 52
+image name 526
+dumplicate image 526
+image name 529
+dumplicate image 529
+image name 545
+dumplicate image 545
+image name 555
+image name 559
+dumplicate image 559
+image name 561
+dumplicate image 561
+image name 569
+dumplicate image 569
+image name 571
+dumplicate image 571
+image name 575
+dumplicate image 575
+image name 61
+dumplicate image 61
+image name 65
+dumplicate image 65
+image name 66
+dumplicate image 66
+image name 73
+dumplicate image 73
+image name 80
+dumplicate image 80
+image name 89
+dumplicate image 89
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Process 2 sees CUDA_VISIBLE_DEVICES = 2
+Using GPU: 0 (logical GPU in this process) for process index: 2
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'404', '148', '21', '545', '73', '266', '474', '349', '14', '442', '559', '61', '52', '400', '50', '429', '374', '100', '251', '388', '459', '483', '526', '205', '453', '431', '80', '185', '307', '181', '66', '571', '575', '464', '279', '191', '154', '569', '42', '171', '287', '381', '65', '529', '481', '31', '240', '561', '166', '492', '106', '89', '134', '300', '25', '119', '397', '163'}
+image name 100
+dumplicate image 100
+image name 106
+dumplicate image 106
+image name 119
+dumplicate image 119
+image name 134
+dumplicate image 134
+image name 14
+dumplicate image 14
+image name 148
+dumplicate image 148
+image name 154
+dumplicate image 154
+image name 163
+dumplicate image 163
+image name 166
+dumplicate image 166
+image name 171
+dumplicate image 171
+image name 179
+image name 181
+dumplicate image 181
+image name 185
+dumplicate image 185
+image name 191
+dumplicate image 191
+image name 205
+dumplicate image 205
+image name 21
+dumplicate image 21
+image name 240
+dumplicate image 240
+image name 25
+dumplicate image 25
+image name 251
+dumplicate image 251
+image name 266
+dumplicate image 266
+image name 279
+dumplicate image 279
+image name 287
+dumplicate image 287
+image name 300
+dumplicate image 300
+image name 307
+dumplicate image 307
+image name 31
+dumplicate image 31
+image name 349
+dumplicate image 349
+image name 353
+image name 374
+dumplicate image 374
+image name 381
+dumplicate image 381
+image name 388
+dumplicate image 388
+image name 397
+dumplicate image 397
+image name 400
+dumplicate image 400
+image name 404
+dumplicate image 404
+image name 42
+dumplicate image 42
+image name 425
+image name 429
+dumplicate image 429
+image name 431
+dumplicate image 431
+image name 442
+dumplicate image 442
+image name 453
+dumplicate image 453
+image name 459
+dumplicate image 459
+image name 464
+dumplicate image 464
+image name 474
+dumplicate image 474
+image name 481
+dumplicate image 481
+image name 483
+dumplicate image 483
+image name 492
+dumplicate image 492
+image name 50
+dumplicate image 50
+image name 52
+dumplicate image 52
+image name 526
+dumplicate image 526
+image name 529
+dumplicate image 529
+image name 545
+dumplicate image 545
+image name 555
+image name 559
+dumplicate image 559
+image name 561
+dumplicate image 561
+image name 569
+dumplicate image 569
+image name 571
+dumplicate image 571
+image name 575
+dumplicate image 575
+image name 61
+dumplicate image 61
+image name 65
+dumplicate image 65
+image name 66
+dumplicate image 66
+image name 73
+dumplicate image 73
+image name 80
+dumplicate image 80
+image name 89
+dumplicate image 89
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Process 1 sees CUDA_VISIBLE_DEVICES = 1
+Using GPU: 0 (logical GPU in this process) for process index: 1
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'73', '429', '526', '481', '31', '571', '483', '474', '569', '154', '300', '404', '279', '349', '61', '575', '559', '397', '431', '25', '171', '148', '307', '459', '89', '134', '66', '492', '374', '119', '442', '80', '42', '400', '381', '266', '464', '65', '529', '388', '21', '251', '191', '181', '166', '545', '561', '205', '185', '240', '287', '52', '100', '14', '50', '163', '453', '106'}
+image name 100
+dumplicate image 100
+image name 106
+dumplicate image 106
+image name 119
+dumplicate image 119
+image name 134
+dumplicate image 134
+image name 14
+dumplicate image 14
+image name 148
+dumplicate image 148
+image name 154
+dumplicate image 154
+image name 163
+dumplicate image 163
+image name 166
+dumplicate image 166
+image name 171
+dumplicate image 171
+image name 179
+image name 181
+dumplicate image 181
+image name 185
+dumplicate image 185
+image name 191
+dumplicate image 191
+image name 205
+dumplicate image 205
+image name 21
+dumplicate image 21
+image name 240
+dumplicate image 240
+image name 25
+dumplicate image 25
+image name 251
+dumplicate image 251
+image name 266
+dumplicate image 266
+image name 279
+dumplicate image 279
+image name 287
+dumplicate image 287
+image name 300
+dumplicate image 300
+image name 307
+dumplicate image 307
+image name 31
+dumplicate image 31
+image name 349
+dumplicate image 349
+image name 353
+image name 374
+dumplicate image 374
+image name 381
+dumplicate image 381
+image name 388
+dumplicate image 388
+image name 397
+dumplicate image 397
+image name 400
+dumplicate image 400
+image name 404
+dumplicate image 404
+image name 42
+dumplicate image 42
+image name 425
+image name 429
+dumplicate image 429
+image name 431
+dumplicate image 431
+image name 442
+dumplicate image 442
+image name 453
+dumplicate image 453
+image name 459
+dumplicate image 459
+image name 464
+dumplicate image 464
+image name 474
+dumplicate image 474
+image name 481
+dumplicate image 481
+image name 483
+dumplicate image 483
+image name 492
+dumplicate image 492
+image name 50
+dumplicate image 50
+image name 52
+dumplicate image 52
+image name 526
+dumplicate image 526
+image name 529
+dumplicate image 529
+image name 545
+dumplicate image 545
+image name 555
+image name 559
+dumplicate image 559
+image name 561
+dumplicate image 561
+image name 569
+dumplicate image 569
+image name 571
+dumplicate image 571
+image name 575
+dumplicate image 575
+image name 61
+dumplicate image 61
+image name 65
+dumplicate image 65
+image name 66
+dumplicate image 66
+image name 73
+dumplicate image 73
+image name 80
+dumplicate image 80
+image name 89
+dumplicate image 89
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Process 0 sees CUDA_VISIBLE_DEVICES = 0
+Using GPU: 0 (logical GPU in this process) for process index: 0
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'545', '31', '134', '464', '89', '181', '526', '575', '492', '349', '80', '119', '14', '431', '287', '166', '148', '374', '106', '442', '559', '459', '381', '65', '279', '529', '25', '483', '21', '266', '397', '300', '50', '66', '251', '52', '561', '404', '571', '569', '307', '429', '100', '191', '205', '154', '42', '171', '240', '185', '61', '474', '481', '163', '388', '400', '73', '453'}
+image name 100
+dumplicate image 100
+image name 106
+dumplicate image 106
+image name 119
+dumplicate image 119
+image name 134
+dumplicate image 134
+image name 14
+dumplicate image 14
+image name 148
+dumplicate image 148
+image name 154
+dumplicate image 154
+image name 163
+dumplicate image 163
+image name 166
+dumplicate image 166
+image name 171
+dumplicate image 171
+image name 179
+image name 181
+dumplicate image 181
+image name 185
+dumplicate image 185
+image name 191
+dumplicate image 191
+image name 205
+dumplicate image 205
+image name 21
+dumplicate image 21
+image name 240
+dumplicate image 240
+image name 25
+dumplicate image 25
+image name 251
+dumplicate image 251
+image name 266
+dumplicate image 266
+image name 279
+dumplicate image 279
+image name 287
+dumplicate image 287
+image name 300
+dumplicate image 300
+image name 307
+dumplicate image 307
+image name 31
+dumplicate image 31
+image name 349
+dumplicate image 349
+image name 353
+image name 374
+dumplicate image 374
+image name 381
+dumplicate image 381
+image name 388
+dumplicate image 388
+image name 397
+dumplicate image 397
+image name 400
+dumplicate image 400
+image name 404
+dumplicate image 404
+image name 42
+dumplicate image 42
+image name 425
+image name 429
+dumplicate image 429
+image name 431
+dumplicate image 431
+image name 442
+dumplicate image 442
+image name 453
+dumplicate image 453
+image name 459
+dumplicate image 459
+image name 464
+dumplicate image 464
+image name 474
+dumplicate image 474
+image name 481
+dumplicate image 481
+image name 483
+dumplicate image 483
+image name 492
+dumplicate image 492
+image name 50
+dumplicate image 50
+image name 52
+dumplicate image 52
+image name 526
+dumplicate image 526
+image name 529
+dumplicate image 529
+image name 545
+dumplicate image 545
+image name 555
+image name 559
+dumplicate image 559
+image name 561
+dumplicate image 561
+image name 569
+dumplicate image 569
+image name 571
+dumplicate image 571
+image name 575
+dumplicate image 575
+image name 61
+dumplicate image 61
+image name 65
+dumplicate image 65
+image name 66
+dumplicate image 66
+image name 73
+dumplicate image 73
+image name 80
+dumplicate image 80
+image name 89
+dumplicate image 89
+Validation round:   0%|          | 0/1 [00:00<?, ?batch/s]Validation round:   0%|          | 0/1 [00:00<?, ?batch/s]Validation round:   0%|          | 0/1 [00:00<?, ?batch/s]Validation round:   0%|          | 0/1 [00:00<?, ?batch/s]Validation round: 100%|██████████| 1/1 [1:25:32<00:00, 5132.09s/batch]                                                                      done
+Validation round: 100%|██████████| 1/1 [1:29:46<00:00, 5386.16s/batch]                                                                      done
+Validation round: 100%|██████████| 1/1 [1:30:01<00:00, 5401.00s/batch]                                                                      done
+Validation round: 100%|██████████| 1/1 [1:30:10<00:00, 5410.61s/batch]                                                                      done

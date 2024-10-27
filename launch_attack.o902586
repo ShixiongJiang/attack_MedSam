@@ -1,0 +1,152 @@
+Traceback (most recent call last):
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py", line 10, in <module>
+    import function_r as function
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py", line 26, in <module>
+Traceback (most recent call last):
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py", line 10, in <module>
+    import function_r as function
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py", line 26, in <module>
+    pos_weight = torch.ones([1]).cuda(device=GPUdevice) * 2
+RuntimeError: CUDA error: invalid device ordinal
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+    pos_weight = torch.ones([1]).cuda(device=GPUdevice) * 2
+RuntimeError: CUDA error: invalid device ordinal
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Traceback (most recent call last):
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py", line 10, in <module>
+    import function_r as function
+  File "/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py", line 26, in <module>
+    pos_weight = torch.ones([1]).cuda(device=GPUdevice) * 2
+RuntimeError: CUDA error: invalid device ordinal
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/afs/crc.nd.edu/user/j/jfan5/attack_MedSam/one_pixel_attack.py:59: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+Namespace(process_idx=0, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_10_26_12_02_44', 'ckpt_path': 'logs/msa_test_polyp_2024_10_26_12_02_44/Model', 'log_path': 'logs/msa_test_polyp_2024_10_26_12_02_44/Log', 'sample_path': 'logs/msa_test_polyp_2024_10_26_12_02_44/Samples'})
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+if poison  False
+{'459', '171', '429', '300', '569', '42', '73', '181', '163', '571', '388', '474', '559', '481', '464', '279', '205', '307', '240', '154', '66', '404', '529', '61', '526', '31', '374', '381', '80', '106', '251', '397', '191', '25', '483', '52', '119', '89', '287', '50', '185', '453', '14', '442', '431'}
+image name 100
+image name 106
+dumplicate image 106
+image name 119
+dumplicate image 119
+image name 134
+image name 14
+dumplicate image 14
+image name 148
+image name 154
+dumplicate image 154
+image name 163
+dumplicate image 163
+image name 166
+image name 171
+dumplicate image 171
+image name 179
+image name 181
+dumplicate image 181
+image name 185
+dumplicate image 185
+image name 191
+dumplicate image 191
+image name 205
+dumplicate image 205
+image name 21
+image name 240
+dumplicate image 240
+image name 25
+dumplicate image 25
+image name 251
+dumplicate image 251
+image name 266
+image name 279
+dumplicate image 279
+image name 287
+dumplicate image 287
+image name 300
+dumplicate image 300
+image name 307
+dumplicate image 307
+image name 31
+dumplicate image 31
+image name 349
+image name 353
+image name 374
+dumplicate image 374
+image name 381
+dumplicate image 381
+image name 388
+dumplicate image 388
+image name 397
+dumplicate image 397
+image name 400
+image name 404
+dumplicate image 404
+image name 42
+dumplicate image 42
+image name 425
+image name 429
+dumplicate image 429
+image name 431
+dumplicate image 431
+image name 442
+dumplicate image 442
+image name 453
+dumplicate image 453
+image name 459
+dumplicate image 459
+image name 464
+dumplicate image 464
+image name 474
+dumplicate image 474
+image name 481
+dumplicate image 481
+image name 483
+dumplicate image 483
+image name 492
+image name 50
+dumplicate image 50
+image name 52
+dumplicate image 52
+image name 526
+dumplicate image 526
+image name 529
+dumplicate image 529
+image name 545
+image name 555
+image name 559
+dumplicate image 559
+image name 561
+image name 569
+dumplicate image 569
+image name 571
+dumplicate image 571
+image name 575
+image name 61
+dumplicate image 61
+image name 65
+image name 66
+dumplicate image 66
+image name 73
+dumplicate image 73
+image name 80
+dumplicate image 80
+image name 89
+dumplicate image 89
+Validation round:   0%|          | 0/4 [00:00<?, ?batch/s]
