@@ -4,10 +4,10 @@
 #$ -q gpu
 #$ -M sjiang5@nd.edu
 #$ -m abe
-#$ -N launch_attacka
+#$ -N train_img_to_attamap
 #$ -l gpu_card=4
 
 
 
 module load python
-python3 launch_attack.py
+python3 train_img_to_attheatmap.py
