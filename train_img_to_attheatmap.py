@@ -103,10 +103,10 @@ image_paths = glob.glob(os.path.join(image_directory, "*.[jp][pn]*g"))
 saliency_path = glob.glob(os.path.join(saliency_directory, "*.[jp][pn]*g"))
 #
 # # Print all image paths (optional)
-for path in image_paths:
-    print(path)
-for path in saliency_path:
-    print(path)
+# for path in image_paths:
+#     print(path)
+# for path in saliency_path:
+#     print(path)
 
 # Split into train and validation sets
 train_images, val_images, train_masks, val_masks = train_test_split(image_paths, saliency_path, test_size=0.1)
@@ -177,17 +177,17 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 num_epochs = 20
 best_val_loss = float("inf")
 
-# for epoch in range(num_epochs):
-#     train_loss = train(model, train_loader, criterion, optimizer, device)
-#     val_loss = validate(model, val_loader, criterion, device)
-#
-#     print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
-#
-#     # Save the model with the best validation loss
-#     if val_loss < best_val_loss:
-#         best_val_loss = val_loss
-#         torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
-#         print("Model saved!")
-#
-# print("Training completed.")
+for epoch in range(num_epochs):
+    train_loss = train(model, train_loader, criterion, optimizer, device)
+    val_loss = validate(model, val_loader, criterion, device)
+
+    print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+
+    # Save the model with the best validation loss
+    if val_loss < best_val_loss:
+        best_val_loss = val_loss
+        torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
+        print("Model saved!")
+
+print("Training completed.")
 
