@@ -10,30 +10,30 @@ import glob
 import os
 import cfg_reverse_adaptation
 # import function_r as function
-class UNet(nn.Module):
-    def __init__(self, in_channels=1, out_channels=1, init_features=32):
-        super(UNet, self).__init__()
+class SmallUNet(nn.Module):
+    def __init__(self, in_channels=1, out_channels=1, init_features=16):  # Start with fewer initial features
+        super(SmallUNet, self).__init__()
 
         features = init_features
-        self.encoder1 = UNet._block(in_channels, features, name="enc1")
-        self.encoder2 = UNet._block(features, features * 2, name="enc2")
-        self.encoder3 = UNet._block(features * 2, features * 4, name="enc3")
-        self.encoder4 = UNet._block(features * 4, features * 8, name="enc4")
+        self.encoder1 = SmallUNet._block(in_channels, features, name="enc1")
+        self.encoder2 = SmallUNet._block(features, features * 2, name="enc2")
+        self.encoder3 = SmallUNet._block(features * 2, features * 4, name="enc3")
+        self.encoder4 = SmallUNet._block(features * 4, features * 8, name="enc4")
 
-        self.bottleneck = UNet._block(features * 8, features * 16, name="bottleneck")
+        self.bottleneck = SmallUNet._block(features * 8, features * 8, name="bottleneck")
 
-        self.decoder4 = UNet._block(features * 16, features * 8, name="dec4")
-        self.decoder3 = UNet._block(features * 8, features * 4, name="dec3")
-        self.decoder2 = UNet._block(features * 4, features * 2, name="dec2")
-        self.decoder1 = UNet._block(features * 2, features, name="dec1")
+        self.decoder4 = SmallUNet._block(features * 8 + features * 8, features * 4, name="dec4")
+        self.decoder3 = SmallUNet._block(features * 4 + features * 4, features * 2, name="dec3")
+        self.decoder2 = SmallUNet._block(features * 2 + features * 2, features, name="dec2")
+        self.decoder1 = SmallUNet._block(features + features, features, name="dec1")
 
         self.conv = nn.Conv2d(features, out_channels, kernel_size=1)
 
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.upconv4 = nn.ConvTranspose2d(features * 16, features * 8, kernel_size=2, stride=2)
-        self.upconv3 = nn.ConvTranspose2d(features * 8, features * 4, kernel_size=2, stride=2)
-        self.upconv2 = nn.ConvTranspose2d(features * 4, features * 2, kernel_size=2, stride=2)
-        self.upconv1 = nn.ConvTranspose2d(features * 2, features, kernel_size=2, stride=2)
+        self.upconv4 = nn.ConvTranspose2d(features * 8, features * 8, kernel_size=2, stride=2)
+        self.upconv3 = nn.ConvTranspose2d(features * 4, features * 4, kernel_size=2, stride=2)
+        self.upconv2 = nn.ConvTranspose2d(features * 2, features * 2, kernel_size=2, stride=2)
+        self.upconv1 = nn.ConvTranspose2d(features, features, kernel_size=2, stride=2)
 
     def forward(self, x):
         enc1 = self.encoder1(x)
@@ -44,7 +44,7 @@ class UNet(nn.Module):
         bottleneck = self.bottleneck(self.pool(enc4))
 
         dec4 = self.upconv4(bottleneck)
-        dec4 = torch.cat((dec4, enc4), dim=1)
+        dec4 = torch.cat((dec4, enc4), dim=1)  # Concatenate with encoder output
         dec4 = self.decoder4(dec4)
 
         dec3 = self.upconv3(dec4)
@@ -71,6 +71,7 @@ class UNet(nn.Module):
             nn.BatchNorm2d(features),
             nn.ReLU(inplace=True)
         )
+
 
 
 class CustomDataset(Dataset):
@@ -128,8 +129,8 @@ transform_train_seg = transforms.Compose([
 train_dataset = CustomDataset(train_images, train_masks, transform=transform_train)
 val_dataset = CustomDataset(val_images, val_masks, transform=transform_train)
 
-train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=4, shuffle=False)
 
 def train(model, loader, criterion, optimizer, device):
     model.train()
@@ -169,7 +170,7 @@ def validate(model, loader, criterion, device):
 
 # Initialize the model, loss function, and optimizer
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = UNet(in_channels=1, out_channels=1).to(device)  # Assuming grayscale images and masks
+model = SmallUNet(in_channels=1, out_channels=1).to(device)  # Assuming grayscale images and masks
 criterion = nn.BCELoss()  # Binary cross-entropy for binary segmentation or saliency maps
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
