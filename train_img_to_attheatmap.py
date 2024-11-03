@@ -224,8 +224,8 @@ for filename in os.listdir(input_dir):
         output = output.squeeze(0).cpu()
         # output_image = inverse_transform(output)
         print(output.shape)
-        img = output[0]
+        # img = output[0]
         # Save the prediction
         # output.save(os.path.join(output_dir, f"pred_{filename}"))
-        save_image(img, os.path.join(output_dir, f"pred_{filename}"))
+        save_image(output, os.path.join(output_dir, f"pred_{filename}"))
         print(f"Saved prediction for {filename} as pred_{filename}")
