@@ -62,6 +62,16 @@ class SmallUNet(nn.Module):
         dec1 = self.decoder1(dec1)
 
         return self.conv(dec1)
+    @staticmethod
+    def _block(in_channels, features, name):
+        return nn.Sequential(
+            nn.Conv2d(in_channels, features, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(features),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(features, features, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(features),
+            nn.ReLU(inplace=True)
+        )
 
 class Discriminator(nn.Module):
     def __init__(self, in_channels=6):  # Concatenated input and target images
