@@ -87,8 +87,8 @@ class CustomDataset(Dataset):
 
     def __getitem__(self, idx):
         # Load image and mask
-        image = Image.open(self.image_paths[idx]).convert("L")
-        mask = Image.open(self.mask_paths[idx]).convert("L")
+        image = Image.open(self.image_paths[idx]).convert("RGB")
+        mask = Image.open(self.mask_paths[idx]).convert("RGB")
 
         if self.transform:
             image = self.transform(image)
@@ -177,22 +177,22 @@ criterion = nn.BCELoss()  # Binary cross-entropy for binary segmentation or sali
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # Training parameters
-num_epochs = 100
+num_epochs = 20
 best_val_loss = float("inf")
 
-# for epoch in range(num_epochs):
-#     train_loss = train(model, train_loader, criterion, optimizer, device)
-#     val_loss = validate(model, val_loader, criterion, device)
-#
-#     print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
-#
-#     # Save the model with the best validation loss
-#     if val_loss < best_val_loss:
-#         best_val_loss = val_loss
-#         torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
-#         print("Model saved!")
-#
-# print("Training completed.")
+for epoch in range(num_epochs):
+    train_loss = train(model, train_loader, criterion, optimizer, device)
+    val_loss = validate(model, val_loader, criterion, device)
+
+    print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+
+    # Save the model with the best validation loss
+    if val_loss < best_val_loss:
+        best_val_loss = val_loss
+        torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
+        print("Model saved!")
+
+print("Training completed.")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SmallUNet(in_channels=1, out_channels=1, init_features=16).to(device)
@@ -212,7 +212,7 @@ for filename in os.listdir(input_dir):
     if filename.endswith((".jpg", ".png", ".jpeg")):  # Adjust extensions as needed
         # Load and preprocess the image
         image_path = os.path.join(input_dir, filename)
-        image = Image.open(image_path).convert("L")
+        image = Image.open(image_path).convert("RGB")
         input_tensor = transform_train(image).unsqueeze(0).to(device)
 
         # Make prediction
