@@ -179,10 +179,6 @@ def train(generator, discriminator, loader, criterion_GAN, criterion_pixelwise, 
         images = images.to(device)
         masks = masks.to(device)
 
-        # Adversarial ground truths
-        valid = torch.ones((images.size(0), 1, images.size(2) // 16, images.size(3) // 16), requires_grad=False).to(device)
-        fake = torch.zeros((images.size(0), 1, images.size(2) // 16, images.size(3) // 16), requires_grad=False).to(device)
-
         # ------------------
         #  Train Generators
         # ------------------
@@ -193,6 +189,7 @@ def train(generator, discriminator, loader, criterion_GAN, criterion_pixelwise, 
 
         # Adversarial loss
         pred_fake = discriminator(images, gen_masks)
+        valid = torch.ones_like(pred_fake, requires_grad=False)
         loss_GAN = criterion_GAN(pred_fake, valid)
 
         # Pixel-wise loss
@@ -211,10 +208,12 @@ def train(generator, discriminator, loader, criterion_GAN, criterion_pixelwise, 
 
         # Real loss
         pred_real = discriminator(images, masks)
+        valid = torch.ones_like(pred_real, requires_grad=False)
         loss_real = criterion_GAN(pred_real, valid)
 
         # Fake loss
         pred_fake = discriminator(images, gen_masks.detach())
+        fake = torch.zeros_like(pred_fake, requires_grad=False)
         loss_fake = criterion_GAN(pred_fake, fake)
 
         # Total discriminator loss
@@ -229,6 +228,7 @@ def train(generator, discriminator, loader, criterion_GAN, criterion_pixelwise, 
     epoch_G_loss = running_G_loss / len(loader.dataset)
     epoch_D_loss = running_D_loss / len(loader.dataset)
     return epoch_G_loss, epoch_D_loss
+
 
 
 def validate(generator, loader, criterion_pixelwise, device):
