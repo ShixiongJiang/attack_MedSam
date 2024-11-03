@@ -13,7 +13,7 @@ import cfg_reverse_adaptation
 import matplotlib.pyplot as plt
 
 class SmallUNet(nn.Module):
-    def __init__(self, in_channels=1, out_channels=1, init_features=16):  # Start with fewer initial features
+    def __init__(self, in_channels=3, out_channels=3, init_features=16):  # Start with fewer initial features
         super(SmallUNet, self).__init__()
 
         features = init_features
@@ -172,7 +172,7 @@ def validate(model, loader, criterion, device):
 
 # Initialize the model, loss function, and optimizer
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = SmallUNet(in_channels=1, out_channels=1).to(device)  # Assuming grayscale images and masks
+model = SmallUNet(in_channels=3, out_channels=3).to(device)  # Assuming grayscale images and masks
 criterion = nn.BCELoss()  # Binary cross-entropy for binary segmentation or saliency maps
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
