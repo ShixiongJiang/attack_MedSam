@@ -178,17 +178,49 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 num_epochs = 20
 best_val_loss = float("inf")
 
-for epoch in range(num_epochs):
-    train_loss = train(model, train_loader, criterion, optimizer, device)
-    val_loss = validate(model, val_loader, criterion, device)
+# for epoch in range(num_epochs):
+#     train_loss = train(model, train_loader, criterion, optimizer, device)
+#     val_loss = validate(model, val_loader, criterion, device)
+#
+#     print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+#
+#     # Save the model with the best validation loss
+#     if val_loss < best_val_loss:
+#         best_val_loss = val_loss
+#         torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
+#         print("Model saved!")
+#
+# print("Training completed.")
 
-    print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = SmallUNet(in_channels=1, out_channels=1, init_features=16).to(device)
+model.load_state_dict(torch.load("best_unet_model.pth", map_location=device))
+model.eval()
 
-    # Save the model with the best validation loss
-    if val_loss < best_val_loss:
-        best_val_loss = val_loss
-        torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
-        print("Model saved!")
+inverse_transform = transforms.Compose([
+    transforms.ToPILImage()
+])
 
-print("Training completed.")
+input_dir = "dataset/TestDataset/CVC-ClinicDB/images"
+output_dir = "evalDataset/save_predictions"
+os.makedirs(output_dir, exist_ok=True)
 
+# Loop through each image in the test directory
+for filename in os.listdir(input_dir):
+    if filename.endswith((".jpg", ".png", ".jpeg")):  # Adjust extensions as needed
+        # Load and preprocess the image
+        image_path = os.path.join(input_dir, filename)
+        image = Image.open(image_path).convert("L")  # Convert to grayscale if necessary
+        input_tensor = transform_train(image).unsqueeze(0).to(device)  # Add batch dimension
+
+        # Make prediction
+        with torch.no_grad():
+            output = model(input_tensor)
+
+        # Post-process the output
+        output = output.squeeze(0).cpu()  # Remove batch dimension and move to CPU
+        output_image = inverse_transform(output)  # Convert tensor to PIL image
+
+        # Save the prediction
+        output_image.save(os.path.join(output_dir, f"pred_{filename}"))
+        print(f"Saved prediction for {filename} as pred_{filename}")
