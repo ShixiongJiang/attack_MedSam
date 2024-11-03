@@ -195,7 +195,7 @@ for epoch in range(num_epochs):
 print("Training completed.")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = SmallUNet(in_channels=1, out_channels=1, init_features=16).to(device)
+model = SmallUNet(in_channels=3, out_channels=3, init_features=16).to(device)
 model.load_state_dict(torch.load("checkpoint/best_unet_model.pth", map_location=device))
 model.eval()
 
