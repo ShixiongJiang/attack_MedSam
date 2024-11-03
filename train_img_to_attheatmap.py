@@ -177,7 +177,7 @@ criterion = nn.BCELoss()  # Binary cross-entropy for binary segmentation or sali
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # Training parameters
-num_epochs = 20
+num_epochs = 100
 best_val_loss = float("inf")
 
 for epoch in range(num_epochs):
