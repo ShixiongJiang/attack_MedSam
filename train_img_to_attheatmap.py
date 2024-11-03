@@ -112,7 +112,7 @@ if len(image_paths) != len(saliency_paths):
 
 # Split into train and validation sets
 train_images, val_images, train_masks, val_masks = train_test_split(
-    image_paths, saliency_paths, test_size=0.1, random_state=42
+    image_paths, saliency_paths, test_size=0.15, random_state=42
 )
 
 args = cfg_reverse_adaptation.parse_args()
@@ -179,7 +179,7 @@ criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
 # Training parameters
-num_epochs = 100
+num_epochs = 200
 best_val_loss = float("inf")
 
 for epoch in range(num_epochs):
@@ -220,8 +220,8 @@ for filename in os.listdir(input_dir):
             output = model(input_tensor)
 
         output = output.squeeze(0).cpu()
-        output_image = inverse_transform(output)
+        # output_image = inverse_transform(output)
 
         # Save the prediction
-        output_image.save(os.path.join(output_dir, f"pred_{filename}"))
+        output.save(os.path.join(output_dir, f"pred_{filename}"))
         print(f"Saved prediction for {filename} as pred_{filename}")
