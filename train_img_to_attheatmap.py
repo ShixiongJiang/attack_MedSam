@@ -180,19 +180,19 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 num_epochs = 100
 best_val_loss = float("inf")
 
-for epoch in range(num_epochs):
-    train_loss = train(model, train_loader, criterion, optimizer, device)
-    val_loss = validate(model, val_loader, criterion, device)
-
-    print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
-
-    # Save the model with the best validation loss
-    if val_loss < best_val_loss:
-        best_val_loss = val_loss
-        torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
-        print("Model saved!")
-
-print("Training completed.")
+# for epoch in range(num_epochs):
+#     train_loss = train(model, train_loader, criterion, optimizer, device)
+#     val_loss = validate(model, val_loader, criterion, device)
+#
+#     print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+#
+#     # Save the model with the best validation loss
+#     if val_loss < best_val_loss:
+#         best_val_loss = val_loss
+#         torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
+#         print("Model saved!")
+#
+# print("Training completed.")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SmallUNet(in_channels=1, out_channels=1, init_features=16).to(device)
