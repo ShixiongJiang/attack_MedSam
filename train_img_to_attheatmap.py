@@ -212,7 +212,7 @@ for filename in os.listdir(input_dir):
     if filename.endswith((".jpg", ".png", ".jpeg")):  # Adjust extensions as needed
         # Load and preprocess the image
         image_path = os.path.join(input_dir, filename)
-        image = Image.open(image_path)
+        image = Image.open(image_path).convert("L")
         input_tensor = transform_train(image).unsqueeze(0).to(device)
 
         # Make prediction
