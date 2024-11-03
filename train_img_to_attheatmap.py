@@ -10,6 +10,8 @@ import glob
 import os
 import cfg_reverse_adaptation
 # import function_r as function
+import matplotlib.pyplot as plt
+
 class SmallUNet(nn.Module):
     def __init__(self, in_channels=1, out_channels=1, init_features=16):  # Start with fewer initial features
         super(SmallUNet, self).__init__()
@@ -175,22 +177,22 @@ criterion = nn.BCELoss()  # Binary cross-entropy for binary segmentation or sali
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # Training parameters
-num_epochs = 20
+num_epochs = 100
 best_val_loss = float("inf")
 
-# for epoch in range(num_epochs):
-#     train_loss = train(model, train_loader, criterion, optimizer, device)
-#     val_loss = validate(model, val_loader, criterion, device)
-#
-#     print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
-#
-#     # Save the model with the best validation loss
-#     if val_loss < best_val_loss:
-#         best_val_loss = val_loss
-#         torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
-#         print("Model saved!")
-#
-# print("Training completed.")
+for epoch in range(num_epochs):
+    train_loss = train(model, train_loader, criterion, optimizer, device)
+    val_loss = validate(model, val_loader, criterion, device)
+
+    print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+
+    # Save the model with the best validation loss
+    if val_loss < best_val_loss:
+        best_val_loss = val_loss
+        torch.save(model.state_dict(), "checkpoint/best_unet_model.pth")
+        print("Model saved!")
+
+print("Training completed.")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SmallUNet(in_channels=1, out_channels=1, init_features=16).to(device)
@@ -217,10 +219,14 @@ for filename in os.listdir(input_dir):
         with torch.no_grad():
             output = model(input_tensor)
 
-        # Post-process the output
-        output = output.squeeze(0).cpu()  # Remove batch dimension and move to CPU
-        output_image = inverse_transform(output)  # Convert tensor to PIL image
+        output = output.squeeze(0).cpu().numpy()  # Remove batch dimension and move to CPU
+        output = np.squeeze(output)  # Remove channel dimension if needed
 
-        # Save the prediction
-        output_image.save(os.path.join(output_dir, f"pred_{filename}"))
-        print(f"Saved prediction for {filename} as pred_{filename}")
+        # Apply color map (e.g., 'jet', 'viridis', etc.)
+        color_mapped_output = plt.get_cmap('jet')(output)[:, :, :3]  # Apply colormap and ignore alpha channel
+        color_mapped_output = (color_mapped_output * 255).astype(np.uint8)  # Scale to 0-255 and convert to uint8
+
+        # Convert to PIL Image and save
+        output_image = Image.fromarray(color_mapped_output)
+        output_image.save(os.path.join(output_dir, f"pred_color_{filename}"))
+        print(f"Saved colorful prediction for {filename} as pred_color_{filename}")
