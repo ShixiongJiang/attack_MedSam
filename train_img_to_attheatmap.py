@@ -219,14 +219,9 @@ for filename in os.listdir(input_dir):
         with torch.no_grad():
             output = model(input_tensor)
 
-        output = output.squeeze(0).cpu().numpy()  # Remove batch dimension and move to CPU
-        output = np.squeeze(output)  # Remove channel dimension if needed
+        output = output.squeeze(0).cpu()  # Remove batch dimension and move to CPU
+        output_image = inverse_transform(output)  # Convert tensor to PIL image
 
-        # Apply color map (e.g., 'jet', 'viridis', etc.)
-        color_mapped_output = plt.get_cmap('jet')(output)[:, :, :3]  # Apply colormap and ignore alpha channel
-        color_mapped_output = (color_mapped_output * 255).astype(np.uint8)  # Scale to 0-255 and convert to uint8
-
-        # Convert to PIL Image and save
-        output_image = Image.fromarray(color_mapped_output)
-        output_image.save(os.path.join(output_dir, f"pred_color_{filename}"))
-        print(f"Saved colorful prediction for {filename} as pred_color_{filename}")
+        # Save the prediction
+        output_image.save(os.path.join(output_dir, f"pred_{filename}"))
+        print(f"Saved prediction for {filename} as pred_{filename}")
