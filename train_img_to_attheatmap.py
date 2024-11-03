@@ -210,8 +210,8 @@ for filename in os.listdir(input_dir):
     if filename.endswith((".jpg", ".png", ".jpeg")):  # Adjust extensions as needed
         # Load and preprocess the image
         image_path = os.path.join(input_dir, filename)
-        image = Image.open(image_path).convert("L")  # Convert to grayscale if necessary
-        input_tensor = transform_train(image).unsqueeze(0).to(device)  # Add batch dimension
+        image = Image.open(image_path)
+        input_tensor = transform_train(image).unsqueeze(0).to(device)
 
         # Make prediction
         with torch.no_grad():
