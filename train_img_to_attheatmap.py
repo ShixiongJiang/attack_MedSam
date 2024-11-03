@@ -194,7 +194,7 @@ best_val_loss = float("inf")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SmallUNet(in_channels=1, out_channels=1, init_features=16).to(device)
-model.load_state_dict(torch.load("best_unet_model.pth", map_location=device))
+model.load_state_dict(torch.load("checkpoint/best_unet_model.pth", map_location=device))
 model.eval()
 
 inverse_transform = transforms.Compose([
