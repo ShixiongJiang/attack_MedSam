@@ -9,6 +9,8 @@ import glob
 import os
 import cfg_reverse_adaptation
 import matplotlib.pyplot as plt
+from torchvision.utils import save_image
+
 
 class SmallUNet(nn.Module):
     def __init__(self, in_channels=3, out_channels=3, init_features=16):
@@ -179,7 +181,7 @@ criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
 # Training parameters
-num_epochs = 200
+num_epochs = 150
 best_val_loss = float("inf")
 
 for epoch in range(num_epochs):
@@ -221,7 +223,9 @@ for filename in os.listdir(input_dir):
 
         output = output.squeeze(0).cpu()
         # output_image = inverse_transform(output)
-
+        print(output.shape)
+        img = output[0]
         # Save the prediction
-        output.save(os.path.join(output_dir, f"pred_{filename}"))
+        # output.save(os.path.join(output_dir, f"pred_{filename}"))
+        save_image(img, os.path.join(output_dir, f"pred_{filename}"))
         print(f"Saved prediction for {filename} as pred_{filename}")
