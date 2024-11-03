@@ -239,7 +239,7 @@ criterion_pixelwise = nn.L1Loss()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Initialize generator and discriminator
-generator = SmallUNet().to(device)
+generator = SmallUNet(in_channels=3, out_channels=3).to(device).to(device)
 discriminator = Discriminator().to(device)
 
 # Optimizers
