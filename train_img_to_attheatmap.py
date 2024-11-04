@@ -411,5 +411,5 @@ for filename in os.listdir(image_directory):
         output_image = transforms.ToPILImage()(outputs)
 
         # Save the prediction
-        output_image.save(os.path.join(output_dir, f"pred_{filename}_{resize}"))
+        output_image.save(os.path.join(output_dir, f"pred_{resize}_{filename}"))
         print(f"Saved prediction for {filename} as pred_{filename}")
