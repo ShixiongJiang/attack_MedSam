@@ -403,8 +403,8 @@ for filename in os.listdir(image_directory):
             outputs = model(input_tensor)
 
 
-        output = output.squeeze(0).cpu()
-        output_image = transforms.ToPILImage()(output)
+        outputs = outputs.squeeze(0).cpu()
+        output_image = transforms.ToPILImage()(outputs)
 
         # Save the prediction
         output_image.save(os.path.join(output_dir, f"pred_{filename}"))
