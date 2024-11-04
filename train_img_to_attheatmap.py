@@ -148,7 +148,7 @@ if len(image_paths) != len(saliency_paths):
 
 # Split into train and validation sets
 train_images, val_images, train_masks, val_masks = train_test_split(
-    image_paths, saliency_paths, test_size=0.0, random_state=42
+    image_paths, saliency_paths, test_size=0.1, random_state=42
 )
 
 args = cfg_reverse_adaptation.parse_args()
