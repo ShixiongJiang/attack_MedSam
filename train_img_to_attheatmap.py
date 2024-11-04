@@ -164,9 +164,9 @@ args = cfg_reverse_adaptation.parse_args()
 #     transforms.ToTensor(),
 # ])
 transform_image = transforms.Compose([
-    transforms.Resize((128, 128)),  # Resize images to a fixed size
+    transforms.Resize((args.out, args.out)),  # Resize images to a fixed size
     transforms.ToTensor(),          # Convert images to PyTorch tensors
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize pixel values
+    # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize pixel values
 ])
 
 # # Create datasets and data loaders
