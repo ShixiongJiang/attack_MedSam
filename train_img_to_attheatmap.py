@@ -122,13 +122,13 @@ class CustomDataset(Dataset):
         # Load image and mask
         image = Image.open(self.image_paths[idx]).convert("RGB")
         mask = Image.open(self.mask_paths[idx]).convert("RGB")
-#
-#         if self.transform_image:
-#             image = self.transform_image(image)
-#         if self.transform_mask:
-#             mask = self.transform_mask(mask)
-#
-#         return image, mask
+
+        if self.transform_image:
+            image = self.transform_image(image)
+        if self.transform_mask:
+            mask = self.transform_mask(mask)
+
+        return image, mask
 #
 # # Load image and mask paths
 image_directory = "dataset/TestDataset/CVC-ClinicDB/images"
