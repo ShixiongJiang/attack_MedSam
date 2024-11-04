@@ -350,14 +350,14 @@ model = Autoencoder().to(device)
 criterion = nn.MSELoss()  # Mean Squared Error Loss
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-num_epochs = 20
+num_epochs = 100
 
 for epoch in range(num_epochs):
     running_loss = 0.0
-    for data in train_loader:
-        inputs, targets = data
-        inputs = inputs.to(device)
-        targets = targets.to(device)
+    for images, masks in train_loader:
+        inputs = images.to(device)
+        targets = masks.to(device)
+
 
         # Zero the parameter gradients
         optimizer.zero_grad()
