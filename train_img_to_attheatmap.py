@@ -166,7 +166,7 @@ args = cfg_reverse_adaptation.parse_args()
 transform_image = transforms.Compose([
     transforms.Resize((args.out_size, args.out_size)),  # Resize images to a fixed size
     transforms.ToTensor(),          # Convert images to PyTorch tensors
-    # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize pixel values
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize pixel values
 ])
 
 # # Create datasets and data loaders
@@ -390,7 +390,9 @@ model.eval()
 # # Move tensors to CPU and denormalize
 # images = images.cpu() * 0.5 + 0.5  # Denormalize
 # outputs = outputs.cpu() * 0.5 + 0.5  # Denormalize
-
+def denormalize(tensor):
+    tensor = tensor * 0.5 + 0.5
+    return tensor.clamp(0, 1)
 for filename in os.listdir(image_directory):
     if filename.endswith((".jpg", ".png", ".jpeg")):
         # Load and preprocess the image
@@ -404,6 +406,7 @@ for filename in os.listdir(image_directory):
 
 
         outputs = outputs.squeeze(0).cpu()
+        outputs = denormalize(outputs)
         output_image = transforms.ToPILImage()(outputs)
 
         # Save the prediction
