@@ -163,7 +163,7 @@ args = cfg_reverse_adaptation.parse_args()
 #     transforms.Resize((args.out_size, args.out_size)),
 #     transforms.ToTensor(),
 # ])
-resize = 128
+resize = 256
 transform_image = transforms.Compose([
     transforms.Resize((resize, resize)),  # Resize images to a fixed size
     transforms.ToTensor(),          # Convert images to PyTorch tensors
@@ -394,6 +394,7 @@ model.eval()
 def denormalize(tensor):
     tensor = tensor * 0.5 + 0.5
     return tensor.clamp(0, 1)
+
 for filename in os.listdir(image_directory):
     if filename.endswith((".jpg", ".png", ".jpeg")):
         # Load and preprocess the image
