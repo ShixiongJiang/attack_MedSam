@@ -2,8 +2,10 @@ import cv2
 import os
 import glob
 
-input_dir = 'dataset/TestDataset/CVC-ClinicDB/images'
-output_dir = 'evalDataset/brightness_to_heatmap'
+# input_dir = 'dataset/TestDataset/CVC-ClinicDB/images'
+# input_dir = 'dataset/TestDataset/CVC-ClinicDB_atta_heatmap'
+input_dir = 'evalDataset/save_predictions'
+output_dir = 'evalDataset/save_predictions_brightness_to_heatmap'
 os.makedirs(output_dir, exist_ok=True)
 
 # Get all image files in the input directory
@@ -18,13 +20,15 @@ for image_file in image_files:
         continue
 
     # Convert to grayscale
+
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Normalize
-    normalized_gray = cv2.normalize(gray_image, None, 0, 255, cv2.NORM_MINMAX)
+    # Apply histogram equalization
+    equalized_gray = cv2.equalizeHist(gray_image)
 
-    # Apply colormap
-    heatmap = cv2.applyColorMap(normalized_gray, cv2.COLORMAP_JET)
+    # Apply the colormap
+    heatmap = cv2.applyColorMap(equalized_gray, cv2.COLORMAP_JET)
+
 
     # Save heatmap
     base_filename = os.path.basename(image_file)

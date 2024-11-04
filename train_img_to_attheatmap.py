@@ -253,11 +253,11 @@ generator = SmallUNet(in_channels=3, out_channels=3).to(device).to(device)
 discriminator = Discriminator().to(device)
 
 # Optimizers
-optimizer_G = optim.Adam(generator.parameters(), lr=1e-4, betas=(0.5, 0.999))
-optimizer_D = optim.Adam(discriminator.parameters(), lr=1e-4, betas=(0.5, 0.999))
+optimizer_G = optim.Adam(generator.parameters(), lr=1e-5, betas=(0.5, 0.999))
+optimizer_D = optim.Adam(discriminator.parameters(), lr=1e-5, betas=(0.5, 0.999))
 
 # Training parameters
-num_epochs = 100
+num_epochs = 300
 best_val_loss = float("inf")
 
 for epoch in range(num_epochs):
