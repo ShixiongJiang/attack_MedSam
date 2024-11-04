@@ -163,9 +163,9 @@ args = cfg_reverse_adaptation.parse_args()
 #     transforms.Resize((args.out_size, args.out_size)),
 #     transforms.ToTensor(),
 # ])
-size = 128
+resize = 128
 transform_image = transforms.Compose([
-    transforms.Resize((128, 128)),  # Resize images to a fixed size
+    transforms.Resize((resize, resize)),  # Resize images to a fixed size
     transforms.ToTensor(),          # Convert images to PyTorch tensors
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize pixel values
 ])
@@ -411,5 +411,5 @@ for filename in os.listdir(image_directory):
         output_image = transforms.ToPILImage()(outputs)
 
         # Save the prediction
-        output_image.save(os.path.join(output_dir, f"pred_{filename}"))
+        output_image.save(os.path.join(output_dir, f"pred_{filename}_{resize}"))
         print(f"Saved prediction for {filename} as pred_{filename}")
