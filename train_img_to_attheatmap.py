@@ -394,8 +394,9 @@ for epoch in range(num_epochs):
     # Save the generator model with the best validation loss
     if val_loss < best_val_loss:
         best_val_loss = val_loss
-        torch.save(model.state_dict(), "checkpoint/best_auto_encode.pth")
-        print(" model saved!")
+
+torch.save(model.state_dict(), "checkpoint/best_auto_encode.pth")
+print(" model saved!")
 
 # Switch model to evaluation mode
 model.load_state_dict(torch.load("checkpoint/best_auto_encode.pth", map_location=device))
