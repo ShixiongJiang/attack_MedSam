@@ -386,9 +386,10 @@ for epoch in range(num_epochs):
         running_loss += loss.item() * inputs.size(0)
 
     epoch_loss = running_loss / len(train_dataset)
-    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}')
+    # print(f'Epoch [{epoch+1}/{num_epochs}],')
 
     val_loss = validate(model, val_loader, criterion, device)
+    print(f'Epoch [{epoch+1}/{num_epochs}],  Loss: {epoch_loss:.4f}, validate Loss: {val_loss:.4f}')
 
 
     # Save the generator model with the best validation loss
