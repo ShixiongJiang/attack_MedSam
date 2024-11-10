@@ -4,10 +4,11 @@
 #$ -q gpu
 #$ -M sjiang5@nd.edu
 #$ -m abe
-#$ -N train_img_to_attamap
+#$ -N train_policy
 #$ -l gpu_card=4
 
 
 
 module load python
+pip install safety-gymnasium
 python3 train_img_to_attheatmap.py
