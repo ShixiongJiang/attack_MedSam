@@ -252,7 +252,8 @@ class Polyp(Dataset):
             # data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
             # data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
             # data_path = os.path.join(data_path, "TestDataset", "cluster_nice_dataset")
-            data_path = os.path.join(data_path, "TestDataset", "CVC-300")
+            # data_path = os.path.join(data_path, "TestDataset", "CVC-300")
+            data_path = os.path.join(data_path, "TestDataset", "CVC-ColonDB")
         else:
             # if args.backdoor:
             #     data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
