@@ -17,7 +17,8 @@ from utils import *
 def remove_dumplicate_image(polyp_train_dataset=None, heatmap_img_path=None):
     # 假设 heatmap_img 路径
     # heatmap_img_path = 'heatmap_img_CVC300'
-    os.mkdir(heatmap_img_path)
+    if not os.path.exists(heatmap_img_path):
+        os.mkdir(heatmap_img_path)
     # 列出 heatmap_img 下所有的文件并提取已处理的图片名称
     pattern = re.compile(r'orig_(\d+)\+\.png')
 
