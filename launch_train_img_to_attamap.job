@@ -10,5 +10,5 @@
 
 
 module load python
-pip install safety-gymnasium
+
 python3 train_img_to_attheatmap.py

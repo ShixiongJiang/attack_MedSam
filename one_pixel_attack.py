@@ -14,9 +14,9 @@ from dataset import *
 from utils import *
 
 
-def remove_dumplicate_image(polyp_train_dataset):
+def remove_dumplicate_image(polyp_train_dataset=None, heatmap_img_path=None):
     # 假设 heatmap_img 路径
-    heatmap_img_path = 'heatmap_img_ColonDB'
+    # heatmap_img_path = 'heatmap_img_CVC300'
     os.mkdir(heatmap_img_path)
     # 列出 heatmap_img 下所有的文件并提取已处理的图片名称
     pattern = re.compile(r'orig_(\d+)\+\.png')
@@ -104,9 +104,10 @@ transform_train_seg = transforms.Compose([
 ])
 
 # 加载并划分数据集
+heatmap_img_path = 'heatmap_img_CVC300'
 polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
-polyp_train_dataset = remove_dumplicate_image(polyp_train_dataset)
+polyp_train_dataset = remove_dumplicate_image(heatmap_img_path=heatmap_img_path, polyp_train_dataset=polyp_train_dataset)
 
 # 根据进程数分割数据集
 N = args.num_processes
@@ -137,7 +138,7 @@ with open(log_file_path, 'w') as log_file:
 writer = SummaryWriter(log_dir=f"./logs/process_{args.process_idx}")
 
 # 启动攻击
-function.one_pixel_attack(args, net, nice_train_loader, color='black')
+function.one_pixel_attack(args, net, nice_train_loader, color='black', heatmap_img_path=heatmap_img_path)
 
 # 关闭日志
 writer.close()

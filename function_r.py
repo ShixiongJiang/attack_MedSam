@@ -1043,7 +1043,7 @@ def heat_map(args, net, train_loader):
                 # vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
 
-def one_pixel_attack(args, net, train_loader, color='black'):
+def one_pixel_attack(args, net, train_loader, heatmap_img_path, color='black', ):
     # 设置模型为评估模式
     net.eval()
     dataset = os.path.basename(args.data_path)
@@ -1175,11 +1175,11 @@ def one_pixel_attack(args, net, train_loader, color='black'):
                 eiou_list = np.array(eiou_list)
 
                 # save predict and original
-                image_path = "./heatmap_img"
+                image_path = heatmap_img_path
                 os.makedirs(image_path, exist_ok=True)
                 final_path = os.path.join(image_path, f'orig_{namecat}.png')
                 vutils.save_image(imgs, fp=final_path, nrow=1, padding=0)
-                vutils.save_image(pred, fp=f'./heatmap_img/pred_{color}_{namecat}.png', nrow=1, padding=0)
+                vutils.save_image(pred, fp=f'./{heatmap_img_path}/pred_{color}_{namecat}.png', nrow=1, padding=0)
 
                 # generate heatmap
                 last_pos = pos_list[-1]
