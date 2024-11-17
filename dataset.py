@@ -14,14 +14,22 @@ from torch.utils.data import Dataset
 
 from utils import random_click
 
+import os
+import pandas as pd
+import torch
+from torch.utils.data import Dataset
+from PIL import Image
+
+
 
 class ISIC2016(Dataset):
     def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
                  plane=False):
+        data_path = os.path.join(data_path, "TestDataset", "ISIC2016")
 
-        df = pd.read_csv(os.path.join(data_path, 'ISBI2016_ISIC_Part1_' + mode + '_GroundTruth.csv'), encoding='gbk')
-        self.name_list = df.iloc[:, 1].tolist()
-        self.label_list = df.iloc[:, 2].tolist()
+        self.name_list = sorted(os.listdir(os.path.join(data_path, "images")))
+        self.label_list = sorted(os.listdir(os.path.join(data_path, "masks")))
+
         self.data_path = data_path
         self.mode = mode
         self.prompt = prompt
@@ -44,10 +52,11 @@ class ISIC2016(Dataset):
 
         """Get the images"""
         name = self.name_list[index]
-        img_path = os.path.join(self.data_path, name)
+        # print('this is the index',index)
+        img_path = os.path.join(self.data_path, "images", name)
 
         mask_name = self.label_list[index]
-        msk_path = os.path.join(self.data_path, mask_name)
+        msk_path = os.path.join(self.data_path, "masks", mask_name)
 
         img = Image.open(img_path).convert('RGB')
         mask = Image.open(msk_path).convert('L')
@@ -74,7 +83,7 @@ class ISIC2016(Dataset):
             # if (inout == 0 and point_label == 1) or (inout == 1 and point_label == 0):
             #     mask = 1 - mask
 
-        name = name.split('/')[-1].split(".jpg")[0]
+        name = name.split(".")[0]
         image_meta_dict = {'filename_or_obj': name}
         return {
             'images': img,
@@ -83,13 +92,6 @@ class ISIC2016(Dataset):
             'pt': pt,
             'image_meta_dict': image_meta_dict,
         }
-
-
-import os
-import pandas as pd
-import torch
-from torch.utils.data import Dataset
-from PIL import Image
 
 
 

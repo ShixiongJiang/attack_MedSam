@@ -105,19 +105,17 @@ transform_train_seg = transforms.Compose([
 ])
 
 # 加载并划分数据集
-# polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
-#                             mode='Training')
+ISIC2016_test_dataset = ISIC2016(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
+                            mode='Training')
 
-ISIC2018_test_dataset = ISIC2016(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg)
 
-polyp_train_dataset = remove_dumplicate_image(ISIC2018_test_dataset)
 
 # 根据进程数分割数据集
 N = args.num_processes
-dataset_size = len(polyp_train_dataset)
+dataset_size = len(ISIC2016_test_dataset)
 subset_sizes = [dataset_size // N] * N
 subset_sizes[-1] += dataset_size - sum(subset_sizes)
-subsets = random_split(polyp_train_dataset, subset_sizes)
+subsets = random_split(ISIC2016_test_dataset, subset_sizes)
 subset = subsets[args.process_idx]
 
 # 创建 DataLoader
@@ -125,10 +123,10 @@ nice_train_loader = DataLoader(subset, batch_size=args.b, shuffle=True, num_work
 
 # 为每个进程创建一个单独的日志文件
 try:
-    os.mkdir('./attack_log')
+    os.mkdir('./attack_log_ISIC2016')
 except:
     pass
-log_file_path = f"./attack_log/process_{args.process_idx}_data_log.txt"
+log_file_path = f"./attack_log_ISIC2016/process_{args.process_idx}_data_log.txt"
 with open(log_file_path, 'w') as log_file:
     # 遍历 train_loader 并写入图片名称
     for batch in nice_train_loader:
@@ -141,7 +139,7 @@ with open(log_file_path, 'w') as log_file:
 writer = SummaryWriter(log_dir=f"./logs/process_{args.process_idx}")
 
 # 启动攻击
-function.one_pixel_attack(args, net, nice_train_loader, color='white')
+function.one_pixel_attack(args, net, nice_train_loader, color='black')
 
 # 关闭日志
 writer.close()
