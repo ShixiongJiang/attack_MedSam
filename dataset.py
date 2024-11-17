@@ -4,31 +4,24 @@ author jundewu
 """
 import os
 import pickle
-import random
-import sys
 
-import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-import torchvision.transforms as transforms
-from monai.transforms import LoadImage, LoadImaged, Randomizable
 from PIL import Image
-from skimage import io
-from skimage.transform import rotate
 from torch.utils.data import Dataset
 
 from utils import random_click
 
 
 class ISIC2016(Dataset):
-    def __init__(self, args, data_path , transform = None, transform_msk = None, mode = 'Training',prompt = 'click', plane = False):
+    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
+                 plane=False):
 
         df = pd.read_csv(os.path.join(data_path, 'ISBI2016_ISIC_Part1_' + mode + '_GroundTruth.csv'), encoding='gbk')
-        self.name_list = df.iloc[:,1].tolist()
-        self.label_list = df.iloc[:,2].tolist()
+        self.name_list = df.iloc[:, 1].tolist()
+        self.label_list = df.iloc[:, 2].tolist()
         self.data_path = data_path
         self.mode = mode
         self.prompt = prompt
@@ -52,7 +45,7 @@ class ISIC2016(Dataset):
         """Get the images"""
         name = self.name_list[index]
         img_path = os.path.join(self.data_path, name)
-        
+
         mask_name = self.label_list[index]
         msk_path = os.path.join(self.data_path, mask_name)
 
@@ -75,26 +68,34 @@ class ISIC2016(Dataset):
             img = self.transform(img)
             torch.set_rng_state(state)
 
-
             if self.transform_msk:
                 mask = self.transform_msk(mask)
-                
+
             # if (inout == 0 and point_label == 1) or (inout == 1 and point_label == 0):
             #     mask = 1 - mask
 
         name = name.split('/')[-1].split(".jpg")[0]
-        image_meta_dict = {'filename_or_obj':name}
+        image_meta_dict = {'filename_or_obj': name}
         return {
-            'images':img,
+            'images': img,
             'label': mask,
-            'p_label':point_label,
-            'pt':pt,
-            'image_meta_dict':image_meta_dict,
+            'p_label': point_label,
+            'pt': pt,
+            'image_meta_dict': image_meta_dict,
         }
 
 
+import os
+import pandas as pd
+import torch
+from torch.utils.data import Dataset
+from PIL import Image
+
+
+
 class REFUGE(Dataset):
-    def __init__(self, args, data_path , transform = None, transform_msk = None, mode = 'Training',prompt = 'click', plane = False):
+    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
+                 plane=False):
         self.data_path = data_path
         self.subfolders = [f.path for f in os.scandir(os.path.join(data_path, mode + '-400')) if f.is_dir()]
         self.mode = mode
@@ -132,38 +133,44 @@ class REFUGE(Dataset):
 
         # first click is the target agreement among most raters
         if self.prompt == 'click':
-            point_label, pt_cup = random_click(np.array(np.mean(np.stack(multi_rater_cup_np), axis=0)) / 255, point_label)
-            point_label, pt_disc = random_click(np.array(np.mean(np.stack(multi_rater_disc_np), axis=0)) / 255, point_label)
+            point_label, pt_cup = random_click(np.array(np.mean(np.stack(multi_rater_cup_np), axis=0)) / 255,
+                                               point_label)
+            point_label, pt_disc = random_click(np.array(np.mean(np.stack(multi_rater_disc_np), axis=0)) / 255,
+                                                point_label)
 
         if self.transform:
             state = torch.get_rng_state()
             img = self.transform(img)
-            multi_rater_cup = [torch.as_tensor((self.transform(single_rater) >0.5).float(), dtype=torch.float32) for single_rater in multi_rater_cup]
+            multi_rater_cup = [torch.as_tensor((self.transform(single_rater) > 0.5).float(), dtype=torch.float32) for
+                               single_rater in multi_rater_cup]
             multi_rater_cup = torch.stack(multi_rater_cup, dim=0)
             # transform to mask size (out_size) for mask define
-            mask_cup = F.interpolate(multi_rater_cup, size=(self.mask_size, self.mask_size), mode='bilinear', align_corners=False).mean(dim=0)
+            mask_cup = F.interpolate(multi_rater_cup, size=(self.mask_size, self.mask_size), mode='bilinear',
+                                     align_corners=False).mean(dim=0)
 
-            multi_rater_disc = [torch.as_tensor((self.transform(single_rater) >0.5).float(), dtype=torch.float32) for single_rater in multi_rater_disc]
+            multi_rater_disc = [torch.as_tensor((self.transform(single_rater) > 0.5).float(), dtype=torch.float32) for
+                                single_rater in multi_rater_disc]
             multi_rater_disc = torch.stack(multi_rater_disc, dim=0)
-            mask_disc = F.interpolate(multi_rater_disc, size=(self.mask_size, self.mask_size), mode='bilinear', align_corners=False).mean(dim=0)
+            mask_disc = F.interpolate(multi_rater_disc, size=(self.mask_size, self.mask_size), mode='bilinear',
+                                      align_corners=False).mean(dim=0)
             torch.set_rng_state(state)
 
-        image_meta_dict = {'filename_or_obj':name}
+        image_meta_dict = {'filename_or_obj': name}
         return {
-            'images':img,
+            'images': img,
             'multi_rater': multi_rater_cup,
             'multi_rater_disc': multi_rater_disc,
             'mask_cup': mask_cup,
             'mask_disc': mask_disc,
             'label': mask_cup,
             # 'label': mask_disc,
-            'p_label':point_label,
-            'pt_cup':pt_cup,
-            'pt_disc':pt_disc,
-            'pt':pt_cup,
-            'image_meta_dict':image_meta_dict,
+            'p_label': point_label,
+            'pt_cup': pt_cup,
+            'pt_disc': pt_disc,
+            'pt': pt_cup,
+            'image_meta_dict': image_meta_dict,
         }
-    
+
 
 class LIDC(Dataset):
     names = []
@@ -171,12 +178,12 @@ class LIDC(Dataset):
     labels = []
     series_uid = []
 
-    def __init__(self, data_path, transform=None, transform_msk = None, prompt = 'click'):
+    def __init__(self, data_path, transform=None, transform_msk=None, prompt='click'):
         self.prompt = prompt
         self.transform = transform
         self.transform_msk = transform_msk
-        
-        max_bytes = 2**31 - 1
+
+        max_bytes = 2 ** 31 - 1
         data = {}
         for file in os.listdir(data_path):
             filename = os.fsdecode(file)
@@ -189,8 +196,7 @@ class LIDC(Dataset):
                         bytes_in += f_in.read(max_bytes)
                 new_data = pickle.loads(bytes_in)
                 data.update(new_data)
-                
-        
+
         for key, value in data.items():
             self.names.append(key)
             self.images.append(value['images'].astype(float))
@@ -225,31 +231,32 @@ class LIDC(Dataset):
 
         # Convert images (ensure three channels) and multi-rater labels to torch tensors
         img = torch.from_numpy(img).type(torch.float32)
-        img = img.repeat(3, 1, 1) 
+        img = img.repeat(3, 1, 1)
         multi_rater = [torch.from_numpy(single_rater).type(torch.float32) for single_rater in multi_rater]
 
         multi_rater = torch.stack(multi_rater, dim=0)
         multi_rater = multi_rater.unsqueeze(1)
-        mask = multi_rater.mean(dim=0) # average
+        mask = multi_rater.mean(dim=0)  # average
 
-        image_meta_dict = {'filename_or_obj':name}
+        image_meta_dict = {'filename_or_obj': name}
         return {
-            'images':img,
+            'images': img,
             'multi_rater': multi_rater,
             'label': mask,
-            'p_label':point_label,
-            'pt':pt,
-            'image_meta_dict':image_meta_dict,
+            'p_label': point_label,
+            'pt': pt,
+            'image_meta_dict': image_meta_dict,
         }
 
 
 class Polyp(Dataset):
-    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        if mode=="Training":
+    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
+                 plane=False):
+        if mode == "Training":
             # if args.poison:
             #     data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
             # else:
-            data_path=os.path.join(data_path,"TestDataset", "CVC-ClinicDB")
+            data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
             # data_path = os.path.join(data_path, "TestDataset", "sub_nice_dataset")
             # data_path = os.path.join(data_path, "TestDataset", "cluster_nice_dataset")
             # data_path = os.path.join(data_path, "TestDataset", "CVC-300")
@@ -262,7 +269,7 @@ class Polyp(Dataset):
             # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
             data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
 
-        self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
+        self.name_list = sorted(os.listdir(os.path.join(data_path, "images")))
         self.label_list = self.name_list
 
         self.data_path = data_path
@@ -287,10 +294,10 @@ class Polyp(Dataset):
 
         """Get the images"""
         name = self.name_list[index]
-        img_path = os.path.join(self.data_path, "images",name)
+        img_path = os.path.join(self.data_path, "images", name)
 
         mask_name = self.label_list[index]
-        msk_path = os.path.join(self.data_path,"masks", mask_name)
+        msk_path = os.path.join(self.data_path, "masks", mask_name)
 
         img = Image.open(img_path).convert('RGB')
         mask = Image.open(msk_path).convert('L')
@@ -327,11 +334,13 @@ class Polyp(Dataset):
             'image_meta_dict': image_meta_dict,
         }
 
+
 class Polyp2(Dataset):
-    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        if mode=="Training":
-            data_path=os.path.join(data_path,"TrainDataset")
-        self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
+    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
+                 plane=False):
+        if mode == "Training":
+            data_path = os.path.join(data_path, "TrainDataset")
+        self.name_list = sorted(os.listdir(os.path.join(data_path, "images")))
         self.label_list = self.name_list
 
         self.data_path = data_path
@@ -356,10 +365,10 @@ class Polyp2(Dataset):
 
         """Get the images"""
         name = self.name_list[index]
-        img_path = os.path.join(self.data_path, "images",name)
+        img_path = os.path.join(self.data_path, "images", name)
 
         mask_name = self.label_list[index]
-        msk_path = os.path.join(self.data_path,"masks", mask_name)
+        msk_path = os.path.join(self.data_path, "masks", mask_name)
 
         img = Image.open(img_path).convert('RGB')
         mask = Image.open(msk_path).convert('L')
@@ -368,7 +377,6 @@ class Polyp2(Dataset):
         #     label = 0 if self.label_list[index] == 'benign' else 1
         # else:
         #     label = int(self.label_list[index])
-
 
         if self.prompt == 'click':
             point_label, pt = random_click(np.array(mask) / 255, point_label)
@@ -394,15 +402,16 @@ class Polyp2(Dataset):
             'image_meta_dict': image_meta_dict,
         }
 
-        
+
 class Poison_Polyp(Dataset):
-    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
+    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
+                 plane=False):
         # poison_dataset = args.poison_datasets
         poison_dataset = args.generate_subpupu_dataset
         # poison_dataset = args.generate_cluster_dataset
-        data_path = os.path.join(data_path, "TestDataset",poison_dataset)
+        data_path = os.path.join(data_path, "TestDataset", poison_dataset)
 
-        self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
+        self.name_list = sorted(os.listdir(os.path.join(data_path, "images")))
         self.label_list = self.name_list
 
         self.data_path = data_path
@@ -427,10 +436,10 @@ class Poison_Polyp(Dataset):
 
         """Get the images"""
         name = self.name_list[index]
-        img_path = os.path.join(self.data_path, "images",name)
+        img_path = os.path.join(self.data_path, "images", name)
 
         mask_name = self.label_list[index]
-        msk_path = os.path.join(self.data_path,"masks", mask_name)
+        msk_path = os.path.join(self.data_path, "masks", mask_name)
 
         img = Image.open(img_path).convert('RGB')
         mask = Image.open(msk_path).convert('L')
@@ -468,10 +477,10 @@ class Poison_Polyp(Dataset):
         }
 
 
-
 class Polyp_generated_poison_lora(Dataset):
-    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',plane=False):
-        if mode=="Training":
+    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click',
+                 plane=False):
+        if mode == "Training":
             # if args.poison:
             #     data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB_poison")
             # else:
@@ -488,7 +497,7 @@ class Polyp_generated_poison_lora(Dataset):
             # data_path = os.path.join(data_path, "TestDataset", "backdoor_CVC-300")
             data_path = os.path.join(data_path, "TestDataset", "CVC-ClinicDB")
 
-        self.name_list =sorted(os.listdir(os.path.join(data_path,"images")))
+        self.name_list = sorted(os.listdir(os.path.join(data_path, "images")))
         self.label_list = self.name_list
 
         self.data_path = data_path
@@ -513,10 +522,10 @@ class Polyp_generated_poison_lora(Dataset):
 
         """Get the images"""
         name = self.name_list[index]
-        img_path = os.path.join(self.data_path, "images",name)
+        img_path = os.path.join(self.data_path, "images", name)
 
         mask_name = self.label_list[index]
-        msk_path = os.path.join(self.data_path,"masks", mask_name)
+        msk_path = os.path.join(self.data_path, "masks", mask_name)
 
         img = Image.open(img_path).convert('RGB')
         mask = Image.open(msk_path).convert('L')
@@ -552,4 +561,3 @@ class Polyp_generated_poison_lora(Dataset):
             'pt': pt,
             'image_meta_dict': image_meta_dict,
         }
-
