@@ -1043,7 +1043,7 @@ def heat_map(args, net, train_loader):
                 # vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
 
-def one_pixel_attack(args, net, train_loader, color='black'):
+def one_pixel_attack(args, net, train_loader, color='black',log_dir="./heatmap_img/"):
     # 设置模型为评估模式
     net.eval()
     dataset = os.path.basename(args.data_path)
@@ -1058,7 +1058,6 @@ def one_pixel_attack(args, net, train_loader, color='black'):
     threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
     GPUdevice = torch.device('cuda:' + str(args.gpu_device))
     lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean') if args.thd else criterion_G
-    log_dir = "./heatmap_img/"
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "attack_performance.log")
 
