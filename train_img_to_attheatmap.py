@@ -309,7 +309,7 @@ optimizer_G = optim.Adam(generator.parameters(), lr=1e-5, betas=(0.5, 0.999))
 optimizer_D = optim.Adam(discriminator.parameters(), lr=1e-5, betas=(0.5, 0.999))
 
 # Training parameters
-num_epochs = 300
+num_epochs = 500
 best_val_loss = float("inf")
 
 for epoch in range(num_epochs):
@@ -332,12 +332,17 @@ print("Training completed.")
 generator.load_state_dict(torch.load("checkpoint/best_pix2pix_generator.pth", map_location=device))
 generator.eval()
 #
-output_dir = "evalDataset/save_predictions"
-os.makedirs(output_dir, exist_ok=True)
+
 
 def denormalize(tensor):
     tensor = tensor * 0.5 + 0.5
     return tensor.clamp(0, 1)
+
+dataset_name = 'CVC-300'
+image_directory = f"dataset/TestDataset/{dataset_name}/images"
+output_dir = f"evalDataset/save_predictions_{dataset_name}"
+os.makedirs(output_dir, exist_ok=True)
+
 for filename in os.listdir(image_directory):
     if filename.endswith((".jpg", ".png", ".jpeg")):
         # Load and preprocess the image
@@ -359,6 +364,33 @@ for filename in os.listdir(image_directory):
         output_image.save(os.path.join(output_dir, f"pred_{filename}"))
         print(f"Saved prediction for {filename} as pred_{filename}")
 
+
+
+dataset_name = 'CVC-ClinicDB'
+image_directory = f"dataset/TestDataset/{dataset_name}/images"
+output_dir = f"evalDataset/save_predictions_{dataset_name}"
+os.makedirs(output_dir, exist_ok=True)
+
+for filename in os.listdir(image_directory):
+    if filename.endswith((".jpg", ".png", ".jpeg")):
+        # Load and preprocess the image
+        image_path = os.path.join(image_directory, filename)
+        image = Image.open(image_path).convert("RGB")
+        input_tensor = transform_image(image).unsqueeze(0).to(device)
+
+        # Generate prediction
+        with torch.no_grad():
+            output = generator(input_tensor)
+
+        output = output.squeeze(0).cpu()
+        output = denormalize(output)
+        output_image = transforms.ToPILImage()(output)
+
+
+
+        # Save the prediction
+        output_image.save(os.path.join(output_dir, f"pred_{filename}"))
+        print(f"Saved prediction for {filename} as pred_{filename}")
 
 
 
