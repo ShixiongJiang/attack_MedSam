@@ -7,7 +7,7 @@ from scipy.ndimage import gaussian_filter
 
 
 # directory_path = "heatmap_img/"
-directory_path = 'heat_map_clinicDB'
+directory_path = 'evalDataset/heat_map_clinicDB'
 save_path = 'contour_image/'
 for filename in os.listdir(directory_path):
         filepath = os.path.join(directory_path, filename)
