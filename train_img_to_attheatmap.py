@@ -192,7 +192,7 @@ combined_image_paths = image_paths_1 + image_paths_2
 combined_saliency_paths = saliency_paths_1 + saliency_paths_2
 # Split into train and validation sets
 train_images, val_images, train_masks, val_masks = train_test_split(
-    combined_image_paths, combined_saliency_paths, test_size=0.1, random_state=42
+    combined_image_paths, combined_saliency_paths, test_size=0.15, random_state=42
 )
 
 args = cfg_reverse_adaptation.parse_args()
