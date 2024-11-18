@@ -309,7 +309,7 @@ optimizer_G = optim.Adam(generator.parameters(), lr=1e-5, betas=(0.5, 0.999))
 optimizer_D = optim.Adam(discriminator.parameters(), lr=1e-5, betas=(0.5, 0.999))
 
 # Training parameters
-num_epochs = 500
+num_epochs = 1000
 best_val_loss = float("inf")
 
 for epoch in range(num_epochs):
