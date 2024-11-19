@@ -1,6 +1,4 @@
 import cv2
-import torch
-from matplotlib import colormaps
 
 from einops import rearrange
 import torch.nn.functional as F
@@ -9,16 +7,8 @@ from utils import *
 from monai.metrics import compute_hausdorff_distance, DiceMetric
 from monai.losses import DiceCELoss
 from pathlib import Path
-from torchsummary import summary
-from segment_anything import sam_model_registry, SamPredictor
-from torchvision.transforms.functional import normalize, resize, to_pil_image
 
-import pandas as pd
-from pytorch_grad_cam import GradCAM
-from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 import matplotlib.pyplot as plt
-
-from PIL import Image
 
 args = cfg.parse_args()
 
@@ -916,8 +906,6 @@ def heat_map(args, net, train_loader):
                 #
                 forward_hook = net.image_encoder.neck[3].register_forward_hook(forward_hook, prepend=False)
 
-
-
                 imge = net.image_encoder(imgs)
                 # print(net)
 
@@ -1043,7 +1031,7 @@ def heat_map(args, net, train_loader):
                 # vutils.save_image(pred, fp=f'result_{namecat}.png', nrow=1, padding=0)
 
 
-def one_pixel_attack(args, net, train_loader, color='black',log_dir="./heatmap_img/"):
+def one_pixel_attack(args, net, train_loader, color='black', log_dir="./heatmap_img/"):
     # 设置模型为评估模式
     net.eval()
     dataset = os.path.basename(args.data_path)
@@ -1134,7 +1122,7 @@ def one_pixel_attack(args, net, train_loader, color='black',log_dir="./heatmap_i
                     imgs = _imgs.clone()
                     # replace for to improve speed
                     imgs[0, :, att_pos_i - patch_size + 1:att_pos_i + 1,
-                         att_pos_j - patch_size + 1:att_pos_j + 1] = color_value
+                    att_pos_j - patch_size + 1:att_pos_j + 1] = color_value
                     imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
                     # predict
@@ -1202,3 +1190,99 @@ def one_pixel_attack(args, net, train_loader, color='black',log_dir="./heatmap_i
 
             pbar.update(1)
     print('done')
+
+
+def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="./heatmap_img/", attack_coords=None):
+    """
+    Perform one-pixel attack targeting a specific 10x10 region.
+
+    Args:
+        args: Arguments containing configuration.
+        net: Neural network model.
+        train_loader: Data loader for training data.
+        color: Color of the attack ('black' or 'white').
+        log_dir: Directory to save logs and heatmaps.
+        attack_coords: Tuple (x, y) specifying the top-left corner of the 10x10 attack region. If None, default logic applies.
+    """
+    net.eval()  # Set the model to evaluation mode
+    os.makedirs(log_dir, exist_ok=True)
+    log_file = os.path.join(log_dir, "attack_performance.log")
+
+    # Open log file
+    with open(log_file, 'a') as f_log:
+        f_log.write("This is a log entry.\n")
+
+    with tqdm(total=len(train_loader), desc='Validation round', unit='batch', leave=False) as pbar:
+        for ind, pack in enumerate(train_loader):
+            imgsw = pack['images'].to(dtype=torch.float32, device=torch.device('cuda:' + str(args.gpu_device)))
+            masksw = pack['label'].to(dtype=torch.float32, device=torch.device('cuda:' + str(args.gpu_device)))
+
+            if 'pt' not in pack:
+                imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
+            else:
+                ptw = pack['pt']
+                point_labels = pack['p_label']
+
+            names_batch = pack['image_meta_dict']['filename_or_obj']
+            for name in names_batch:
+                namecat = os.path.splitext(os.path.basename(name))[0] + '+'
+
+            imgs = imgsw.clone()
+            masks = masksw.clone()
+
+            # Apply the attack to the specified 10x10 region
+            patch_size = 10
+            color_value = 255 if color == 'white' else 0
+
+            # Use the provided attack coordinates or calculate positions
+            if attack_coords is None:
+                print("Attack coordinates not provided. Please calculate or specify them.")
+                continue  # Skip batch if no attack region is defined
+
+            x, y = attack_coords  # Coordinates for the top-left corner of the 10x10 region
+
+            # Apply attack by modifying the 10x10 region
+            imgs[:, :, y:y + patch_size, x:x + patch_size] = color_value
+
+            # Prediction
+            with torch.no_grad():
+                imge = net.image_encoder(imgs)
+                if args.net in ['sam', 'mobile_sam']:
+                    se, de = net.prompt_encoder(points=ptw, boxes=None, masks=None)
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
+                    )
+                elif args.net == "efficient_sam":
+                    coords_torch, labels_torch = transform_prompt(ptw, point_labels, imgs.size(2), imgs.size(3))
+                    se = net.prompt_encoder(coords=coords_torch, labels=labels_torch)
+                    se = se.view(se.shape[0], 1, se.shape[1], se.shape[2])
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        multimask_output=False,
+                    )
+
+                # Resize prediction to match masks
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                temp_hd, save_pred = calc_hf(pred.detach(), masks)
+
+                # Save original and perturbed images
+                image_path = "./106"
+                os.makedirs(image_path, exist_ok=True)
+                final_path = os.path.join(image_path, f'orig_{namecat}.png')
+                vutils.save_image(imgsw, fp=final_path, nrow=1, padding=0)
+                vutils.save_image(pred, fp=f'./heatmap_img/pred_{color}_{namecat}.png', nrow=1, padding=0)
+
+                # Log attack performance
+                eiou, edice = eval_seg(pred, masks, (0.1, 0.3, 0.5, 0.7, 0.9))
+                with open(log_file, 'a') as f_log:
+                    f_log.write(f"Image: {namecat}, EIoU: {eiou}, EDice: {edice}\n")
+
+            pbar.update(1)
+    print('Attack done.')
+

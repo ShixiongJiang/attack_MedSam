@@ -51,9 +51,12 @@ with torch.no_grad():
     output = net(input_tensor)
 
 # 可视化结果
-
+print(output.shape,'this is output shape')
 # 如果是概率值，先将其转换为二值掩码
-output_mask = (output > 0.5).astype(np.uint8) * 255  # 二值化并扩展到 0-255 范围
+output_np = output.squeeze().cpu().numpy()  # [1024, 1024]
+
+# 二值化并扩展到 0-255 范围
+output_mask = (output_np > 0.5).astype(np.uint8) * 255
 
 # 转为 PIL 图像
 result_image = Image.fromarray(output_mask)
