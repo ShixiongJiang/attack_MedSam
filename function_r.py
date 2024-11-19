@@ -1204,21 +1204,25 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
         log_dir: Directory to save logs and heatmaps.
         attack_coords: Tuple (x, y) specifying the top-left corner of the 10x10 attack region. If None, default logic applies.
     """
-    net.eval()  # Set the model to evaluation mode
+    net.eval()  # 设置模型为评估模式
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "attack_performance.log")
 
-    # Open log file
+    # 打开日志文件
     with open(log_file, 'a') as f_log:
         f_log.write("This is a log entry.\n")
 
+    GPUdevice = torch.device('cuda:' + str(args.gpu_device))
+
     with tqdm(total=len(train_loader), desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
-            imgsw = pack['images'].to(dtype=torch.float32, device=torch.device('cuda:' + str(args.gpu_device)))
-            masksw = pack['label'].to(dtype=torch.float32, device=torch.device('cuda:' + str(args.gpu_device)))
+            imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
+            masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
 
             if 'pt' not in pack:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
+                # 假设正样本标签
+                point_labels = torch.ones(ptw.shape[0], dtype=torch.int, device=GPUdevice)
             else:
                 ptw = pack['pt']
                 point_labels = pack['p_label']
@@ -1230,25 +1234,39 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
             imgs = imgsw.clone()
             masks = masksw.clone()
 
-            # Apply the attack to the specified 10x10 region
+            # 设置攻击区域
             patch_size = 10
             color_value = 255 if color == 'white' else 0
 
-            # Use the provided attack coordinates or calculate positions
+            # 使用提供的攻击坐标，或默认逻辑
             if attack_coords is None:
-                print("Attack coordinates not provided. Please calculate or specify them.")
-                continue  # Skip batch if no attack region is defined
+                # 默认攻击图像中心
+                _, _, height, width = imgs.shape
+                x = (width - patch_size) // 2
+                y = (height - patch_size) // 2
+            else:
+                x, y = attack_coords  # 攻击区域的左上角坐标
 
-            x, y = attack_coords  # Coordinates for the top-left corner of the 10x10 region
+            # 确保攻击区域在图像范围内
+            x = max(0, min(x, imgs.shape[3] - patch_size))
+            y = max(0, min(y, imgs.shape[2] - patch_size))
 
-            # Apply attack by modifying the 10x10 region
+            # 应用攻击，修改指定的10x10区域
             imgs[:, :, y:y + patch_size, x:x + patch_size] = color_value
 
-            # Prediction
+            # 预测
             with torch.no_grad():
                 imge = net.image_encoder(imgs)
+
+                # 准备points元组
+                coords_torch = ptw.to(dtype=torch.float, device=GPUdevice)
+                labels_torch = point_labels.to(dtype=torch.int, device=GPUdevice)
+                coords_torch = coords_torch[None, :, :]
+                labels_torch = labels_torch[None, :]
+                points = (coords_torch, labels_torch)
+
                 if args.net in ['sam', 'mobile_sam']:
-                    se, de = net.prompt_encoder(points=ptw, boxes=None, masks=None)
+                    se, de = net.prompt_encoder(points=points, boxes=None, masks=None)
                     pred, _ = net.mask_decoder(
                         image_embeddings=imge,
                         image_pe=net.prompt_encoder.get_dense_pe(),
@@ -1267,18 +1285,18 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
                         multimask_output=False,
                     )
 
-                # Resize prediction to match masks
+                # 调整预测结果的尺寸以匹配掩码
                 pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
                 temp_hd, save_pred = calc_hf(pred.detach(), masks)
 
-                # Save original and perturbed images
+                # 保存原始和攻击后的图像
                 image_path = "./106"
                 os.makedirs(image_path, exist_ok=True)
                 final_path = os.path.join(image_path, f'orig_{namecat}.png')
                 vutils.save_image(imgsw, fp=final_path, nrow=1, padding=0)
-                vutils.save_image(pred, fp=f'./heatmap_img/pred_{color}_{namecat}.png', nrow=1, padding=0)
+                vutils.save_image(pred, fp=f'./106/pred_{color}_{namecat}.png', nrow=1, padding=0)
 
-                # Log attack performance
+                # 记录攻击性能
                 eiou, edice = eval_seg(pred, masks, (0.1, 0.3, 0.5, 0.7, 0.9))
                 with open(log_file, 'a') as f_log:
                     f_log.write(f"Image: {namecat}, EIoU: {eiou}, EDice: {edice}\n")

@@ -12,7 +12,7 @@ import function_r as function
 # from models.discriminatorlayer import discriminator
 from dataset import *
 from utils import *
-
+from torchvision import transforms
 
 def remove_dumplicate_image(polyp_train_dataset):
     # 假设 heatmap_img 路径
@@ -106,18 +106,21 @@ transform_train_seg = transforms.Compose([
 # 加载并划分数据集
 polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
-polyp_train_dataset = remove_dumplicate_image(polyp_train_dataset)
+# polyp_train_dataset = remove_dumplicate_image(polyp_train_dataset)
+filtered_dataset=[]
+# 过滤只保留名称为 106 的图片
+for data in polyp_train_dataset:
+    print(data['image_meta_dict']['filename_or_obj'])
+    if '106' in data['image_meta_dict']['filename_or_obj']:
+        print(data['image_meta_dict']['filename_or_obj'])
+        filtered_dataset.append(data)
 
-# 根据进程数分割数据集
-N = args.num_processes
-dataset_size = len(polyp_train_dataset)
-subset_sizes = [dataset_size // N] * N
-subset_sizes[-1] += dataset_size - sum(subset_sizes)
-subsets = random_split(polyp_train_dataset, subset_sizes)
-subset = subsets[args.process_idx]
+if len(filtered_dataset) == 0:
+    raise ValueError("No images with the name '106' were found in the dataset.")
+
 
 # 创建 DataLoader
-nice_train_loader = DataLoader(subset, batch_size=args.b, shuffle=True, num_workers=2, pin_memory=True)
+nice_train_loader = DataLoader(filtered_dataset, batch_size=args.b, shuffle=True, num_workers=2, pin_memory=True)
 
 # 为每个进程创建一个单独的日志文件
 try:
