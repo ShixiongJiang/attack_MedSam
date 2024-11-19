@@ -1204,7 +1204,7 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
         log_dir: Directory to save logs and heatmaps.
         attack_coords: Tuple (x, y) specifying the top-left corner of the 10x10 attack region. If None, default logic applies.
     """
-    net.eval()  # 设置模型为评估模式
+    net.eval()
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "attack_performance.log")
 
@@ -1293,9 +1293,10 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
                 image_path = "./106"
                 os.makedirs(image_path, exist_ok=True)
                 final_path = os.path.join(image_path, f'orig_{namecat}.png')
-                vutils.save_image(imgsw, fp=final_path, nrow=1, padding=0)
+                print('write original ',f'orig_{namecat}.png')
+                vutils.save_image(imgs, fp=final_path, nrow=1, padding=0)
+                print('write predict mask',f'./106/pred_{color}_{namecat}.png')
                 vutils.save_image(pred, fp=f'./106/pred_{color}_{namecat}.png', nrow=1, padding=0)
-
                 # 记录攻击性能
                 eiou, edice = eval_seg(pred, masks, (0.1, 0.3, 0.5, 0.7, 0.9))
                 with open(log_file, 'a') as f_log:
