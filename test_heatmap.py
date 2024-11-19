@@ -95,7 +95,6 @@ nice_test_loader = DataLoader(polyp_test_dataset, batch_size=args.b, shuffle=Fal
 # '''checkpoint path and tensorboard'''
 # iter_per_epoch = len(Glaucoma_training_loader)
 checkpoint_path = os.path.join(settings.CHECKPOINT_PATH, args.net,  f"train_exp_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}")
-#use tensorboard
 if not os.path.exists(settings.LOG_DIR):
     os.mkdir(settings.LOG_DIR)
 
@@ -107,7 +106,6 @@ writer = SummaryWriter(log_dir=os.path.join(
 # input_tensor = torch.Tensor(args.b, 3, 256, 256).cuda(device = GPUdevice)
 # writer.add_graph(net, Variable(input_tensor, requires_grad=True))
 
-#create checkpoint folder to save model
 if not os.path.exists(checkpoint_path):
     os.makedirs(checkpoint_path)
 checkpoint_path = os.path.join(checkpoint_path, '{net}-{epoch}-{type}.pth')
@@ -120,8 +118,5 @@ total_epoch = 1
 # for epoch in range(settings.EPOCH):
 for epoch in range(total_epoch):
     function.heat_map(args, net, nice_train_loader)
-
-
-
 
 writer.close()

@@ -2,6 +2,7 @@ import argparse
 import os
 import subprocess
 
+
 def run_attack(process_idx, num_processes, script, additional_args):
     # 设置每个进程的环境变量
     env = os.environ.copy()
@@ -20,6 +21,7 @@ def run_attack(process_idx, num_processes, script, additional_args):
     # 使用 subprocess.Popen 并传递环境变量
     process = subprocess.Popen(cmd, env=env)
     process.wait()
+
 
 def main():
     parser = argparse.ArgumentParser(description='Launch Multiple Processes for One Pixel Attack')
@@ -44,6 +46,7 @@ def main():
     # 等待所有进程完成
     for p in processes:
         p.wait()
+
 
 if __name__ == '__main__':
     main()
