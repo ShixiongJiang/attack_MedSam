@@ -17,30 +17,33 @@ from torchvision import transforms
 def remove_dumplicate_image(polyp_train_dataset):
     # 假设 heatmap_img 路径
     heatmap_img_path = 'heatmap_img'
-
+    # 定义正则表达式，用于提取图片名称 (如 ISIC_0009901)
+    pattern = re.compile(r"ISIC_\d+")
     # 列出 heatmap_img 下所有的文件并提取已处理的图片名称
-    pattern = re.compile(r'orig_(\d+)\+\.png')
-
-    # 列出 heatmap_img 下所有的文件并提取已处理图片的数字名称
     processed_images = set()
     for file in os.listdir(heatmap_img_path):
         match = pattern.search(file)
         if match:
-            processed_images.add(match.group(1))
+            processed_images.add(match.group(0))  # 提取图片名称并加入集合
     # 创建一个新的数据集列表，存储未处理过的图片
     filtered_data = []
-    print(processed_images)
+
     # 遍历原始数据集，检查每个图片是否在已处理的图片列表中
     for data in polyp_train_dataset:
-        image_name = os.path.basename(data['image_meta_dict']['filename_or_obj'])  # 假设图片路径在数据字典中的键是 'image_path'
-        print('image name', image_name)
-        if image_name not in processed_images:
-            filtered_data.append(data)
+        # 获取当前图片的文件名
+        image_path = data['image_meta_dict']['filename_or_obj']
+        image_name_match = pattern.search(os.path.basename(image_path))  # 提取图片名称
+        if image_name_match:
+            image_name = image_name_match.group(0)
+            if image_name not in processed_images:
+                filtered_data.append(data)  # 如果未处理过，加入新的数据集列表
+            else:
+                print('Duplicate image:', image_path)
         else:
-            print('dumplicate image', data['image_meta_dict']['filename_or_obj'])
-    # 更新数据集
-    polyp_train_dataset = filtered_data
-    return polyp_train_dataset
+            print('No valid image name found for:', image_path)
+
+    # 更新并返回数据集
+    return filtered_data
 
 
 # 获取参数

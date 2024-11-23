@@ -1,14 +1,14 @@
-import cv2
-
-from einops import rearrange
-import torch.nn.functional as F
-from conf import settings
-from utils import *
-from monai.metrics import compute_hausdorff_distance, DiceMetric
-from monai.losses import DiceCELoss
 from pathlib import Path
 
+import cv2
 import matplotlib.pyplot as plt
+import torch.nn.functional as F
+from einops import rearrange
+from monai.losses import DiceCELoss
+from monai.metrics import compute_hausdorff_distance, DiceMetric
+
+from conf import settings
+from utils import *
 
 args = cfg.parse_args()
 
@@ -1293,9 +1293,9 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
                 image_path = "./106"
                 os.makedirs(image_path, exist_ok=True)
                 final_path = os.path.join(image_path, f'orig_{namecat}.png')
-                print('write original ',f'orig_{namecat}.png')
+                print('write original ', f'orig_{namecat}.png')
                 vutils.save_image(imgs, fp=final_path, nrow=1, padding=0)
-                print('write predict mask',f'./106/pred_{color}_{namecat}.png')
+                print('write predict mask', f'./106/pred_{color}_{namecat}.png')
                 vutils.save_image(pred, fp=f'./106/pred_{color}_{namecat}.png', nrow=1, padding=0)
                 # 记录攻击性能
                 eiou, edice = eval_seg(pred, masks, (0.1, 0.3, 0.5, 0.7, 0.9))
@@ -1304,4 +1304,3 @@ def one_pixel_attack_specified(args, net, train_loader, color='black', log_dir="
 
             pbar.update(1)
     print('Attack done.')
-
