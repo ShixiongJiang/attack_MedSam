@@ -109,7 +109,7 @@ ISIC2016_test_dataset = ISIC2016(args, args.data_path, transform=transform_train
                             mode='Training')
 
 
-
+ISIC2016_test_dataset= remove_dumplicate_image(ISIC2016_test_dataset)
 # 根据进程数分割数据集
 N = args.num_processes
 dataset_size = len(ISIC2016_test_dataset)

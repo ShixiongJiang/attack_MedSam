@@ -1,0 +1,1585 @@
+/scratch365/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/scratch365/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/scratch365/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/scratch365/jfan5/attack_MedSam/function_r.py:32: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/scratch365/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/scratch365/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/scratch365/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/scratch365/jfan5/attack_MedSam/models/sam/build_sam.py:147: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/scratch365/jfan5/attack_MedSam/one_pixel_attack_ISIC2016.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/scratch365/jfan5/attack_MedSam/one_pixel_attack_ISIC2016.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/scratch365/jfan5/attack_MedSam/one_pixel_attack_ISIC2016.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+/scratch365/jfan5/attack_MedSam/one_pixel_attack_ISIC2016.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_file, map_location=loc)
+Namespace(process_idx=1, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_11_21_10_52_32', 'ckpt_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Model', 'log_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Log', 'sample_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Samples'})
+Namespace(process_idx=0, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_11_21_10_52_32', 'ckpt_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Model', 'log_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Log', 'sample_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Samples'})
+Namespace(process_idx=3, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_11_21_10_52_32', 'ckpt_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Model', 'log_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Log', 'sample_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Samples'})
+Namespace(process_idx=2, num_processes=4, net='sam', baseline='unet', encoder='default', seg_net='transunet', mod='sam_adpt', exp_name='msa_test_polyp', type='map', vis=1, reverse=False, pretrain=False, val_freq=25, gpu=True, gpu_device=0, sim_gpu=0, epoch_ini=1, image_size=1024, out_size=1024, patch_size=2, dim=512, depth=1, heads=16, mlp_dim=1024, w=4, b=1, s=True, warm=1, lr=0.0001, uinch=1, imp_lr=0.0003, weights='./checkpoint/sam/checkpoint_best.pth', base_weights=0, sim_weights=0, distributed='none', dataset='Polyp', sam_ckpt='./sam_checkpoints/sam_vit_b_01ec64.pth', thd=False, chunk=96, num_sample=4, roi_size=96, evl_chunk=None, mid_dim=None, epsilon=0.1, attack_method='pgd', freeze=True, backdoor=False, poison_datasets='cluster_poison_dataset', generate_subpupu_dataset='poison_dataset', generate_cluster_dataset='cluster_poison_dataset', poison=False, data_path='./dataset', path_helper={'prefix': 'logs/msa_test_polyp_2024_11_21_10_52_32', 'ckpt_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Model', 'log_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Log', 'sample_path': 'logs/msa_test_polyp_2024_11_21_10_52_32/Samples'})
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Process 1 sees CUDA_VISIBLE_DEVICES = 1
+Using GPU: 0 (logical GPU in this process) for process index: 1
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'163', '171', '492', '65', '31', '483', '191', '240', '381', '106', '431', '119', '349', '569', '179', '400', '205', '307', '166', '459', '89', '181', '388', '442', '148', '251', '25', '134', '61', '529', '21', '300', '404', '73', '425', '555', '66', '526', '154', '545', '185', '14', '397', '100', '481', '42', '50', '575', '464', '429', '453', '474', '559', '561', '374', '80', '266', '279', '287', '52', '353', '571'}
+image name ISIC_0000003
+image name ISIC_0000012
+image name ISIC_0000013
+image name ISIC_0000014
+image name ISIC_0000015
+image name ISIC_0000020
+image name ISIC_0000022
+image name ISIC_0000023
+image name ISIC_0000027
+image name ISIC_0000036
+image name ISIC_0000037
+image name ISIC_0000040
+image name ISIC_0000043
+image name ISIC_0000052
+image name ISIC_0000053
+image name ISIC_0000056
+image name ISIC_0000057
+image name ISIC_0000064
+image name ISIC_0000066
+image name ISIC_0000069
+image name ISIC_0000071
+image name ISIC_0000072
+image name ISIC_0000088
+image name ISIC_0000092
+image name ISIC_0000098
+image name ISIC_0000099
+image name ISIC_0000101
+image name ISIC_0000107
+image name ISIC_0000111
+image name ISIC_0000113
+image name ISIC_0000115
+image name ISIC_0000117
+image name ISIC_0000125
+image name ISIC_0000126
+image name ISIC_0000129
+image name ISIC_0000132
+image name ISIC_0000136
+image name ISIC_0000138
+image name ISIC_0000141
+image name ISIC_0000149
+image name ISIC_0000160
+image name ISIC_0000161
+image name ISIC_0000164
+image name ISIC_0000165
+image name ISIC_0000169
+image name ISIC_0000172
+image name ISIC_0000174
+image name ISIC_0000177
+image name ISIC_0000188
+image name ISIC_0000195
+image name ISIC_0000196
+image name ISIC_0000197
+image name ISIC_0000198
+image name ISIC_0000200
+image name ISIC_0000201
+image name ISIC_0000202
+image name ISIC_0000212
+image name ISIC_0000213
+image name ISIC_0000222
+image name ISIC_0000226
+image name ISIC_0000227
+image name ISIC_0000228
+image name ISIC_0000230
+image name ISIC_0000231
+image name ISIC_0000233
+image name ISIC_0000234
+image name ISIC_0000246
+image name ISIC_0000253
+image name ISIC_0000254
+image name ISIC_0000257
+image name ISIC_0000258
+image name ISIC_0000271
+image name ISIC_0000279
+image name ISIC_0000287
+image name ISIC_0000289
+image name ISIC_0000298
+image name ISIC_0000299
+image name ISIC_0000302
+image name ISIC_0000306
+image name ISIC_0000310
+image name ISIC_0000311
+image name ISIC_0000319
+image name ISIC_0000320
+image name ISIC_0000325
+image name ISIC_0000327
+image name ISIC_0000328
+image name ISIC_0000340
+image name ISIC_0000343
+image name ISIC_0000354
+image name ISIC_0000357
+image name ISIC_0000368
+image name ISIC_0000371
+image name ISIC_0000377
+image name ISIC_0000378
+image name ISIC_0000380
+image name ISIC_0000388
+image name ISIC_0000392
+image name ISIC_0000393
+image name ISIC_0000407
+image name ISIC_0000418
+image name ISIC_0000420
+image name ISIC_0000433
+image name ISIC_0000448
+image name ISIC_0000449
+image name ISIC_0000456
+image name ISIC_0000466
+image name ISIC_0000470
+image name ISIC_0000476
+image name ISIC_0000479
+image name ISIC_0000482
+image name ISIC_0000484
+image name ISIC_0000487
+image name ISIC_0000490
+image name ISIC_0000494
+image name ISIC_0000499
+image name ISIC_0000501
+image name ISIC_0000508
+image name ISIC_0000509
+image name ISIC_0000510
+image name ISIC_0000515
+image name ISIC_0000518
+image name ISIC_0000525
+image name ISIC_0000527
+image name ISIC_0000533
+image name ISIC_0000534
+image name ISIC_0000537
+image name ISIC_0000539
+image name ISIC_0000540
+image name ISIC_0000547
+image name ISIC_0000549
+image name ISIC_0000550
+image name ISIC_0001100
+image name ISIC_0001103
+image name ISIC_0001128
+image name ISIC_0001131
+image name ISIC_0001142
+image name ISIC_0001181
+image name ISIC_0001185
+image name ISIC_0001186
+image name ISIC_0001190
+image name ISIC_0001204
+image name ISIC_0001242
+image name ISIC_0001299
+image name ISIC_0001427
+image name ISIC_0001484
+image name ISIC_0001685
+image name ISIC_0001960
+image name ISIC_0002107
+image name ISIC_0002246
+image name ISIC_0002673
+image name ISIC_0002829
+image name ISIC_0002871
+image name ISIC_0003056
+image name ISIC_0003559
+image name ISIC_0003728
+image name ISIC_0004115
+image name ISIC_0004346
+image name ISIC_0005000
+image name ISIC_0006193
+image name ISIC_0006711
+image name ISIC_0007322
+image name ISIC_0007693
+image name ISIC_0008116
+image name ISIC_0008207
+image name ISIC_0008406
+image name ISIC_0008507
+image name ISIC_0008600
+image name ISIC_0008626
+image name ISIC_0008659
+image name ISIC_0008992
+image name ISIC_0008998
+image name ISIC_0009035
+image name ISIC_0009078
+image name ISIC_0009083
+image name ISIC_0009201
+image name ISIC_0009298
+image name ISIC_0009564
+image name ISIC_0009869
+image name ISIC_0009872
+image name ISIC_0009874
+image name ISIC_0009879
+image name ISIC_0009880
+image name ISIC_0009881
+image name ISIC_0009882
+image name ISIC_0009885
+image name ISIC_0009889
+image name ISIC_0009891
+image name ISIC_0009898
+image name ISIC_0009901
+image name ISIC_0009902
+image name ISIC_0009906
+image name ISIC_0009918
+image name ISIC_0009920
+image name ISIC_0009923
+image name ISIC_0009926
+image name ISIC_0009927
+image name ISIC_0009928
+image name ISIC_0009930
+image name ISIC_0009931
+image name ISIC_0009943
+image name ISIC_0009945
+image name ISIC_0009946
+image name ISIC_0009948
+image name ISIC_0009954
+image name ISIC_0009955
+image name ISIC_0009956
+image name ISIC_0009958
+image name ISIC_0009959
+image name ISIC_0009965
+image name ISIC_0009970
+image name ISIC_0009977
+image name ISIC_0009980
+image name ISIC_0009982
+image name ISIC_0009988
+image name ISIC_0009990
+image name ISIC_0009992
+image name ISIC_0009993
+image name ISIC_0009994
+image name ISIC_0009998
+image name ISIC_0010004
+image name ISIC_0010009
+image name ISIC_0010011
+image name ISIC_0010013
+image name ISIC_0010016
+image name ISIC_0010018
+image name ISIC_0010020
+image name ISIC_0010023
+image name ISIC_0010028
+image name ISIC_0010033
+image name ISIC_0010034
+image name ISIC_0010037
+image name ISIC_0010038
+image name ISIC_0010041
+image name ISIC_0010047
+image name ISIC_0010055
+image name ISIC_0010058
+image name ISIC_0010059
+image name ISIC_0010061
+image name ISIC_0010062
+image name ISIC_0010073
+image name ISIC_0010077
+image name ISIC_0010088
+image name ISIC_0010089
+image name ISIC_0010092
+image name ISIC_0010100
+image name ISIC_0010103
+image name ISIC_0010171
+image name ISIC_0010173
+image name ISIC_0010175
+image name ISIC_0010180
+image name ISIC_0010183
+image name ISIC_0010187
+image name ISIC_0010190
+image name ISIC_0010192
+image name ISIC_0010193
+image name ISIC_0010201
+image name ISIC_0010202
+image name ISIC_0010206
+image name ISIC_0010207
+image name ISIC_0010215
+image name ISIC_0010216
+image name ISIC_0010229
+image name ISIC_0010231
+image name ISIC_0010234
+image name ISIC_0010238
+image name ISIC_0010254
+image name ISIC_0010255
+image name ISIC_0010257
+image name ISIC_0010261
+image name ISIC_0010326
+image name ISIC_0010331
+image name ISIC_0010336
+image name ISIC_0010340
+image name ISIC_0010346
+image name ISIC_0010347
+image name ISIC_0010348
+image name ISIC_0010360
+image name ISIC_0010368
+image name ISIC_0010369
+image name ISIC_0010373
+image name ISIC_0010374
+image name ISIC_0010377
+image name ISIC_0010378
+image name ISIC_0010379
+image name ISIC_0010437
+image name ISIC_0010444
+image name ISIC_0010448
+image name ISIC_0010449
+image name ISIC_0010451
+image name ISIC_0010452
+image name ISIC_0010454
+image name ISIC_0010456
+image name ISIC_0010460
+image name ISIC_0010463
+image name ISIC_0010474
+image name ISIC_0010477
+image name ISIC_0010483
+image name ISIC_0010494
+image name ISIC_0010498
+image name ISIC_0010552
+image name ISIC_0010553
+image name ISIC_0010556
+image name ISIC_0010565
+image name ISIC_0010574
+image name ISIC_0010582
+image name ISIC_0010584
+image name ISIC_0010587
+image name ISIC_0010588
+image name ISIC_0010591
+image name ISIC_0010592
+image name ISIC_0010596
+image name ISIC_0010597
+image name ISIC_0010598
+image name ISIC_0010599
+image name ISIC_0010604
+image name ISIC_0010606
+image name ISIC_0010607
+image name ISIC_0010846
+image name ISIC_0010847
+image name ISIC_0010854
+image name ISIC_0010856
+image name ISIC_0010863
+image name ISIC_0011080
+image name ISIC_0011081
+image name ISIC_0011083
+image name ISIC_0011089
+image name ISIC_0011090
+image name ISIC_0011092
+image name ISIC_0011098
+image name ISIC_0011101
+image name ISIC_0011104
+image name ISIC_0011107
+image name ISIC_0011110
+image name ISIC_0011112
+image name ISIC_0011122
+image name ISIC_0011129
+image name ISIC_0011132
+image name ISIC_0011143
+image name ISIC_0011148
+image name ISIC_0011149
+image name ISIC_0011150
+image name ISIC_0011151
+image name ISIC_0011152
+image name ISIC_0011155
+image name ISIC_0011162
+image name ISIC_0011167
+image name ISIC_0011168
+image name ISIC_0011171
+image name ISIC_0011172
+image name ISIC_0011175
+image name ISIC_0011176
+image name ISIC_0011177
+image name ISIC_0011204
+image name ISIC_0011205
+image name ISIC_0011213
+image name ISIC_0011219
+image name ISIC_0011224
+image name ISIC_0011227
+image name ISIC_0011292
+image name ISIC_0011294
+image name ISIC_0011298
+image name ISIC_0011300
+image name ISIC_0011305
+image name ISIC_0011310
+image name ISIC_0011319
+image name ISIC_0011321
+image name ISIC_0011325
+image name ISIC_0011333
+image name ISIC_0011336
+image name ISIC_0011338
+image name ISIC_0011344
+image name ISIC_0011349
+image name ISIC_0011359
+image name ISIC_0011363
+image name ISIC_0011367
+image name ISIC_0011374
+image name ISIC_0011384
+image name ISIC_0011386
+image name ISIC_0011392
+Process 0 sees CUDA_VISIBLE_DEVICES = 0
+Using GPU: 0 (logical GPU in this process) for process index: 0
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'21', '61', '464', '381', '181', '25', '481', '154', '80', '529', '52', '166', '148', '307', '526', '106', '50', '374', '14', '575', '459', '492', '100', '404', '431', '569', '442', '66', '89', '561', '42', '240', '163', '353', '388', '300', '483', '429', '559', '571', '73', '171', '251', '65', '31', '474', '349', '119', '425', '185', '134', '179', '266', '205', '555', '397', '287', '453', '400', '545', '191', '279'}
+image name ISIC_0000003
+image name ISIC_0000012
+image name ISIC_0000013
+image name ISIC_0000014
+image name ISIC_0000015
+image name ISIC_0000020
+image name ISIC_0000022
+image name ISIC_0000023
+image name ISIC_0000027
+image name ISIC_0000036
+image name ISIC_0000037
+image name ISIC_0000040
+image name ISIC_0000043
+image name ISIC_0000052
+image name ISIC_0000053
+image name ISIC_0000056
+image name ISIC_0000057
+image name ISIC_0000064
+image name ISIC_0000066
+image name ISIC_0000069
+image name ISIC_0000071
+image name ISIC_0000072
+image name ISIC_0000088
+image name ISIC_0000092
+image name ISIC_0000098
+image name ISIC_0000099
+image name ISIC_0000101
+image name ISIC_0000107
+image name ISIC_0000111
+image name ISIC_0000113
+image name ISIC_0000115
+image name ISIC_0000117
+image name ISIC_0000125
+image name ISIC_0000126
+image name ISIC_0000129
+image name ISIC_0000132
+image name ISIC_0000136
+image name ISIC_0000138
+image name ISIC_0000141
+image name ISIC_0000149
+image name ISIC_0000160
+image name ISIC_0000161
+image name ISIC_0000164
+image name ISIC_0000165
+image name ISIC_0000169
+image name ISIC_0000172
+image name ISIC_0000174
+image name ISIC_0000177
+image name ISIC_0000188
+image name ISIC_0000195
+image name ISIC_0000196
+image name ISIC_0000197
+image name ISIC_0000198
+image name ISIC_0000200
+image name ISIC_0000201
+image name ISIC_0000202
+image name ISIC_0000212
+image name ISIC_0000213
+image name ISIC_0000222
+image name ISIC_0000226
+image name ISIC_0000227
+image name ISIC_0000228
+image name ISIC_0000230
+image name ISIC_0000231
+image name ISIC_0000233
+image name ISIC_0000234
+image name ISIC_0000246
+image name ISIC_0000253
+image name ISIC_0000254
+image name ISIC_0000257
+image name ISIC_0000258
+image name ISIC_0000271
+image name ISIC_0000279
+image name ISIC_0000287
+image name ISIC_0000289
+image name ISIC_0000298
+image name ISIC_0000299
+image name ISIC_0000302
+image name ISIC_0000306
+image name ISIC_0000310
+image name ISIC_0000311
+image name ISIC_0000319
+image name ISIC_0000320
+image name ISIC_0000325
+image name ISIC_0000327
+image name ISIC_0000328
+image name ISIC_0000340
+image name ISIC_0000343
+image name ISIC_0000354
+image name ISIC_0000357
+image name ISIC_0000368
+image name ISIC_0000371
+image name ISIC_0000377
+image name ISIC_0000378
+image name ISIC_0000380
+image name ISIC_0000388
+image name ISIC_0000392
+image name ISIC_0000393
+image name ISIC_0000407
+image name ISIC_0000418
+image name ISIC_0000420
+image name ISIC_0000433
+image name ISIC_0000448
+image name ISIC_0000449
+image name ISIC_0000456
+image name ISIC_0000466
+image name ISIC_0000470
+image name ISIC_0000476
+image name ISIC_0000479
+image name ISIC_0000482
+image name ISIC_0000484
+image name ISIC_0000487
+image name ISIC_0000490
+image name ISIC_0000494
+image name ISIC_0000499
+image name ISIC_0000501
+image name ISIC_0000508
+image name ISIC_0000509
+image name ISIC_0000510
+image name ISIC_0000515
+image name ISIC_0000518
+image name ISIC_0000525
+image name ISIC_0000527
+image name ISIC_0000533
+image name ISIC_0000534
+image name ISIC_0000537
+image name ISIC_0000539
+image name ISIC_0000540
+image name ISIC_0000547
+image name ISIC_0000549
+image name ISIC_0000550
+image name ISIC_0001100
+image name ISIC_0001103
+image name ISIC_0001128
+image name ISIC_0001131
+image name ISIC_0001142
+image name ISIC_0001181
+image name ISIC_0001185
+image name ISIC_0001186
+image name ISIC_0001190
+image name ISIC_0001204
+image name ISIC_0001242
+image name ISIC_0001299
+image name ISIC_0001427
+image name ISIC_0001484
+image name ISIC_0001685
+image name ISIC_0001960
+image name ISIC_0002107
+image name ISIC_0002246
+image name ISIC_0002673
+image name ISIC_0002829
+image name ISIC_0002871
+image name ISIC_0003056
+image name ISIC_0003559
+image name ISIC_0003728
+image name ISIC_0004115
+image name ISIC_0004346
+image name ISIC_0005000
+image name ISIC_0006193
+image name ISIC_0006711
+image name ISIC_0007322
+image name ISIC_0007693
+image name ISIC_0008116
+image name ISIC_0008207
+image name ISIC_0008406
+image name ISIC_0008507
+image name ISIC_0008600
+image name ISIC_0008626
+image name ISIC_0008659
+image name ISIC_0008992
+image name ISIC_0008998
+image name ISIC_0009035
+image name ISIC_0009078
+image name ISIC_0009083
+image name ISIC_0009201
+image name ISIC_0009298
+image name ISIC_0009564
+image name ISIC_0009869
+image name ISIC_0009872
+image name ISIC_0009874
+image name ISIC_0009879
+image name ISIC_0009880
+image name ISIC_0009881
+image name ISIC_0009882
+image name ISIC_0009885
+image name ISIC_0009889
+image name ISIC_0009891
+image name ISIC_0009898
+image name ISIC_0009901
+image name ISIC_0009902
+image name ISIC_0009906
+image name ISIC_0009918
+image name ISIC_0009920
+image name ISIC_0009923
+image name ISIC_0009926
+image name ISIC_0009927
+image name ISIC_0009928
+image name ISIC_0009930
+image name ISIC_0009931
+image name ISIC_0009943
+image name ISIC_0009945
+image name ISIC_0009946
+image name ISIC_0009948
+image name ISIC_0009954
+image name ISIC_0009955
+image name ISIC_0009956
+image name ISIC_0009958
+image name ISIC_0009959
+image name ISIC_0009965
+image name ISIC_0009970
+image name ISIC_0009977
+image name ISIC_0009980
+image name ISIC_0009982
+image name ISIC_0009988
+image name ISIC_0009990
+image name ISIC_0009992
+image name ISIC_0009993
+image name ISIC_0009994
+image name ISIC_0009998
+image name ISIC_0010004
+image name ISIC_0010009
+image name ISIC_0010011
+image name ISIC_0010013
+image name ISIC_0010016
+image name ISIC_0010018
+image name ISIC_0010020
+image name ISIC_0010023
+image name ISIC_0010028
+image name ISIC_0010033
+image name ISIC_0010034
+image name ISIC_0010037
+image name ISIC_0010038
+image name ISIC_0010041
+image name ISIC_0010047
+image name ISIC_0010055
+image name ISIC_0010058
+image name ISIC_0010059
+image name ISIC_0010061
+image name ISIC_0010062
+image name ISIC_0010073
+image name ISIC_0010077
+image name ISIC_0010088
+image name ISIC_0010089
+image name ISIC_0010092
+image name ISIC_0010100
+image name ISIC_0010103
+image name ISIC_0010171
+image name ISIC_0010173
+image name ISIC_0010175
+image name ISIC_0010180
+image name ISIC_0010183
+image name ISIC_0010187
+image name ISIC_0010190
+image name ISIC_0010192
+image name ISIC_0010193
+image name ISIC_0010201
+image name ISIC_0010202
+image name ISIC_0010206
+image name ISIC_0010207
+image name ISIC_0010215
+image name ISIC_0010216
+image name ISIC_0010229
+image name ISIC_0010231
+image name ISIC_0010234
+image name ISIC_0010238
+image name ISIC_0010254
+image name ISIC_0010255
+image name ISIC_0010257
+image name ISIC_0010261
+image name ISIC_0010326
+image name ISIC_0010331
+image name ISIC_0010336
+image name ISIC_0010340
+image name ISIC_0010346
+image name ISIC_0010347
+image name ISIC_0010348
+image name ISIC_0010360
+image name ISIC_0010368
+image name ISIC_0010369
+image name ISIC_0010373
+image name ISIC_0010374
+image name ISIC_0010377
+image name ISIC_0010378
+image name ISIC_0010379
+image name ISIC_0010437
+image name ISIC_0010444
+image name ISIC_0010448
+image name ISIC_0010449
+image name ISIC_0010451
+image name ISIC_0010452
+image name ISIC_0010454
+image name ISIC_0010456
+image name ISIC_0010460
+image name ISIC_0010463
+image name ISIC_0010474
+image name ISIC_0010477
+image name ISIC_0010483
+image name ISIC_0010494
+image name ISIC_0010498
+image name ISIC_0010552
+image name ISIC_0010553
+image name ISIC_0010556
+image name ISIC_0010565
+image name ISIC_0010574
+image name ISIC_0010582
+image name ISIC_0010584
+image name ISIC_0010587
+image name ISIC_0010588
+image name ISIC_0010591
+image name ISIC_0010592
+image name ISIC_0010596
+image name ISIC_0010597
+image name ISIC_0010598
+image name ISIC_0010599
+image name ISIC_0010604
+image name ISIC_0010606
+image name ISIC_0010607
+image name ISIC_0010846
+image name ISIC_0010847
+image name ISIC_0010854
+image name ISIC_0010856
+image name ISIC_0010863
+image name ISIC_0011080
+image name ISIC_0011081
+image name ISIC_0011083
+image name ISIC_0011089
+image name ISIC_0011090
+image name ISIC_0011092
+image name ISIC_0011098
+image name ISIC_0011101
+image name ISIC_0011104
+image name ISIC_0011107
+image name ISIC_0011110
+image name ISIC_0011112
+image name ISIC_0011122
+image name ISIC_0011129
+image name ISIC_0011132
+image name ISIC_0011143
+image name ISIC_0011148
+image name ISIC_0011149
+image name ISIC_0011150
+image name ISIC_0011151
+image name ISIC_0011152
+image name ISIC_0011155
+image name ISIC_0011162
+image name ISIC_0011167
+image name ISIC_0011168
+image name ISIC_0011171
+image name ISIC_0011172
+image name ISIC_0011175
+image name ISIC_0011176
+image name ISIC_0011177
+image name ISIC_0011204
+image name ISIC_0011205
+image name ISIC_0011213
+image name ISIC_0011219
+image name ISIC_0011224
+image name ISIC_0011227
+image name ISIC_0011292
+image name ISIC_0011294
+image name ISIC_0011298
+image name ISIC_0011300
+image name ISIC_0011305
+image name ISIC_0011310
+image name ISIC_0011319
+image name ISIC_0011321
+image name ISIC_0011325
+image name ISIC_0011333
+image name ISIC_0011336
+image name ISIC_0011338
+image name ISIC_0011344
+image name ISIC_0011349
+image name ISIC_0011359
+image name ISIC_0011363
+image name ISIC_0011367
+image name ISIC_0011374
+image name ISIC_0011384
+image name ISIC_0011386
+image name ISIC_0011392
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/afs/crc.nd.edu/user/j/jfan5/.conda/envs/attack_MedSam/lib/python3.10/site-packages/torch/utils/data/dataloader.py:617: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Process 3 sees CUDA_VISIBLE_DEVICES = 3
+Using GPU: 0 (logical GPU in this process) for process index: 3
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'425', '492', '442', '21', '575', '474', '388', '42', '545', '163', '266', '80', '65', '483', '555', '31', '14', '431', '464', '185', '397', '526', '349', '459', '279', '481', '404', '73', '400', '61', '148', '154', '529', '561', '429', '181', '559', '52', '89', '569', '251', '179', '134', '106', '307', '205', '119', '50', '171', '66', '191', '381', '287', '571', '25', '453', '300', '353', '240', '166', '374', '100'}
+image name ISIC_0000003
+image name ISIC_0000012
+image name ISIC_0000013
+image name ISIC_0000014
+image name ISIC_0000015
+image name ISIC_0000020
+image name ISIC_0000022
+image name ISIC_0000023
+image name ISIC_0000027
+image name ISIC_0000036
+image name ISIC_0000037
+image name ISIC_0000040
+image name ISIC_0000043
+image name ISIC_0000052
+image name ISIC_0000053
+image name ISIC_0000056
+image name ISIC_0000057
+image name ISIC_0000064
+image name ISIC_0000066
+image name ISIC_0000069
+image name ISIC_0000071
+image name ISIC_0000072
+image name ISIC_0000088
+image name ISIC_0000092
+image name ISIC_0000098
+image name ISIC_0000099
+image name ISIC_0000101
+image name ISIC_0000107
+image name ISIC_0000111
+image name ISIC_0000113
+image name ISIC_0000115
+image name ISIC_0000117
+image name ISIC_0000125
+image name ISIC_0000126
+image name ISIC_0000129
+image name ISIC_0000132
+image name ISIC_0000136
+image name ISIC_0000138
+image name ISIC_0000141
+image name ISIC_0000149
+image name ISIC_0000160
+image name ISIC_0000161
+image name ISIC_0000164
+image name ISIC_0000165
+image name ISIC_0000169
+image name ISIC_0000172
+image name ISIC_0000174
+image name ISIC_0000177
+image name ISIC_0000188
+image name ISIC_0000195
+image name ISIC_0000196
+image name ISIC_0000197
+image name ISIC_0000198
+image name ISIC_0000200
+image name ISIC_0000201
+image name ISIC_0000202
+image name ISIC_0000212
+image name ISIC_0000213
+image name ISIC_0000222
+image name ISIC_0000226
+image name ISIC_0000227
+image name ISIC_0000228
+image name ISIC_0000230
+image name ISIC_0000231
+image name ISIC_0000233
+image name ISIC_0000234
+image name ISIC_0000246
+image name ISIC_0000253
+image name ISIC_0000254
+image name ISIC_0000257
+image name ISIC_0000258
+image name ISIC_0000271
+image name ISIC_0000279
+image name ISIC_0000287
+image name ISIC_0000289
+image name ISIC_0000298
+image name ISIC_0000299
+image name ISIC_0000302
+image name ISIC_0000306
+image name ISIC_0000310
+image name ISIC_0000311
+image name ISIC_0000319
+image name ISIC_0000320
+image name ISIC_0000325
+image name ISIC_0000327
+image name ISIC_0000328
+image name ISIC_0000340
+image name ISIC_0000343
+image name ISIC_0000354
+image name ISIC_0000357
+image name ISIC_0000368
+image name ISIC_0000371
+image name ISIC_0000377
+image name ISIC_0000378
+image name ISIC_0000380
+image name ISIC_0000388
+image name ISIC_0000392
+image name ISIC_0000393
+image name ISIC_0000407
+image name ISIC_0000418
+image name ISIC_0000420
+image name ISIC_0000433
+image name ISIC_0000448
+image name ISIC_0000449
+image name ISIC_0000456
+image name ISIC_0000466
+image name ISIC_0000470
+image name ISIC_0000476
+image name ISIC_0000479
+image name ISIC_0000482
+image name ISIC_0000484
+image name ISIC_0000487
+image name ISIC_0000490
+image name ISIC_0000494
+image name ISIC_0000499
+image name ISIC_0000501
+image name ISIC_0000508
+image name ISIC_0000509
+image name ISIC_0000510
+image name ISIC_0000515
+image name ISIC_0000518
+image name ISIC_0000525
+image name ISIC_0000527
+image name ISIC_0000533
+image name ISIC_0000534
+image name ISIC_0000537
+image name ISIC_0000539
+image name ISIC_0000540
+image name ISIC_0000547
+image name ISIC_0000549
+image name ISIC_0000550
+image name ISIC_0001100
+image name ISIC_0001103
+image name ISIC_0001128
+image name ISIC_0001131
+image name ISIC_0001142
+image name ISIC_0001181
+image name ISIC_0001185
+image name ISIC_0001186
+image name ISIC_0001190
+image name ISIC_0001204
+image name ISIC_0001242
+image name ISIC_0001299
+image name ISIC_0001427
+image name ISIC_0001484
+image name ISIC_0001685
+image name ISIC_0001960
+image name ISIC_0002107
+image name ISIC_0002246
+image name ISIC_0002673
+image name ISIC_0002829
+image name ISIC_0002871
+image name ISIC_0003056
+image name ISIC_0003559
+image name ISIC_0003728
+image name ISIC_0004115
+image name ISIC_0004346
+image name ISIC_0005000
+image name ISIC_0006193
+image name ISIC_0006711
+image name ISIC_0007322
+image name ISIC_0007693
+image name ISIC_0008116
+image name ISIC_0008207
+image name ISIC_0008406
+image name ISIC_0008507
+image name ISIC_0008600
+image name ISIC_0008626
+image name ISIC_0008659
+image name ISIC_0008992
+image name ISIC_0008998
+image name ISIC_0009035
+image name ISIC_0009078
+image name ISIC_0009083
+image name ISIC_0009201
+image name ISIC_0009298
+image name ISIC_0009564
+image name ISIC_0009869
+image name ISIC_0009872
+image name ISIC_0009874
+image name ISIC_0009879
+image name ISIC_0009880
+image name ISIC_0009881
+image name ISIC_0009882
+image name ISIC_0009885
+image name ISIC_0009889
+image name ISIC_0009891
+image name ISIC_0009898
+image name ISIC_0009901
+image name ISIC_0009902
+image name ISIC_0009906
+image name ISIC_0009918
+image name ISIC_0009920
+image name ISIC_0009923
+image name ISIC_0009926
+image name ISIC_0009927
+image name ISIC_0009928
+image name ISIC_0009930
+image name ISIC_0009931
+image name ISIC_0009943
+image name ISIC_0009945
+image name ISIC_0009946
+image name ISIC_0009948
+image name ISIC_0009954
+image name ISIC_0009955
+image name ISIC_0009956
+image name ISIC_0009958
+image name ISIC_0009959
+image name ISIC_0009965
+image name ISIC_0009970
+image name ISIC_0009977
+image name ISIC_0009980
+image name ISIC_0009982
+image name ISIC_0009988
+image name ISIC_0009990
+image name ISIC_0009992
+image name ISIC_0009993
+image name ISIC_0009994
+image name ISIC_0009998
+image name ISIC_0010004
+image name ISIC_0010009
+image name ISIC_0010011
+image name ISIC_0010013
+image name ISIC_0010016
+image name ISIC_0010018
+image name ISIC_0010020
+image name ISIC_0010023
+image name ISIC_0010028
+image name ISIC_0010033
+image name ISIC_0010034
+image name ISIC_0010037
+image name ISIC_0010038
+image name ISIC_0010041
+image name ISIC_0010047
+image name ISIC_0010055
+image name ISIC_0010058
+image name ISIC_0010059
+image name ISIC_0010061
+image name ISIC_0010062
+image name ISIC_0010073
+image name ISIC_0010077
+image name ISIC_0010088
+image name ISIC_0010089
+image name ISIC_0010092
+image name ISIC_0010100
+image name ISIC_0010103
+image name ISIC_0010171
+image name ISIC_0010173
+image name ISIC_0010175
+image name ISIC_0010180
+image name ISIC_0010183
+image name ISIC_0010187
+image name ISIC_0010190
+image name ISIC_0010192
+image name ISIC_0010193
+image name ISIC_0010201
+image name ISIC_0010202
+image name ISIC_0010206
+image name ISIC_0010207
+image name ISIC_0010215
+image name ISIC_0010216
+image name ISIC_0010229
+image name ISIC_0010231
+image name ISIC_0010234
+image name ISIC_0010238
+image name ISIC_0010254
+image name ISIC_0010255
+image name ISIC_0010257
+image name ISIC_0010261
+image name ISIC_0010326
+image name ISIC_0010331
+image name ISIC_0010336
+image name ISIC_0010340
+image name ISIC_0010346
+image name ISIC_0010347
+image name ISIC_0010348
+image name ISIC_0010360
+image name ISIC_0010368
+image name ISIC_0010369
+image name ISIC_0010373
+image name ISIC_0010374
+image name ISIC_0010377
+image name ISIC_0010378
+image name ISIC_0010379
+image name ISIC_0010437
+image name ISIC_0010444
+image name ISIC_0010448
+image name ISIC_0010449
+image name ISIC_0010451
+image name ISIC_0010452
+image name ISIC_0010454
+image name ISIC_0010456
+image name ISIC_0010460
+image name ISIC_0010463
+image name ISIC_0010474
+image name ISIC_0010477
+image name ISIC_0010483
+image name ISIC_0010494
+image name ISIC_0010498
+image name ISIC_0010552
+image name ISIC_0010553
+image name ISIC_0010556
+image name ISIC_0010565
+image name ISIC_0010574
+image name ISIC_0010582
+image name ISIC_0010584
+image name ISIC_0010587
+image name ISIC_0010588
+image name ISIC_0010591
+image name ISIC_0010592
+image name ISIC_0010596
+image name ISIC_0010597
+image name ISIC_0010598
+image name ISIC_0010599
+image name ISIC_0010604
+image name ISIC_0010606
+image name ISIC_0010607
+image name ISIC_0010846
+image name ISIC_0010847
+image name ISIC_0010854
+image name ISIC_0010856
+image name ISIC_0010863
+image name ISIC_0011080
+image name ISIC_0011081
+image name ISIC_0011083
+image name ISIC_0011089
+image name ISIC_0011090
+image name ISIC_0011092
+image name ISIC_0011098
+image name ISIC_0011101
+image name ISIC_0011104
+image name ISIC_0011107
+image name ISIC_0011110
+image name ISIC_0011112
+image name ISIC_0011122
+image name ISIC_0011129
+image name ISIC_0011132
+image name ISIC_0011143
+image name ISIC_0011148
+image name ISIC_0011149
+image name ISIC_0011150
+image name ISIC_0011151
+image name ISIC_0011152
+image name ISIC_0011155
+image name ISIC_0011162
+image name ISIC_0011167
+image name ISIC_0011168
+image name ISIC_0011171
+image name ISIC_0011172
+image name ISIC_0011175
+image name ISIC_0011176
+image name ISIC_0011177
+image name ISIC_0011204
+image name ISIC_0011205
+image name ISIC_0011213
+image name ISIC_0011219
+image name ISIC_0011224
+image name ISIC_0011227
+image name ISIC_0011292
+image name ISIC_0011294
+image name ISIC_0011298
+image name ISIC_0011300
+image name ISIC_0011305
+image name ISIC_0011310
+image name ISIC_0011319
+image name ISIC_0011321
+image name ISIC_0011325
+image name ISIC_0011333
+image name ISIC_0011336
+image name ISIC_0011338
+image name ISIC_0011344
+image name ISIC_0011349
+image name ISIC_0011359
+image name ISIC_0011363
+image name ISIC_0011367
+image name ISIC_0011374
+image name ISIC_0011384
+image name ISIC_0011386
+image name ISIC_0011392
+Process 2 sees CUDA_VISIBLE_DEVICES = 2
+Using GPU: 0 (logical GPU in this process) for process index: 2
+=> resuming from ./checkpoint/sam/checkpoint_best.pth
+{'400', '50', '431', '529', '251', '459', '89', '353', '474', '14', '266', '307', '148', '425', '240', '575', '163', '179', '191', '287', '61', '52', '65', '25', '388', '300', '134', '555', '185', '397', '483', '429', '526', '205', '119', '569', '106', '21', '42', '374', '404', '453', '80', '381', '481', '100', '154', '31', '166', '73', '571', '464', '181', '349', '492', '559', '561', '66', '279', '545', '171', '442'}
+image name ISIC_0000003
+image name ISIC_0000012
+image name ISIC_0000013
+image name ISIC_0000014
+image name ISIC_0000015
+image name ISIC_0000020
+image name ISIC_0000022
+image name ISIC_0000023
+image name ISIC_0000027
+image name ISIC_0000036
+image name ISIC_0000037
+image name ISIC_0000040
+image name ISIC_0000043
+image name ISIC_0000052
+image name ISIC_0000053
+image name ISIC_0000056
+image name ISIC_0000057
+image name ISIC_0000064
+image name ISIC_0000066
+image name ISIC_0000069
+image name ISIC_0000071
+image name ISIC_0000072
+image name ISIC_0000088
+image name ISIC_0000092
+image name ISIC_0000098
+image name ISIC_0000099
+image name ISIC_0000101
+image name ISIC_0000107
+image name ISIC_0000111
+image name ISIC_0000113
+image name ISIC_0000115
+image name ISIC_0000117
+image name ISIC_0000125
+image name ISIC_0000126
+image name ISIC_0000129
+image name ISIC_0000132
+image name ISIC_0000136
+image name ISIC_0000138
+image name ISIC_0000141
+image name ISIC_0000149
+image name ISIC_0000160
+image name ISIC_0000161
+image name ISIC_0000164
+image name ISIC_0000165
+image name ISIC_0000169
+image name ISIC_0000172
+image name ISIC_0000174
+image name ISIC_0000177
+image name ISIC_0000188
+image name ISIC_0000195
+image name ISIC_0000196
+image name ISIC_0000197
+image name ISIC_0000198
+image name ISIC_0000200
+image name ISIC_0000201
+image name ISIC_0000202
+image name ISIC_0000212
+image name ISIC_0000213
+image name ISIC_0000222
+image name ISIC_0000226
+image name ISIC_0000227
+image name ISIC_0000228
+image name ISIC_0000230
+image name ISIC_0000231
+image name ISIC_0000233
+image name ISIC_0000234
+image name ISIC_0000246
+image name ISIC_0000253
+image name ISIC_0000254
+image name ISIC_0000257
+image name ISIC_0000258
+image name ISIC_0000271
+image name ISIC_0000279
+image name ISIC_0000287
+image name ISIC_0000289
+image name ISIC_0000298
+image name ISIC_0000299
+image name ISIC_0000302
+image name ISIC_0000306
+image name ISIC_0000310
+image name ISIC_0000311
+image name ISIC_0000319
+image name ISIC_0000320
+image name ISIC_0000325
+image name ISIC_0000327
+image name ISIC_0000328
+image name ISIC_0000340
+image name ISIC_0000343
+image name ISIC_0000354
+image name ISIC_0000357
+image name ISIC_0000368
+image name ISIC_0000371
+image name ISIC_0000377
+image name ISIC_0000378
+image name ISIC_0000380
+image name ISIC_0000388
+image name ISIC_0000392
+image name ISIC_0000393
+image name ISIC_0000407
+image name ISIC_0000418
+image name ISIC_0000420
+image name ISIC_0000433
+image name ISIC_0000448
+image name ISIC_0000449
+image name ISIC_0000456
+image name ISIC_0000466
+image name ISIC_0000470
+image name ISIC_0000476
+image name ISIC_0000479
+image name ISIC_0000482
+image name ISIC_0000484
+image name ISIC_0000487
+image name ISIC_0000490
+image name ISIC_0000494
+image name ISIC_0000499
+image name ISIC_0000501
+image name ISIC_0000508
+image name ISIC_0000509
+image name ISIC_0000510
+image name ISIC_0000515
+image name ISIC_0000518
+image name ISIC_0000525
+image name ISIC_0000527
+image name ISIC_0000533
+image name ISIC_0000534
+image name ISIC_0000537
+image name ISIC_0000539
+image name ISIC_0000540
+image name ISIC_0000547
+image name ISIC_0000549
+image name ISIC_0000550
+image name ISIC_0001100
+image name ISIC_0001103
+image name ISIC_0001128
+image name ISIC_0001131
+image name ISIC_0001142
+image name ISIC_0001181
+image name ISIC_0001185
+image name ISIC_0001186
+image name ISIC_0001190
+image name ISIC_0001204
+image name ISIC_0001242
+image name ISIC_0001299
+image name ISIC_0001427
+image name ISIC_0001484
+image name ISIC_0001685
+image name ISIC_0001960
+image name ISIC_0002107
+image name ISIC_0002246
+image name ISIC_0002673
+image name ISIC_0002829
+image name ISIC_0002871
+image name ISIC_0003056
+image name ISIC_0003559
+image name ISIC_0003728
+image name ISIC_0004115
+image name ISIC_0004346
+image name ISIC_0005000
+image name ISIC_0006193
+image name ISIC_0006711
+image name ISIC_0007322
+image name ISIC_0007693
+image name ISIC_0008116
+image name ISIC_0008207
+image name ISIC_0008406
+image name ISIC_0008507
+image name ISIC_0008600
+image name ISIC_0008626
+image name ISIC_0008659
+image name ISIC_0008992
+image name ISIC_0008998
+image name ISIC_0009035
+image name ISIC_0009078
+image name ISIC_0009083
+image name ISIC_0009201
+image name ISIC_0009298
+image name ISIC_0009564
+image name ISIC_0009869
+image name ISIC_0009872
+image name ISIC_0009874
+image name ISIC_0009879
+image name ISIC_0009880
+image name ISIC_0009881
+image name ISIC_0009882
+image name ISIC_0009885
+image name ISIC_0009889
+image name ISIC_0009891
+image name ISIC_0009898
+image name ISIC_0009901
+image name ISIC_0009902
+image name ISIC_0009906
+image name ISIC_0009918
+image name ISIC_0009920
+image name ISIC_0009923
+image name ISIC_0009926
+image name ISIC_0009927
+image name ISIC_0009928
+image name ISIC_0009930
+image name ISIC_0009931
+image name ISIC_0009943
+image name ISIC_0009945
+image name ISIC_0009946
+image name ISIC_0009948
+image name ISIC_0009954
+image name ISIC_0009955
+image name ISIC_0009956
+image name ISIC_0009958
+image name ISIC_0009959
+image name ISIC_0009965
+image name ISIC_0009970
+image name ISIC_0009977
+image name ISIC_0009980
+image name ISIC_0009982
+image name ISIC_0009988
+image name ISIC_0009990
+image name ISIC_0009992
+image name ISIC_0009993
+image name ISIC_0009994
+image name ISIC_0009998
+image name ISIC_0010004
+image name ISIC_0010009
+image name ISIC_0010011
+image name ISIC_0010013
+image name ISIC_0010016
+image name ISIC_0010018
+image name ISIC_0010020
+image name ISIC_0010023
+image name ISIC_0010028
+image name ISIC_0010033
+image name ISIC_0010034
+image name ISIC_0010037
+image name ISIC_0010038
+image name ISIC_0010041
+image name ISIC_0010047
+image name ISIC_0010055
+image name ISIC_0010058
+image name ISIC_0010059
+image name ISIC_0010061
+image name ISIC_0010062
+image name ISIC_0010073
+image name ISIC_0010077
+image name ISIC_0010088
+image name ISIC_0010089
+image name ISIC_0010092
+image name ISIC_0010100
+image name ISIC_0010103
+image name ISIC_0010171
+image name ISIC_0010173
+image name ISIC_0010175
+image name ISIC_0010180
+image name ISIC_0010183
+image name ISIC_0010187
+image name ISIC_0010190
+image name ISIC_0010192
+image name ISIC_0010193
+image name ISIC_0010201
+image name ISIC_0010202
+image name ISIC_0010206
+image name ISIC_0010207
+image name ISIC_0010215
+image name ISIC_0010216
+image name ISIC_0010229
+image name ISIC_0010231
+image name ISIC_0010234
+image name ISIC_0010238
+image name ISIC_0010254
+image name ISIC_0010255
+image name ISIC_0010257
+image name ISIC_0010261
+image name ISIC_0010326
+image name ISIC_0010331
+image name ISIC_0010336
+image name ISIC_0010340
+image name ISIC_0010346
+image name ISIC_0010347
+image name ISIC_0010348
+image name ISIC_0010360
+image name ISIC_0010368
+image name ISIC_0010369
+image name ISIC_0010373
+image name ISIC_0010374
+image name ISIC_0010377
+image name ISIC_0010378
+image name ISIC_0010379
+image name ISIC_0010437
+image name ISIC_0010444
+image name ISIC_0010448
+image name ISIC_0010449
+image name ISIC_0010451
+image name ISIC_0010452
+image name ISIC_0010454
+image name ISIC_0010456
+image name ISIC_0010460
+image name ISIC_0010463
+image name ISIC_0010474
+image name ISIC_0010477
+image name ISIC_0010483
+image name ISIC_0010494
+image name ISIC_0010498
+image name ISIC_0010552
+image name ISIC_0010553
+image name ISIC_0010556
+image name ISIC_0010565
+image name ISIC_0010574
+image name ISIC_0010582
+image name ISIC_0010584
+image name ISIC_0010587
+image name ISIC_0010588
+image name ISIC_0010591
+image name ISIC_0010592
+image name ISIC_0010596
+image name ISIC_0010597
+image name ISIC_0010598
+image name ISIC_0010599
+image name ISIC_0010604
+image name ISIC_0010606
+image name ISIC_0010607
+image name ISIC_0010846
+image name ISIC_0010847
+image name ISIC_0010854
+image name ISIC_0010856
+image name ISIC_0010863
+image name ISIC_0011080
+image name ISIC_0011081
+image name ISIC_0011083
+image name ISIC_0011089
+image name ISIC_0011090
+image name ISIC_0011092
+image name ISIC_0011098
+image name ISIC_0011101
+image name ISIC_0011104
+image name ISIC_0011107
+image name ISIC_0011110
+image name ISIC_0011112
+image name ISIC_0011122
+image name ISIC_0011129
+image name ISIC_0011132
+image name ISIC_0011143
+image name ISIC_0011148
+image name ISIC_0011149
+image name ISIC_0011150
+image name ISIC_0011151
+image name ISIC_0011152
+image name ISIC_0011155
+image name ISIC_0011162
+image name ISIC_0011167
+image name ISIC_0011168
+image name ISIC_0011171
+image name ISIC_0011172
+image name ISIC_0011175
+image name ISIC_0011176
+image name ISIC_0011177
+image name ISIC_0011204
+image name ISIC_0011205
+image name ISIC_0011213
+image name ISIC_0011219
+image name ISIC_0011224
+image name ISIC_0011227
+image name ISIC_0011292
+image name ISIC_0011294
+image name ISIC_0011298
+image name ISIC_0011300
+image name ISIC_0011305
+image name ISIC_0011310
+image name ISIC_0011319
+image name ISIC_0011321
+image name ISIC_0011325
+image name ISIC_0011333
+image name ISIC_0011336
+image name ISIC_0011338
+image name ISIC_0011344
+image name ISIC_0011349
+image name ISIC_0011359
+image name ISIC_0011363
+image name ISIC_0011367
+image name ISIC_0011374
+image name ISIC_0011384
+image name ISIC_0011386
+image name ISIC_0011392
+Validation round:   0%|          | 0/94 [00:00<?, ?batch/s]Validation round:   0%|          | 0/94 [00:00<?, ?batch/s]Validation round:   0%|          | 0/94 [00:00<?, ?batch/s]Validation round:   0%|          | 0/97 [00:00<?, ?batch/s]Validation round:   1%|          | 1/94 [1:29:26<138:38:49, 5366.98s/batch]Validation round:   1%|          | 1/97 [1:31:08<145:49:26, 5468.40s/batch]Validation round:   1%|          | 1/94 [2:07:25<197:30:34, 7645.54s/batch]Validation round:   1%|          | 1/94 [2:09:50<201:15:47, 7790.83s/batch]Validation round:   2%|▏         | 2/97 [3:22:33<163:11:23, 6184.04s/batch]Validation round:   2%|▏         | 2/94 [3:45:28<168:53:14, 6608.64s/batch]Validation round:   2%|▏         | 2/94 [3:54:40<187:28:10, 7335.77s/batch]Validation round:   2%|▏         | 2/94 [4:37:33<215:12:15, 8421.03s/batch]Validation round:   3%|▎         | 3/97 [5:02:02<158:54:37, 6085.94s/batch]Validation round:   3%|▎         | 3/94 [5:16:44<153:58:41, 6091.44s/batch]Validation round:   3%|▎         | 3/94 [5:55:08<184:10:56, 7286.33s/batch]Validation round:   3%|▎         | 3/94 [6:11:58<181:03:49, 7162.96s/batch]Validation round:   4%|▍         | 4/97 [7:06:37<171:22:53, 6634.12s/batch]Validation round:   4%|▍         | 4/94 [7:08:22<158:16:30, 6331.01s/batch]Validation round:   4%|▍         | 4/94 [8:19:20<195:38:21, 7825.58s/batch]Validation round:   4%|▍         | 4/94 [8:32:38<191:40:21, 7666.91s/batch]Validation round:   5%|▌         | 5/94 [8:47:01<152:50:46, 6182.54s/batch]Validation round:   5%|▌         | 5/97 [8:53:44<167:38:08, 6559.65s/batch]Validation round:   5%|▌         | 5/94 [10:16:32<186:23:32, 7539.47s/batch]Validation round:   5%|▌         | 5/94 [10:26:31<182:06:52, 7366.44s/batch]Validation round:   6%|▌         | 6/97 [10:45:07<166:52:14, 6601.48s/batch]Validation round:   6%|▋         | 6/94 [11:08:10<170:07:42, 6959.80s/batch]Validation round:   6%|▋         | 6/94 [12:15:25<180:54:49, 7401.02s/batch]Validation round:   6%|▋         | 6/94 [12:20:17<175:34:36, 7182.69s/batch]Validation round:   7%|▋         | 7/97 [12:23:12<159:10:42, 6367.14s/batch]Validation round:   7%|▋         | 7/94 [13:21:18<176:19:15, 7296.04s/batch]Validation round:   7%|▋         | 7/94 [13:48:45<158:45:59, 6569.65s/batch]Validation round:   8%|▊         | 8/97 [13:52:32<149:28:59, 6046.51s/batch]Validation round:   7%|▋         | 7/94 [14:06:32<173:03:30, 7161.04s/batch]Validation round:   9%|▊         | 8/94 [14:56:48<162:22:47, 6797.30s/batch]Validation round:   9%|▊         | 8/94 [15:33:48<156:26:06, 6548.45s/batch]Validation round:   9%|▊         | 8/94 [15:42:16<158:46:38, 6646.49s/batch]Validation round:   9%|▉         | 9/97 [16:16:52<167:46:42, 6863.67s/batch]Validation round:  10%|▉         | 9/94 [16:46:55<159:05:21, 6737.90s/batch]Validation round:  10%|▉         | 9/94 [17:24:04<152:57:18, 6478.10s/batch]Validation round:  10%|▉         | 9/94 [17:48:03<165:44:01, 7019.32s/batch]Validation round:  10%|█         | 10/97 [17:59:53<160:46:44, 6652.93s/batch]Validation round:  11%|█         | 10/94 [18:56:12<164:33:37, 7052.59s/batch]Validation round:  11%|█         | 10/94 [19:11:47<151:02:55, 6473.52s/batch]Validation round:  11%|█▏        | 11/97 [19:37:07<152:56:41, 6402.34s/batch]Validation round:  11%|█         | 10/94 [19:57:50<169:18:42, 7256.22s/batch]Validation round:  12%|█▏        | 11/94 [20:36:38<155:21:19, 6738.31s/batch]Validation round:  12%|█▏        | 11/94 [21:09:39<153:28:27, 6656.72s/batch]Validation round:  12%|█▏        | 12/97 [21:24:30<151:27:28, 6414.68s/batch]Validation round:  12%|█▏        | 11/94 [21:42:14<160:17:50, 6952.66s/batch]Validation round:  13%|█▎        | 12/94 [22:36:09<156:29:06, 6870.08s/batch]Validation round:  13%|█▎        | 12/94 [22:38:23<142:23:26, 6251.30s/batch]Validation round:  13%|█▎        | 13/97 [23:17:58<152:27:21, 6533.82s/batch]Validation round:  13%|█▎        | 12/94 [23:20:26<151:01:01, 6630.02s/batch]Validation round:  14%|█▍        | 13/94 [24:08:14<134:47:18, 5990.60s/batch]Validation round:  14%|█▍        | 13/94 [24:16:11<148:39:24, 6606.97s/batch]Validation round:  14%|█▍        | 14/97 [24:47:02<142:21:15, 6174.41s/batch]Validation round:  15%|█▍        | 14/94 [25:33:35<127:17:04, 5727.80s/batch]Validation round:  14%|█▍        | 13/94 [25:38:24<160:24:27, 7129.23s/batch]Validation round:  15%|█▍        | 14/94 [26:19:13<152:01:18, 6840.98s/batch]Validation round:  15%|█▌        | 15/97 [26:22:26<137:32:48, 6038.64s/batch]Validation round:  15%|█▍        | 14/94 [27:08:41<146:56:11, 6612.14s/batch]Validation round:  16%|█▌        | 15/94 [27:09:20<125:48:43, 5733.21s/batch]Validation round:  16%|█▌        | 15/94 [28:01:27<145:26:56, 6628.06s/batch]Validation round:  16%|█▋        | 16/97 [28:13:43<140:11:42, 6230.89s/batch]Validation round:  16%|█▌        | 15/94 [28:37:36<136:39:01, 6227.11s/batch]Validation round:  17%|█▋        | 16/94 [28:51:33<126:49:33, 5853.51s/batch]Validation round:  18%|█▊        | 17/97 [30:03:17<140:45:12, 6333.90s/batch]Validation round:  17%|█▋        | 16/94 [30:03:28<148:07:27, 6836.51s/batch]Validation round:  17%|█▋        | 16/94 [30:14:31<132:14:02, 6103.11s/batch]Validation round:  18%|█▊        | 17/94 [30:29:24<125:18:35, 5858.64s/batch]Validation round:  18%|█▊        | 17/94 [31:38:40<123:45:16, 5785.93s/batch]Validation round:  19%|█▊        | 18/97 [31:43:22<136:49:42, 6235.22s/batch]Validation round:  19%|█▉        | 18/94 [32:09:23<124:34:37, 5901.02s/batch]Validation round:  18%|█▊        | 17/94 [32:19:18<154:40:37, 7231.66s/batch]Validation round:  19%|█▉        | 18/94 [33:05:06<118:20:46, 5605.87s/batch]Validation round:  20%|█▉        | 19/97 [33:25:45<134:29:44, 6207.49s/batch]Validation round:  19%|█▉        | 18/94 [34:28:02<155:47:27, 7379.57s/batch]Validation round:  20%|██        | 19/94 [34:30:31<138:59:55, 6671.94s/batch]Validation round:  20%|██        | 19/94 [34:30:40<113:50:09, 5464.13s/batch]Validation round:  21%|██        | 20/97 [34:59:11<128:54:19, 6026.75s/batch]Validation round:  21%|██▏       | 20/94 [36:21:48<119:44:47, 5825.51s/batch]Validation round:  20%|██        | 19/94 [36:33:48<154:46:38, 7429.32s/batch]Validation round:  21%|██▏       | 20/94 [36:43:48<145:19:27, 7069.84s/batch]Validation round:  22%|██▏       | 21/97 [36:45:56<129:37:54, 6140.45s/batch]Validation round:  22%|██▏       | 21/94 [37:54:40<116:35:10, 5749.46s/batch]Validation round:  23%|██▎       | 22/97 [38:21:37<125:25:43, 6020.58s/batch]Validation round:  21%|██▏       | 20/94 [38:26:45<148:41:30, 7233.65s/batch]Validation round:  22%|██▏       | 21/94 [39:09:01<153:21:41, 7563.04s/batch]Validation round:  23%|██▎       | 22/94 [39:43:09<119:32:39, 5977.22s/batch]Validation round:  24%|██▎       | 23/97 [39:59:09<122:43:05, 5970.07s/batch]Validation round:  22%|██▏       | 21/94 [40:20:10<144:04:30, 7105.08s/batch]Validation round:  23%|██▎       | 22/94 [40:40:27<138:47:36, 6939.67s/batch]Validation round:  24%|██▍       | 23/94 [41:39:42<123:53:55, 6282.20s/batch]Validation round:  23%|██▎       | 22/94 [42:07:49<138:13:07, 6910.93s/batch]Validation round:  25%|██▍       | 24/97 [42:15:47<134:36:55, 6638.57s/batch]Validation round:  24%|██▍       | 23/94 [42:35:36<136:40:53, 6930.33s/batch]Validation round:  26%|██▌       | 24/94 [43:14:28<118:40:25, 6103.22s/batch]Validation round:  24%|██▍       | 23/94 [43:42:04<128:52:13, 6534.28s/batch]Validation round:  26%|██▌       | 25/97 [44:10:56<134:23:33, 6719.63s/batch]Validation round:  26%|██▌       | 24/94 [44:44:22<139:23:53, 7169.05s/batch]Validation round:  26%|██▌       | 24/94 [45:18:01<122:30:59, 6300.86s/batch]Validation round:  27%|██▋       | 25/94 [45:39:12<131:49:14, 6877.60s/batch]Validation round:  27%|██▋       | 26/97 [46:23:09<139:42:15, 7083.60s/batch]Validation round:  27%|██▋       | 25/94 [46:27:23<131:43:31, 6872.62s/batch]Validation round:  28%|██▊       | 26/94 [47:13:12<122:53:57, 6506.44s/batch]Validation round:  27%|██▋       | 25/94 [47:29:23<129:51:31, 6775.23s/batch]Validation round:  28%|██▊       | 27/97 [47:56:37<129:07:39, 6640.84s/batch]
