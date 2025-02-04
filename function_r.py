@@ -1,4 +1,4 @@
-# import cv2
+import cv2
 import torch
 from matplotlib import colormaps
 
@@ -1206,7 +1206,7 @@ def one_pixel_attack(args, net, train_loader, heatmap_img_path, color='black', )
 
 
 
-def zero_order_one_pixel(args, net, train_loader, heatmap_img_path, color='black', ):
+def zero_order_one_pixel(args, net, train_loader, color='black', ):
     # 设置模型为评估模式
     net.eval()
     dataset = os.path.basename(args.data_path)
