@@ -1203,3 +1203,128 @@ def one_pixel_attack(args, net, train_loader, heatmap_img_path, color='black', )
 
             pbar.update(1)
     print('done')
+
+
+
+def zero_order_one_pixel(args, net, train_loader, heatmap_img_path, color='black', ):
+    # 设置模型为评估模式
+    net.eval()
+    dataset = os.path.basename(args.data_path)
+    points = []
+    names = []
+    n_val = len(train_loader)
+    ave_res, mix_res = (0, 0, 0, 0), (0, 0, 0, 0)
+    rater_res = [(0, 0, 0, 0) for _ in range(6)]
+    hd = []
+    tot = 0
+    hard = 0
+    threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
+    GPUdevice = torch.device('cuda:' + str(args.gpu_device))
+    lossfunc = DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean') if args.thd else criterion_G
+    log_dir = "./heatmap_img/"
+    os.makedirs(log_dir, exist_ok=True)
+    log_file = os.path.join(log_dir, "attack_performance.log")
+
+    # open log
+    with open(log_file, 'a') as f_log:
+        f_log.write("This is a log entry.\n")
+
+    with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
+        for ind, pack in enumerate(train_loader):
+            # remove unnecessary continue
+            imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
+            masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
+            if 'pt' not in pack:
+                imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
+            else:
+                ptw = pack['pt']
+                point_labels = pack['p_label']
+
+            names_batch = pack['image_meta_dict']['filename_or_obj']
+            for name in names_batch:
+                namecat = os.path.splitext(os.path.basename(name))[0] + '+'
+
+            buoy = 0
+            evl_ch = int(args.evl_chunk) if args.evl_chunk else int(imgsw.size(-1))
+
+            while (buoy + evl_ch) <= imgsw.size(-1):
+                pt = ptw[:, :, buoy: buoy + evl_ch] if args.thd else ptw
+                imgs = imgsw[..., buoy:buoy + evl_ch]
+                masks = masksw[..., buoy:buoy + evl_ch]
+                buoy += evl_ch
+
+                if args.thd:
+                    pt = rearrange(pt, 'b n d -> (b d) n')
+                    imgs = rearrange(imgs, 'b c h w d -> (b d) c h w')
+                    masks = rearrange(masks, 'b c h w d -> (b d) c h w')
+                    imgs = imgs.repeat(1, 3, 1, 1)
+                    point_labels = torch.ones(imgs.size(0))
+
+                    resize_transform = torchvision.transforms.Resize((args.image_size, args.image_size))
+                    imgs = resize_transform(imgs)
+                    masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
+
+                showp = pt
+                points.append(pt.cpu().numpy()[0])
+                names.extend(names_batch)
+                mask_type = torch.float32
+
+                b_size, c, w, h = imgs.size()
+                longsize = max(w, h)
+
+                if point_labels[0] != -1:
+                    point_coords = pt
+                    coords_torch = point_coords.to(dtype=torch.float, device=GPUdevice)
+                    labels_torch = point_labels.to(dtype=torch.int, device=GPUdevice)
+                    coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
+                    pt = (coords_torch, labels_torch)
+
+                if hard:
+                    true_mask_ave = (true_mask_ave > 0.5).float()
+
+                _imgs = imgs.clone()
+
+                # set patch
+                patch_size = 10
+                color_value = 255 if color == 'white' else 0
+                eiou_list = []
+                pos_list = []
+
+                # calculate attack position
+                positions = [(i, j) for i in range(patch_size - 1, args.image_size, patch_size)
+                             for j in range(patch_size - 1, args.image_size, patch_size)]
+                # use for to replace while
+                for att_pos_i, att_pos_j in positions:
+                    imgs = _imgs.clone()
+                    # replace for to improve speed
+                    imgs[0, :, att_pos_i - patch_size + 1:att_pos_i + 1,
+                         att_pos_j - patch_size + 1:att_pos_j + 1] = color_value
+                    imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+
+                    # predict
+                    with torch.no_grad():
+                        imge = net.image_encoder(imgs)
+                        if args.net in ['sam', 'mobile_sam']:
+                            se, de = net.prompt_encoder(points=pt, boxes=None, masks=None)
+                            pred, _ = net.mask_decoder(
+                                image_embeddings=imge,
+                                image_pe=net.prompt_encoder.get_dense_pe(),
+                                sparse_prompt_embeddings=se,
+                                dense_prompt_embeddings=de,
+                                multimask_output=False,
+                            )
+                        elif args.net == "efficient_sam":
+                            coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
+                            se = net.prompt_encoder(coords=coords_torch, labels=labels_torch)
+                            se = se.view(se.shape[0], 1, se.shape[1], se.shape[2])
+                            pred, _ = net.mask_decoder(
+                                image_embeddings=imge,
+                                image_pe=net.prompt_encoder.get_dense_pe(),
+                                sparse_prompt_embeddings=se,
+                                multimask_output=False,
+                            )
+
+                        # resize
+                        print(pred)
+
+                        return
