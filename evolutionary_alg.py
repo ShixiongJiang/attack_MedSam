@@ -230,18 +230,18 @@ transform_train_seg = transforms.Compose([
 heatmap_img_path = 'heatmap_img_CVC300'
 polyp_train_dataset = Polyp(args, args.data_path, transform=transform_train, transform_msk=transform_train_seg,
                             mode='Training')
-polyp_train_dataset = remove_dumplicate_image(heatmap_img_path=heatmap_img_path, polyp_train_dataset=polyp_train_dataset)
+# polyp_train_dataset = remove_dumplicate_image(heatmap_img_path=heatmap_img_path, polyp_train_dataset=polyp_train_dataset)
 
-# 根据进程数分割数据集
-N = args.num_processes
-dataset_size = len(polyp_train_dataset)
-subset_sizes = [dataset_size // N] * N
-subset_sizes[-1] += dataset_size - sum(subset_sizes)
-subsets = random_split(polyp_train_dataset, subset_sizes)
-subset = subsets[args.process_idx]
+# # 根据进程数分割数据集
+# N = args.num_processes
+# dataset_size = len(polyp_train_dataset)
+# subset_sizes = [dataset_size // N] * N
+# subset_sizes[-1] += dataset_size - sum(subset_sizes)
+# subsets = random_split(polyp_train_dataset, subset_sizes)
+# subset = subsets[args.process_idx]
 
-# 创建 DataLoader
-nice_train_loader = DataLoader(subset, batch_size=args.b, shuffle=True, num_workers=2, pin_memory=True)
+# # 创建 DataLoader
+nice_train_loader = DataLoader(polyp_train_dataset, batch_size=args.b, shuffle=True, num_workers=2, pin_memory=True)
 
 # 为每个进程创建一个单独的日志文件
 try:
