@@ -1,4 +1,11 @@
 from einops import rearrange
+import torch
+import torch.nn.functional as F
+from tqdm import tqdm
+import random
+import numpy as np
+import os
+import torchvision
 
 def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='black'):
     n_val = len(train_loader)
@@ -6,15 +13,20 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
     # ... existing code until patch placement section ...
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
-            # remove unnecessary continue
+            # Get images and masks
             imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
             masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
+            
+            # Get or generate point prompts
             if 'pt' not in pack:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
+                coords_torch = ptw
+                labels_torch = torch.ones(coords_torch.shape[0])  # Assuming positive points
             else:
-                ptw = pack['pt']
-                point_labels = pack['p_label']
+                coords_torch = pack['pt']
+                labels_torch = pack['p_label']
 
+            # Process image names
             names_batch = pack['image_meta_dict']['filename_or_obj']
             for name in names_batch:
                 namecat = os.path.splitext(os.path.basename(name))[0] + '+'
@@ -41,6 +53,9 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             _imgs = imgsw.clone()
             mask_type = torch.float32
 
+            # Prepare points for SAM
+            points = (coords_torch, labels_torch)
+
             # Evolutionary algorithm parameters
             patch_size = 10
             color_value = 255 if color == 'white' else 0
@@ -48,7 +63,6 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             generations = 50
             mutation_rate = 0.1
             threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
-
             tournament_size = 3
             
             def create_individual():
@@ -71,7 +85,7 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                 with torch.no_grad():
                     imge = net.image_encoder(imgs)
                     if args.net in ['sam', 'mobile_sam']:
-                        se, de = net.prompt_encoder(points=pt, boxes=None, masks=None)
+                        se, de = net.prompt_encoder(points=points, boxes=None, masks=None)
                         pred, _ = net.mask_decoder(
                             image_embeddings=imge,
                             image_pe=net.prompt_encoder.get_dense_pe(),
