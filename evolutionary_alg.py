@@ -261,7 +261,7 @@ with open(log_file_path, 'w') as log_file:
 writer = SummaryWriter(log_dir=f"./logs/process_{args.process_idx}")
 
 # 启动攻击
-function.evolutionary_algorithm(args, net, nice_train_loader, color='black', heatmap_img_path=heatmap_img_path)
+evolutionary_algorithm(args, net, nice_train_loader, color='black', heatmap_img_path=heatmap_img_path)
 
 # 关闭日志
 writer.close()
