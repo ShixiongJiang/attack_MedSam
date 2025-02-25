@@ -1326,6 +1326,6 @@ def zero_order_one_pixel(args, net, train_loader, color='black', ):
 
                         # resize
                         print(pred)
-                        print(pred.size)
+                        print(pred.size())
 
                         return
