@@ -22,16 +22,7 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
         threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
 
         tournament_size = 3
-        if args.thd:
-            pt = rearrange(pt, 'b n d -> (b d) n')
-            imgs = rearrange(imgs, 'b c h w d -> (b d) c h w')
-            masks = rearrange(masks, 'b c h w d -> (b d) c h w')
-            imgs = imgs.repeat(1, 3, 1, 1)
-            point_labels = torch.ones(imgs.size(0))
-
-            resize_transform = torchvision.transforms.Resize((args.image_size, args.image_size))
-            imgs = resize_transform(imgs)
-            masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
+        
         def create_individual():
             """Create a random patch position"""
             return [
@@ -47,7 +38,16 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             imgs[0, :, i - patch_size + 1:i + 1,
                     j - patch_size + 1:j + 1] = color_value
             imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+            if args.thd:
+                pt = rearrange(pt, 'b n d -> (b d) n')
+                imgs = rearrange(imgs, 'b c h w d -> (b d) c h w')
+                masks = rearrange(masks, 'b c h w d -> (b d) c h w')
+                imgs = imgs.repeat(1, 3, 1, 1)
+                point_labels = torch.ones(imgs.size(0))
 
+                resize_transform = torchvision.transforms.Resize((args.image_size, args.image_size))
+                imgs = resize_transform(imgs)
+                masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
             with torch.no_grad():
                 imge = net.image_encoder(imgs)
                 if args.net in ['sam', 'mobile_sam']:
