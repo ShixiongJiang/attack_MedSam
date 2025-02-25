@@ -1,108 +1,120 @@
+from einops import rearrange
+
 def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='black'):
     # ... existing code until patch placement section ...
+    with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
+        for ind, pack in enumerate(train_loader):
+            # remove unnecessary continue
+            imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
+            masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
 
-    _imgs = imgs.clone()
+        _imgs = imgsw.clone()
+        mask_type = torch.float32
 
-    # Evolutionary algorithm parameters
-    patch_size = 10
-    color_value = 255 if color == 'white' else 0
-    population_size = 30
-    generations = 50
-    mutation_rate = 0.1
-    tournament_size = 3
+        # Evolutionary algorithm parameters
+        patch_size = 10
+        color_value = 255 if color == 'white' else 0
+        population_size = 30
+        generations = 50
+        mutation_rate = 0.1
+        threshold = (0.1, 0.3, 0.5, 0.7, 0.9)
 
-    def create_individual():
-        """Create a random patch position"""
-        return [
-            random.randint(patch_size - 1, args.image_size - patch_size),
-            random.randint(patch_size - 1, args.image_size - patch_size)
-        ]
+        tournament_size = 3
+        if args.thd:
+            pt = rearrange(pt, 'b n d -> (b d) n')
+            imgs = rearrange(imgs, 'b c h w d -> (b d) c h w')
+            masks = rearrange(masks, 'b c h w d -> (b d) c h w')
+            imgs = imgs.repeat(1, 3, 1, 1)
+            point_labels = torch.ones(imgs.size(0))
 
-    def fitness(position):
-        """Evaluate fitness of a patch position (lower IoU is better)"""
-        imgs = _imgs.clone()
-        i, j = position
-        imgs[0, :, i - patch_size + 1:i + 1,
-                j - patch_size + 1:j + 1] = color_value
-        imgs = imgs.to(dtype=mask_type, device=GPUdevice)
+            resize_transform = torchvision.transforms.Resize((args.image_size, args.image_size))
+            imgs = resize_transform(imgs)
+            masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
+        def create_individual():
+            """Create a random patch position"""
+            return [
+                random.randint(patch_size - 1, args.image_size - patch_size),
+                random.randint(patch_size - 1, args.image_size - patch_size)
+            ]
 
-        with torch.no_grad():
-            imge = net.image_encoder(imgs)
-            if args.net in ['sam', 'mobile_sam']:
-                se, de = net.prompt_encoder(points=pt, boxes=None, masks=None)
-                pred, _ = net.mask_decoder(
-                    image_embeddings=imge,
-                    image_pe=net.prompt_encoder.get_dense_pe(),
-                    sparse_prompt_embeddings=se,
-                    dense_prompt_embeddings=de,
-                    multimask_output=False,
-                )
-            elif args.net == "efficient_sam":
-                coords_torch, labels_torch = transform_prompt(coords_torch, labels_torch, h, w)
-                se = net.prompt_encoder(coords=coords_torch, labels=labels_torch)
-                se = se.view(se.shape[0], 1, se.shape[1], se.shape[2])
-                pred, _ = net.mask_decoder(
-                    image_embeddings=imge,
-                    image_pe=net.prompt_encoder.get_dense_pe(),
-                    sparse_prompt_embeddings=se,
-                    multimask_output=False,
-                )
+        def fitness(position):
+            """Evaluate fitness of a patch position (lower IoU is better)"""
+            imgs = _imgs.clone()
 
-            pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
-            eiou, _ = eval_seg(pred, masks, threshold)
-            return -eiou  # Negative because we want to minimize IoU
+            i, j = position
+            imgs[0, :, i - patch_size + 1:i + 1,
+                    j - patch_size + 1:j + 1] = color_value
+            imgs = imgs.to(dtype=mask_type, device=GPUdevice)
 
-    def tournament_select(population, fitnesses):
-        """Tournament selection"""
-        tournament = random.sample(list(range(len(population))), tournament_size)
-        winner = tournament[0]
-        for idx in tournament[1:]:
-            if fitnesses[idx] > fitnesses[winner]:
-                winner = idx
-        return population[winner]
+            with torch.no_grad():
+                imge = net.image_encoder(imgs)
+                if args.net in ['sam', 'mobile_sam']:
+                    se, de = net.prompt_encoder(points=pt, boxes=None, masks=None)
+                    pred, _ = net.mask_decoder(
+                        image_embeddings=imge,
+                        image_pe=net.prompt_encoder.get_dense_pe(),
+                        sparse_prompt_embeddings=se,
+                        dense_prompt_embeddings=de,
+                        multimask_output=False,
+                    )
+               
 
-    def mutate(position):
-        """Mutate position with gaussian noise"""
-        new_pos = position.copy()
-        if random.random() < mutation_rate:
-            new_pos[0] += int(random.gauss(0, args.image_size/10))
-            new_pos[1] += int(random.gauss(0, args.image_size/10))
-            new_pos[0] = max(patch_size - 1, min(new_pos[0], args.image_size - patch_size))
-            new_pos[1] = max(patch_size - 1, min(new_pos[1], args.image_size - patch_size))
-        return new_pos
+                pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
+                eiou, _ = eval_seg(pred, masks, threshold)
+                return -eiou  # Negative because we want to minimize IoU
 
-    # Initialize population
-    population = [create_individual() for _ in range(population_size)]
-    best_position = None
-    best_fitness = float('-inf')
-    eiou_list = []
-    pos_list = []
+        def tournament_select(population, fitnesses):
+            """Tournament selection"""
+            tournament = random.sample(list(range(len(population))), tournament_size)
+            winner = tournament[0]
+            for idx in tournament[1:]:
+                if fitnesses[idx] > fitnesses[winner]:
+                    winner = idx
+            return population[winner]
 
-    # Evolution loop
-    for gen in range(generations):
-        # Evaluate fitness for all individuals
-        fitnesses = [fitness(pos) for pos in population]
-        
-        # Track best solution
-        gen_best_idx = max(range(len(fitnesses)), key=lambda i: fitnesses[i])
-        if fitnesses[gen_best_idx] > best_fitness:
-            best_fitness = fitnesses[gen_best_idx]
-            best_position = population[gen_best_idx]
+        def mutate(position):
+            """Mutate position with gaussian noise"""
+            new_pos = position.copy()
+            if random.random() < mutation_rate:
+                new_pos[0] += int(random.gauss(0, args.image_size/10))
+                new_pos[1] += int(random.gauss(0, args.image_size/10))
+                new_pos[0] = max(patch_size - 1, min(new_pos[0], args.image_size - patch_size))
+                new_pos[1] = max(patch_size - 1, min(new_pos[1], args.image_size - patch_size))
+            return new_pos
+
+        # Initialize population
+        population = [create_individual() for _ in range(population_size)]
+        best_position = None
+        best_fitness = float('-inf')
+        eiou_list = []
+        pos_list = []
+
+        # Evolution loop
+        for gen in range(generations):
+            # Evaluate fitness for all individuals
+            fitnesses = [fitness(pos) for pos in population]
             
-        # Create new population
-        new_population = []
-        for _ in range(population_size):
-            parent = tournament_select(population, fitnesses)
-            child = mutate(parent)
-            new_population.append(child)
-        
-        population = new_population
-        
-        # Save position and metrics for visualization
-        pos_list.append(best_position)
-        eiou_list.append(-best_fitness)  # Convert back to IoU
+            # Track best solution
+            gen_best_idx = max(range(len(fitnesses)), key=lambda i: fitnesses[i])
+            if fitnesses[gen_best_idx] > best_fitness:
+                best_fitness = fitnesses[gen_best_idx]
+                best_position = population[gen_best_idx]
+                
+            # Create new population
+            new_population = []
+            for _ in range(population_size):
+                parent = tournament_select(population, fitnesses)
+                child = mutate(parent)
+                new_population.append(child)
+            
+            population = new_population
+            
+            # Save position and metrics for visualization
+            pos_list.append(best_position)
+            eiou_list.append(-best_fitness)  # Convert back to IoU
 
-    eiou_list = np.array(eiou_list)
+        eiou_list = np.array(eiou_list)
+        print(eiou_list)
 
     # ... rest of the visualization code ...
 
