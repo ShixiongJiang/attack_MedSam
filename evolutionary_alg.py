@@ -1,6 +1,8 @@
 from einops import rearrange
 
 def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='black'):
+    n_val = len(train_loader)
+
     # ... existing code until patch placement section ...
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for ind, pack in enumerate(train_loader):
