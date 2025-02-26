@@ -56,6 +56,8 @@ def calc_hf(pred, gt):
 
 def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='black'):
     n_val = len(train_loader)
+    points = []
+    hard = 0
 
     # ... existing code until patch placement section ...
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
@@ -110,7 +112,23 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                     masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
                 _imgs = imgs.clone()
                 mask_type = torch.float32
+                showp = pt
+                points.append(pt.cpu().numpy()[0])
+                names.extend(names_batch)
+                mask_type = torch.float32
 
+                b_size, c, w, h = imgs.size()
+                longsize = max(w, h)
+
+                if point_labels[0] != -1:
+                    point_coords = pt
+                    coords_torch = point_coords.to(dtype=torch.float, device=GPUdevice)
+                    labels_torch = point_labels.to(dtype=torch.int, device=GPUdevice)
+                    coords_torch, labels_torch = coords_torch[None, :, :], labels_torch[None, :]
+                    pt = (coords_torch, labels_torch)
+
+                if hard:
+                    true_mask_ave = (true_mask_ave > 0.5).float()
                 # Prepare points for SAM
                 # Ensure proper dimensions: SAM expects [batch, num_points, 2] for coordinates
                 # if coords_torch.ndim == 2:
