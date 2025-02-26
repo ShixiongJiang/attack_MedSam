@@ -75,15 +75,13 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             buoy = 0
             evl_ch = int(args.evl_chunk) if args.evl_chunk else int(imgsw.size(-1))
             # Get or generate point prompts
+           
             if 'pt' not in pack:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
-                coords_torch = ptw
-                labels_torch = torch.ones(coords_torch.shape[0])  # Assuming positive points
             else:
-                coords_torch = pack['pt']
-                labels_torch = pack['p_label']
-
-
+                ptw = pack['pt']
+                point_labels = pack['p_label']
+                
             while (buoy + evl_ch) <= imgsw.size(-1):
                 pt = ptw[:, :, buoy: buoy + evl_ch] if args.thd else ptw
                 imgs = imgsw[..., buoy:buoy + evl_ch]
