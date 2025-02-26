@@ -9,9 +9,10 @@ import torchvision
 from monai.losses import DiceCELoss
 from conf import settings
 from monai.metrics import compute_hausdorff_distance, DiceMetric
+import cfg_reverse_adaptation
 
 
-args = cfg.parse_args()
+args = cfg_reverse_adaptation.parse_args()
 
 GPUdevice = torch.device('cuda', args.gpu_device)
 pos_weight = torch.ones([1]).cuda(device=GPUdevice) * 2
