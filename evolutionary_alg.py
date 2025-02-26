@@ -23,8 +23,8 @@ torch.backends.cudnn.benchmark = True
 loss_function = DiceCELoss(to_onehot_y=True, softmax=True)
 scaler = torch.cuda.amp.GradScaler()
 max_iterations = settings.EPOCH
-post_label = AsDiscrete(to_onehot=14)
-post_pred = AsDiscrete(argmax=True, to_onehot=14)
+# post_label = AsDiscrete(to_onehot=14)
+# post_pred = AsDiscrete(argmax=True, to_onehot=14)
 dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
 dice_val_best = 0.0
 global_step_best = 0
