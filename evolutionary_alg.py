@@ -81,7 +81,7 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             else:
                 ptw = pack['pt']
                 point_labels = pack['p_label']
-                
+
             while (buoy + evl_ch) <= imgsw.size(-1):
                 pt = ptw[:, :, buoy: buoy + evl_ch] if args.thd else ptw
                 imgs = imgsw[..., buoy:buoy + evl_ch]
@@ -157,7 +157,7 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                     with torch.no_grad():
                         imge = net.image_encoder(imgs)
                         if args.net in ['sam', 'mobile_sam']:
-                            se, de = net.prompt_encoder(points=points, boxes=None, masks=None)
+                            se, de = net.prompt_encoder(points=pt, boxes=None, masks=None)
                             pred, _ = net.mask_decoder(
                                 image_embeddings=imge,
                                 image_pe=net.prompt_encoder.get_dense_pe(),
