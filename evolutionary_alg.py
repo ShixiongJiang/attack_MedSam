@@ -67,9 +67,13 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             # Prepare points for SAM
             # Ensure proper dimensions: SAM expects [batch, num_points, 2] for coordinates
             if coords_torch.ndim == 2:
-                coords_torch = coords_torch.unsqueeze(0)
+                coords_torch = coords_torch.unsqueeze(0)  # Now shape: [1, num_points, 2]
             if labels_torch.ndim == 1:
-                labels_torch = labels_torch.unsqueeze(0)
+                labels_torch = labels_torch.unsqueeze(0)  # Now shape: [1, num_points]
+
+            # Move to the same device as the model (e.g., GPUdevice)
+            coords_torch = coords_torch.to(GPUdevice)
+            labels_torch = labels_torch.to(GPUdevice)
             points = (coords_torch, labels_torch)
 
             # Evolutionary algorithm parameters
