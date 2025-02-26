@@ -65,6 +65,11 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             mask_type = torch.float32
 
             # Prepare points for SAM
+            # Ensure proper dimensions: SAM expects [batch, num_points, 2] for coordinates
+            if coords_torch.ndim == 2:
+                coords_torch = coords_torch.unsqueeze(0)
+            if labels_torch.ndim == 1:
+                labels_torch = labels_torch.unsqueeze(0)
             points = (coords_torch, labels_torch)
 
             # Evolutionary algorithm parameters
@@ -92,7 +97,6 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                         j - patch_size + 1:j + 1] = color_value
                 imgs = imgs.to(dtype=mask_type, device=GPUdevice)
                 
-                
                 with torch.no_grad():
                     imge = net.image_encoder(imgs)
                     if args.net in ['sam', 'mobile_sam']:
@@ -105,7 +109,6 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                             multimask_output=False,
                         )
                 
-
                     pred = F.interpolate(pred, size=(masks.shape[2], masks.shape[3]))
                     eiou, _ = eval_seg(pred, masks, threshold)
                     return -eiou  # Negative because we want to minimize IoU
