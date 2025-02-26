@@ -16,7 +16,18 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
             # Get images and masks
             imgsw = pack['images'].to(dtype=torch.float32, device=GPUdevice)
             masksw = pack['label'].to(dtype=torch.float32, device=GPUdevice)
-            
+            if 'pt' not in pack:
+                imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
+            else:
+                ptw = pack['pt']
+                point_labels = pack['p_label']
+
+            names_batch = pack['image_meta_dict']['filename_or_obj']
+            for name in names_batch:
+                namecat = os.path.splitext(os.path.basename(name))[0] + '+'
+
+            buoy = 0
+            evl_ch = int(args.evl_chunk) if args.evl_chunk else int(imgsw.size(-1))
             # Get or generate point prompts
             if 'pt' not in pack:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
