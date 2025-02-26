@@ -61,7 +61,7 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                     resize_transform = torchvision.transforms.Resize((args.image_size, args.image_size))
                     imgs = resize_transform(imgs)
                     masks = torchvision.transforms.Resize((args.out_size, args.out_size))(masks)
-            _imgs = imgsw.clone()
+            _imgs = imgs.clone()
             mask_type = torch.float32
 
             # Prepare points for SAM
