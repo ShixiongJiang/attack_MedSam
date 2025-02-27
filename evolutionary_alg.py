@@ -219,10 +219,10 @@ def evolutionary_algorithm(args, net, train_loader, heatmap_img_path, color='bla
                     # Save position and metrics for visualization
                     pos_list.append(best_position)
                     eiou_list.append(-best_fitness)  # Convert back to IoU
-                    print(f"Generation {gen + 1} best fitness: {best_fitness}")
-
+                    # print(f"Generation {gen + 1} best fitness: {best_fitness}")
+                print(f"{namecat}: best fitness: {best_fitness}")
                 eiou_list = np.array(eiou_list)
-                print(eiou_list)
+                # print(eiou_list)
 
 
     # ... rest of the visualization code ...
